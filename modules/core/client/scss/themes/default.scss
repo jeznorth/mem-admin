@@ -31,18 +31,6 @@ $app-bg: 					#F1f1f1;
 $app-base-color: 			#494949;
 $app-base-font-size:		1.4rem;
 
-// FONTS
-$font-color-grey: 			#666;
-$font-color-disabled: 		#CCC;
-$font-family-heading: 		Myriad-Pro, Calibri, Arial, sans serif;
-$font-family-sans-serif: 	Myriad-Pro, Calibri, Arial, sans serif;
-
-// FORM CONTROLS
-$form-control-bg: 			#fff;
-
-// FOOTER
-$footer-font-size:			1.2rem;
-
 // BUTTONS
 $btn-focus-bg-color: 		#FFF;
 $btn-focus-border-color: 	#5475a7;
@@ -56,6 +44,21 @@ $radio-btn-bg: 				#fff;
 $radio-btn-border-color: 	#ccc;
 $radio-btn-active-color: 	#fff;
 $radio-btn-active-bg: 		#5091cd;
+
+// FONTS
+$font-color-grey: 			#666;
+$font-color-disabled: 		#CCC;
+$font-family-heading: 		Myriad-Pro, Calibri, Arial, sans serif;
+$font-family-sans-serif: 	Myriad-Pro, Calibri, Arial, sans serif;
+
+// FORM CONTROLS
+$form-control-bg: 			#fff;
+
+// FOOTER
+$footer-font-size:			1.2rem;
+
+// HORIZ RULE
+$hr-rule-border:			2px solid #ddd;
 
 // LEFT PANEL
 $left-panel-width: 			19rem;

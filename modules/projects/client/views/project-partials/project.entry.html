@@ -73,16 +73,78 @@
     <div class="tab-pane"
       ng-show="form.curTab === 'Site Activities'">
       <ul class="edit-project-activity">
-        <li class="edit-project-activity__item" ng-repeat="activity in project.activities | orderBy: 'order'">
-          <label class="control-label"
-            for="siteActivity{{activity.name}}">
-            {{activity.name}}
-          </label>
-          <select class="form-control" id="activityStatus" name="activityStatus"
-            id="siteActivity{{activity.name}}"
-            ng-options="statusItem for statusItem in activityStatusItems track by statusItem"
-            ng-model="activity.status">
-          </select>
+        
+        <!-- EDIT: DESIGN STATUS -->
+        <li class="edit-project-activity__item">
+          <span class="edit-project-activity__item-details">
+            <label for="siteActivity{{project.activities[0].name}}">{{project.activities[0].name}}</label>
+            <select class="form-control"
+              id="siteActivity{{project.activities[0].name}}"
+              ng-options="statusItem for statusItem in activityStatusItems track by statusItem"
+              ng-model="project.activities[0].status">
+            </select>
+          </span>
+          <span class="edit-project-activity__item-description">Design encompasses the planning stage of mine development and the environmental assessment and permitting processes. During this stage, which often overlaps with the completion of feasibility studies and ongoing advanced exploration, all aspects of mine construction, operation, closure and reclamation are planned in detail.</span>
+        </li>
+        <!-- EDIT: CONSTRUCTION STATUS -->
+        <li class="edit-project-activity__item">
+          <span class="edit-project-activity__item-details">
+            <label for="siteActivity{{project.activities[1].name}}">{{project.activities[1].name}}</label>
+            <select class="form-control"
+              id="siteActivity{{project.activities[1].name}}"
+              ng-options="statusItem for statusItem in activityStatusItems track by statusItem"
+              ng-model="project.activities[1].status">
+            </select>
+          </span>
+          <span class="edit-project-activity__item-description">Construction, which can begin once a mine project receives the necessary authorizations, includes site preparation activities, such as cutting trees and clearing and stripping overburden, as well as constructing associated buildings and structures, and infrastructure such as roads and bridges.</span>
+        </li>
+        <!-- EDIT: OPERATION STATUS -->
+        <li class="edit-project-activity__item">
+          <span class="edit-project-activity__item-details">
+            <label for="siteActivity{{project.activities[2].name}}">{{project.activities[2].name}}</label>
+            <select class="form-control"
+              id="siteActivity{{project.activities[2].name}}"
+              ng-options="statusItem for statusItem in activityStatusItems track by statusItem"
+              ng-model="project.activities[2].status">
+            </select>
+          </span>
+          <span class="edit-project-activity__item-description">The operation phase begins once a mine is constructed and starts producing. Mining operations include extraction and processing of ore as well as waste disposal and ore transport.</span>
+        </li>
+        <!-- EDIT: CLOSURE STATUS -->
+        <li class="edit-project-activity__item">
+          <span class="edit-project-activity__item-details">
+            <label for="siteActivity{{project.activities[3].name}}">{{project.activities[3].name}}</label>
+            <select class="form-control"
+              id="siteActivity{{project.activities[3].name}}"
+              ng-options="statusItem for statusItem in activityStatusItems track by statusItem"
+              ng-model="project.activities[3].status">
+            </select>
+          </span>
+          <span class="edit-project-activity__item-description">Mine closure is the final phase of the mining lifecycle. A mine’s life comes to an end once production reserves are exhausted or it is no longer economically viable to continue extracting resources from the site. Shutdown and decommissioning of a mine involves removing equipment (e.g., vehicles, processing equipment), dismantling facilities (e.g., mills, workers’ quarters) and safely closing all mine workings.</span>
+        </li>
+        <!-- EDIT: RECLAMATION STATUS -->
+        <li class="edit-project-activity__item">
+          <span class="edit-project-activity__item-details">
+            <label for="siteActivity{{project.activities[4].name}}">{{project.activities[4].name}}</label>
+            <select class="form-control"
+              id="siteActivity{{project.activities[4].name}}"
+              ng-options="statusItem for statusItem in activityStatusItems track by statusItem"
+              ng-model="project.activities[4].status">
+            </select>
+          </span>
+          <span class="edit-project-activity__item-description">Progressive reclamation begins during the mine construction phase and continues until a site is fully reclaimed after mine closure.</span>
+        </li>
+        <!-- EDIT: MONITORING & REPORTING STATUS -->
+        <li class="edit-project-activity__item">
+          <span class="edit-project-activity__item-details">
+            <label for="siteActivity{{project.activities[5].name}}">{{project.activities[5].name}}</label>
+            <select class="form-control"
+              id="siteActivity{{project.activities[5].name}}"
+              ng-options="statusItem for statusItem in activityStatusItems track by statusItem"
+              ng-model="project.activities[5].status">
+            </select>
+          </span>
+          <span class="edit-project-activity__item-description">Monitoring includes environmental (e.g., water quality) testing and assessments of structures (e.g., tailings management facilities). Monitoring activities begin long before a mine is constructed in order to gather baseline information on the site.</span>
         </li>
       </ul>
     </div>
