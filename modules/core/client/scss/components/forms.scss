@@ -12,40 +12,12 @@ form {
 	}
 }
 
-fieldset {
-	margin-bottom: 1rem;
-	&:last-child { margin-bottom: 0; }
-}
-
-legend {
-	margin-bottom: 1.5rem;
-	border-bottom: none;
-	font-size: 1.8rem;
-	font-weight: bold;
-
-	em {
-		@extend .form-validation-msg;
-	}
-
-	&.no-margin {
-		margin-bottom: 0.5rem;
-	}
-}
-
 textarea {
 	resize: vertical;
 }
 
 .form-container {
 	padding: 0 2rem;
-}
-
-.form-group {
-	margin-bottom: 2rem;
-
-	&.no-margin {
-		margin-bottom: 0;
-	}
 }
 
 .form-inline {
@@ -152,6 +124,7 @@ textarea {
 }
 
 .mce-content-body {
+	margin: 0 10px 20px 10px;
 	height: auto;
 	min-height: auto;
 	background-color: transparent;

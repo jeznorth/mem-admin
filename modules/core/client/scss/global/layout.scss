@@ -11,7 +11,7 @@ body {
 	padding: 0;
 	min-height: 100%;
 	color: $app-base-color;
-	background-color: $app-bg;
+	background-color: #f7f8fa;
 	font-family: $font-family-sans-serif;
 	font-size: 1.4rem;
 	-ms-overflow-style: scrollbar;
@@ -120,17 +120,12 @@ section {
 }
 
 .view-title-container {
-	height: 6.4rem;
-	padding: 1.5rem 2rem;
-	border-bottom: 1px solid #EEE;
-	background: #FFF;
+	border-bottom: 2px solid #EEE;
 	min-width: 0;
 
     h1 {
         margin: 0;
-        padding-top: 0.4rem;
 		font-size: 2.4rem;
-		font-weight: bold;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -315,16 +310,12 @@ ui-view {
     .view-title-container {
         @include flexbox();
         @include flex(0 0 auto);
-        padding: 1.5rem 2rem;
-	    border-bottom: $view-panel-border;
-	    background-color: $view-panel-bg;
+        padding: 3rem 2rem;
 
         h1 {
             @include flex(1 1 auto);
             margin: 0;
-            padding-top: 0.7rem;
             font-size: 2rem;
-            font-weight: bold;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -342,8 +333,7 @@ ui-view {
 
     .view-body-container {
         @include flex(1 1 auto);
-        padding: 2rem;
-        overflow-y: auto;
+        overflow-y: scroll;
     }
 }
 
@@ -351,7 +341,6 @@ ui-view {
     .main-panel {
         .view-title-container {
             h1 {
-                padding-top: 0.4rem;
                 font-size: 2.4rem;
             }
 

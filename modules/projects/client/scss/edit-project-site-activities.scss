@@ -1,45 +1,157 @@
-.edit-project-activity {
-    margin: 0;
-    padding: 0;
-    max-width: 80rem;
-    list-style-type: none;
+.tab-pane {
+  padding: 4rem;
+  background: #fff;
 
-    &__item {
-        &-details {
-            @include flexbox();
-            margin-bottom: 1rem;
-
-            label {
-                @include flex(1 1 auto);
-                font-size: 1.6rem;
-            }
-        }
-
-        &-description {
-            display: block;
-        }
-
-        + .edit-project-activity__item {
-            margin-top: 2.5rem;
-            padding-top: 1.5rem;
-            border-top: $hr-rule-border;
-        }
-    }
-
+  fieldset {
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 120rem;
+  }
 }
 
-@media (min-width: 768px) {
-    .edit-project-activity {
-        &__item {
-            //@include flexflow(row nowrap);
+.site-activity {
+  position: relative;
 
-            label {
-                margin-top: 0.8rem;
-            }
+  &__description {
+    display: block;
+    margin-bottom: 3rem;
+  }
 
-            select {
-                width: 30rem;
-            }
+  select {
+    width: 15rem;
+  }
+}
+
+.form-footer {
+    @include flexbox();
+    padding-top: 3rem;
+    justify-content: flex-end;
+    &__buttons {
+        @include flex(0 0 auto);
+        .btn {
+            min-width: 8rem;
         }
     }
+}
+
+.view-body-container {
+    padding: 3rem;
+    overflow-y: scroll;
+}
+
+.nav-tabs {
+    margin-bottom: -2px;
+    > li {
+        > a {
+          padding: 1.25rem 2rem;
+          border-width: 0;
+          border-bottom-width: 0;
+          font-size: 1.4rem;
+          &:active,
+          &:focus,
+          &:hover {
+              border-width: 0;
+              border-bottom-width: 0;
+          }
+        }
+        &.active {
+          > a {
+            border-width: 0;
+            border-bottom-width: 0;
+            &:active,
+            &:focus,
+            &:hover {
+                border-width: 0;
+                border-bottom-width: 0;
+            }
+          }
+        }
+    }
+}
+
+.view-title {
+    @include flex(0 0 auto);
+    border-bottom: 2px solid #eee;
+    &__container {
+      @include flexbox();
+      @include flexflow(row nowrap);
+      margin: 0 auto;
+      padding: 3rem;
+    }
+    &__info {
+      @include flex(1 1 auto);
+
+      &--title {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        font-size: 2.6rem;
+        font-weight: bold;
+      }
+
+      &--last-modified {
+        color: #999;
+      }
+
+    }
+    &__actions {
+      @include flex(0 0 auto);
+
+      .btn {
+        min-width: 8rem;
+      }
+    }
+}
+
+.form-group {
+  + .form-group {
+    margin-top: 3rem;
+    margin-bottom: 0;
+  }
+}
+
+.form-control {
+  padding: 1rem;
+  height: auto;
+}
+
+fieldset {
+  legend {
+    float: left;
+    margin-bottom: 3rem;
+    padding-bottom: 0.75rem;
+    font-size: 1.8rem;
+    font-weight: normal;
+    border-bottom: 2px solid #000;
+  }
+
+  + fieldset {
+    margin-top: 4rem;
+  }
+}
+
+table {
+  thead {
+    background: #eee;
+    font-size: 1.2rem;
+  }
+
+  th, td {
+    padding: 1rem !important;
+  }
+}
+
+.btn {
+  &-default,
+  &-primary {
+    .glyphicon {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+
+.has-error {
+  .form-control {
+    background: yellow;
+  }
 }

@@ -5,26 +5,6 @@
     }
   }
 
-  .form-footer {
-    @include flexbox();
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid #ccc;
-    justify-content: flex-end;
-
-    &__buttons {
-      @include flex(0 0 auto);
-
-      .btn {
-        min-width: 8rem;
-      }
-    }
-  }
-
-  .tab-pane {
-    max-width: 1280px;
-  }
-
   .checkbox {
     label {
       padding-left: 2rem;
