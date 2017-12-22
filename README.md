@@ -37,7 +37,7 @@ Development mode:
 ## Getting Help or Reporting an Issue
 
 ## How to Contribute
-Feel free to create pull requests from the default "master" branch, click here to create one automatically: https://github.com/bcgov/esm-server/pull/new/master.
+Feel free to create pull requests from the default "master" branch, click here to create one automatically: https://github.com/bcgov/mem-admin/pull/new/master.
 
 ## License
 
