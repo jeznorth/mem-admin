@@ -15,11 +15,21 @@ The features provided by the web-based ESM application include:
 
 ## Usage
 
-## Requirements
-Install [yarn](https://yarnpkg.com/lang/en/docs/install/#alternatives-tab)
+## Developer Requirements
+
+mem-admin has been built using MongoDB, Express, AngularJS and NodeJS.  See http://mean.js/ for more information on the project's development stack. Basic globally install requirements for Win32, OSX, or Linux are as follows:
+* node@ >= 6.11.3
+* npm@ >= 2.15.1 (only for installing yarn)
+* mongodb-server@ >= 2.6.x
+* grunt@ >= 0.4.5
+* git
+* yarn >= 1.3.2
 
 ## Installation
-
+Development mode: 
+ yarn install
+ grunt build && node server.js
+ 
 ## Project Status
 
 ## Goals/Roadmap
@@ -27,6 +37,7 @@ Install [yarn](https://yarnpkg.com/lang/en/docs/install/#alternatives-tab)
 ## Getting Help or Reporting an Issue
 
 ## How to Contribute
+Feel free to create pull requests from the default "master" branch, click here to create one automatically: https://github.com/bcgov/esm-server/pull/new/master.
 
 ## License
 
