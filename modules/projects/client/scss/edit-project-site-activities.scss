@@ -116,11 +116,10 @@
 
 fieldset {
   legend {
-    float: left;
     margin-bottom: 3rem;
     padding-bottom: 0.75rem;
     font-size: 1.8rem;
-    font-weight: normal;
+    font-weight: bold;
     border-bottom: 2px solid #000;
   }
 
@@ -153,5 +152,13 @@ table {
 .has-error {
   .form-control {
     background: yellow;
+  }
+}
+
+
+// Button Toolbar
+.btn-toolbar {
+  + .form-group {
+    margin-top: 1.5rem;
   }
 }

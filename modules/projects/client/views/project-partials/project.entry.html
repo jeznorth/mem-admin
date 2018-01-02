@@ -4,7 +4,10 @@
     <div class="view-title__container">
       <div class="view-title__info">
         <h1 class="view-title__info--title">Edit Project &nbsp;&rsaquo;&nbsp; {{project.name ? project.name : "Untitled Project"}}</h1>
-        <span class="view-title__info--last-modified">Last Modified {{project.dateUpdated | date : "yyyy-MM-dd"}}</span>
+        <span class="view-title__info--last-modified"
+          ng-if="project.dateUpdated">
+          Last Modified {{project.dateUpdated | date : "yyyy-MM-dd"}} by {{project.updatedBy.displayName}}
+        </span>
       </div>
       <div class="view-title__actions">
         <button class="btn btn-default"
@@ -22,7 +25,7 @@
           ng-if="project.status !== 'Initiated'">
           Save
         </button>
-        <button class="btn btn-info" type="submit">
+        <button class="btn btn-primary" type="submit">
           Publish
         </button>
         <button class="btn btn-danger"
@@ -43,7 +46,7 @@
   <div class="view-body-container">
     <div class="edit-project__form">
       
-      <ul class="nav nav-tabs" ng-init="form.curTab = 'Project Details'">
+      <ul class="nav nav-tabs" ng-init="form.curTab = currTab || 'Project Details'">
         <li role="presentation"
           ng-class="{'active':form.curTab === 'Project Details'}"
           x-show-errors>
@@ -158,25 +161,27 @@
         <!-- Operator -->
         <fieldset>
           <legend>Operator Details</legend>
-          <div class="form-group">
-            <button class="btn btn-default"
+          <div class="btn-toolbar">
+            <button class="btn btn-sm btn-info"
               x-org-search-chooser
               x-title="'Set Organization'"
               x-project="project"
               x-destination="project.proponent">
-              <span class="glyphicon glyphicon-plus"></span>&nbsp;
+              <span class="glyphicon"
+                ng-class="project.proponent ? 'glyphicon-pencil' : 'glyphicon-plus'">
+              </span>&nbsp;
               {{project.proponent ? 'Change' : 'Add'}} Project Operator
             </button>
           </div>
           <div class="form-group">
-            <table class="table" 
+            <table class="table project-operator-table" 
               ng-if="project.proponent">
               <thead>
                 <tr>
-                  <th>Operator Name</th>
-                  <th>Doing Business As</th>
-                  <th>Website Address</th>
-                  <th></th>
+                  <th class="name">Operator Name</th>
+                  <th class="alias">Doing Business As</th>
+                  <th class="url">Website Address</th>
+                  <th class="actions"></th>
                 </tr>
               </thead>
               <tr>
@@ -196,8 +201,8 @@
         <!-- Owners -->
         <fieldset>
           <legend>Ownership Details</legend>
-          <div class="form-group">
-            <button class="btn btn-default"
+          <div class="btn-toolbar" role="toolbar">
+            <button class="btn btn-sm btn-info"
               x-org-search-chooser=""
               x-title="'Add Organization'"
               x-project="project"
@@ -208,13 +213,13 @@
             </button>
           </div>
           <div class="form-group" ng-if="project.ownershipData.length > 0">
-            <table class="table">
+            <table class="table project-ownership-table">
               <thead>
                 <tr>
-                  <th>Owner Name</th>
-                  <th>Doing Business As</th>
-                  <th>Percent Ownership</th>
-                  <th></th>
+                  <th class="name">Owner Name</th>
+                  <th class="alias">Doing Business As</th>
+                  <th class="percent-ownership">Percent Ownership</th>
+                  <th class="actions"></th>
                 </tr>
               </thead>
               <tr ng-repeat="org in project.ownershipData">
@@ -331,7 +336,7 @@
             ng-if="project.status === 'Initiated'">
               Submit Project
           </button>
-          <button class="btn btn-info" type="submit">
+          <button class="btn btn-primary" type="submit">
             Publish
           </button>
         </div>

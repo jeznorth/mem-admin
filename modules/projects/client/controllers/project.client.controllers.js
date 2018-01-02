@@ -1,103 +1,19 @@
 'use strict';
 
 angular.module('project')
-  // General
-  .controller('controllerModalProjectSchedule', controllerModalProjectSchedule)
-
-  .controller('controllerProjectVC', controllerProjectVC)
-  .controller('controllerProjectVCEntry', controllerProjectVCEntry)
-
   .controller('controllerProjectEntry', controllerProjectEntry)
   .controller('controllerModalProjectImport', controllerModalProjectImport)
-  .controller('controllerProjectPublicContent', controllerProjectPublicContent)
+  .controller('controllerProjectPublicContent', controllerProjectPublicContent);
 
-  .controller('controllerProjectActivities', controllerProjectActivities);
 
-// -----------------------------------------------------------------------------------
-//
-// CONTROLLER: Modal: View Project Schedule
-//
-// -----------------------------------------------------------------------------------
-controllerModalProjectSchedule.$inject = ['$modalInstance', 'PhaseModel', '_', 'rProject'];
+// PROJECT ENTRY TOMBSTONE
+// ------------------------------------------------------------------------------
+controllerModalProjectImport.$inject = ['$scope', '$state', '$stateParams', 'Upload', '$modalInstance', '$timeout', 'UserModel', 'Project',  'ProjectModel', 'rProject', 'REGIONS', 'PROJECT_TYPES', '_', 'ENV'];
 /* @ngInject */
-function controllerModalProjectSchedule($modalInstance,  PhaseModel, _, rProject) {
-  var projSched = this;
-
-  var savedOriginal = angular.copy(rProject.phases);
-  projSched.phases = rProject.phases;
-
-  projSched.cancel = function () { $modalInstance.dismiss('cancel'); };
-  projSched.ok = function () {
-    // save each phase.
-    _.each(projSched.phases, function(item) {
-      PhaseModel.setModel(item);
-      PhaseModel.saveModel().then( function(res) {
-        // console.log('saved');
-      }).catch( function(err) {
-        $modalInstance.dismiss('cancel');
-      });
-    });
-    $modalInstance.close();
-  };
-}
-// -----------------------------------------------------------------------------------
-//
-// CONTROLLER: Modal: View Project VC
-//
-// -----------------------------------------------------------------------------------
-controllerProjectVC.$inject = ['$scope', 'rProjectVC', '_', '$modalInstance', 'VCModel'];
-/* @ngInject */
-function controllerProjectVC($scope, rProjectVC, _, $modalInstance, sVCModel) {
-    var projectVC = this;
-
-    projectVC.roles = ['admin', 'project-team', 'working-group', 'first-nations', 'consultant'];
-    projectVC.vc = rProjectVC;
-
-    // Set current model for VC
-    sVCModel.setModel(rProjectVC);
-
-    sVCModel.getCollection().then(function(data){
-        projectVC.valuecomponents = data;
-    });
-
-    // on save, pass complete permission structure to the server
-    projectVC.ok = function () {
-        $modalInstance.close();
-    };
-    projectVC.cancel = function () { $modalInstance.dismiss('cancel'); };
-
-}
-// -----------------------------------------------------------------------------------
-//
-// CONTROLLER: Modal: View Project VC Entry
-//
-// -----------------------------------------------------------------------------------
-controllerProjectVCEntry.$inject = ['rProjectVCEntry', '_', '$modalInstance'];
-/* @ngInject */
-function controllerProjectVCEntry(rProjectVCEntry, _, $modalInstance) {
-  var projectVCEntryModal = this;
-
-  projectVCEntryModal.roles = ['admin', 'project-team', 'working-group', 'first-nations', 'consultant'];
-
-  projectVCEntryModal.response = "response";
-  projectVCEntryModal.comments = "comments";
-
-  // on save, pass complete permission structure to the server
-  projectVCEntryModal.ok = function () {
-    $modalInstance.close();
-  };
-  projectVCEntryModal.cancel = function () { $modalInstance.dismiss('cancel'); };
-}
-// -----------------------------------------------------------------------------------
-//
-// CONTROLLER: Project Entry Tombstone
-//
-// -----------------------------------------------------------------------------------
-controllerModalProjectImport.$inject = ['Upload', '$modalInstance', '$timeout', '$scope', '$state', 'Project',  'ProjectModel', 'rProject', 'REGIONS', 'PROJECT_TYPES', '_', 'ENV'];
-/* @ngInject */
-function controllerModalProjectImport(Upload, $modalInstance, $timeout, $scope, $state, sProject, ProjectModel, rProject, REGIONS, PROJECT_TYPES, _, ENV) {
+function controllerModalProjectImport($scope, $state, $stateParams, Upload, $modalInstance, $timeout, UserModel, sProject, ProjectModel, rProject, REGIONS, PROJECT_TYPES, _, ENV) {
   var projectImport = this;
   $scope.environment = ENV;
+  $scope.currTab = $stateParams.currTab;
 
   // Setup default endpoint for import option
   $scope.defaultOption = '/api/projects/import/mem';
@@ -187,24 +103,23 @@ var setContentHtml = function(contentArray, page, type, html) {
   }
 };
 
-// -----------------------------------------------------------------------------------
-//
-// CONTROLLER: Project Entry Tombstone
-// Used.
-//
-// -----------------------------------------------------------------------------------
-controllerProjectEntry.$inject = ['$scope', '$state', '$stateParams', '$modal', 'project', 'REGIONS', 'PROJECT_TYPES', 'PROJECT_SUB_TYPES', 'PROJECT_ACTIVITIES_DEFAULTS', 'PROJECT_ACTIVITY_STATUS', 'PROJECT_CONTENT_DEFAULTS', 'CEAA_TYPES', '_', 'UserModel', 'ProjectModel', 'OrganizationModel', 'Authentication', 'codeFromTitle', 'PhaseBaseModel', 'AlertService', 'Utils'];
+// PROJECT ENTRY TOMBSTONE (USED)
+// ------------------------------------------------------------------------------
+controllerProjectEntry.$inject = ['$scope', '$state', '$stateParams', '$modal', 'project', 'ProjectModel', 'REGIONS', 'PROJECT_TYPES', 'PROJECT_SUB_TYPES', 'PROJECT_ACTIVITIES_DEFAULTS', 'PROJECT_ACTIVITY_STATUS', 'PROJECT_CONTENT_DEFAULTS', 'CEAA_TYPES', '_', 'UserModel', 'OrganizationModel', 'Authentication', 'codeFromTitle', 'PhaseBaseModel', 'AlertService', 'Utils'];
 /* @ngInject */
-function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, REGIONS, PROJECT_TYPES, PROJECT_SUB_TYPES, PROJECT_ACTIVITIES_DEFAULTS, PROJECT_ACTIVITY_STATUS, PROJECT_CONTENT_DEFAULTS, CEAA_TYPES, _, UserModel, ProjectModel, OrganizationModel, Authentication, codeFromTitle, PhaseBaseModel, AlertService, Utils) {
+function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, ProjectModel, REGIONS, PROJECT_TYPES, PROJECT_SUB_TYPES, PROJECT_ACTIVITIES_DEFAULTS, PROJECT_ACTIVITY_STATUS, PROJECT_CONTENT_DEFAULTS, CEAA_TYPES, _, UserModel, OrganizationModel, Authentication, codeFromTitle, PhaseBaseModel, AlertService, Utils) {
   $scope.project = project;
 
   ProjectModel.setModel($scope.project);
+
+  $scope.currTab = $stateParams.currTab;
 
   if ($scope.project.proponent && !_.isObject ($scope.project.proponent)) {
     OrganizationModel.getModel ($scope.project.proponent).then (function (org) {
       $scope.project.proponent = org;
     });
   }
+
   if ($scope.project.primaryContact && !_.isObject ($scope.project.primaryContact)) {
     UserModel.me ($scope.project.primaryContact)
     .then (function (userrecord) {
@@ -312,13 +227,6 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
     });
   };
 
-  $scope.onChangePhase = function () {
-    // The user decided to change the current phase.  Until we have a specific tiemline
-    // graphic, lets just set the phase code/name appropriately. Do not attempt to start/stop/complete
-    // various phases.
-    project.currentPhaseName = $scope.allPhases[project.currentPhaseCode];
-  };
-
   $scope.clearOrganization = function() {
     $scope.project.proponent = null;
   };
@@ -327,7 +235,8 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
     $scope.project.primaryContact = null;
   };
 
-  $scope.saveProject = function(isValid) {
+  // SAVE PROJECT
+  $scope.saveProject = function(isValid, currTab) {
     // Make sure the math works on ownership properties.
     var percentTotal = 0;
     _.each($scope.project.ownershipData, function (o) {
@@ -346,23 +255,31 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
       return false;
     }
 
+    // Save a new project
     if (ProjectModel.modelIsNew) {
       ProjectModel.add ($scope.project)
       .then( function(data) {
+        AlertService.success('Project Saved.');
         $state.go('p.detail', {projectid: data.code}, {reload: true});
       })
       .catch (function (err) {
+        AlertService.error('Project Saved.');
         console.error ('error = ', err);
       });
+
+    // Save existing project
     } else {
       ProjectModel.saveModel($scope.project)
-      .then( function(data) {
-        $state.go('p.detail', {projectid: data.code}, {reload: true});
+      .then( function(data, currTab) {
+        AlertService.success('Project Saved.');
+        $state.go('p.edit', {projectid: data.code}, {curTab: currTab}, {reload: true});
       })
       .catch (function (err) {
+        AlertService.error('An error occurred.');
         console.error ('error = ', err);
       });
     }
+
   };
 
   $scope.onChangeProjectName = function () {
@@ -447,13 +364,13 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
       .then( function (p) {
         $scope.project = p;
         return ProjectModel.publishProject(p);
-        // $state.go('p.detail', {projectid: p.code});
       })
       .then( function (p) {
         $scope.project = p;
-        $state.go('p.detail', {projectid: p.code}, {reload: true});
+        AlertService.success('Project Saved.');
       })
       .catch (function (err) {
+        AlertService.error('Something happened.');
         console.error ('error = ', err);
       });
     });
@@ -556,6 +473,8 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
   };
 }
 
+// PROJECT PUBLIC CONTENT
+// ------------------------------------------------------------------------------
 controllerProjectPublicContent.$inject = ['$scope', '$state', '$stateParams', '$modal', 'project', 'ProjectModel', 'AlertService', 'ConfirmService', '_'];
 /* @ngInject */
 function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, project, ProjectModel, AlertService, ConfirmService, _) {
@@ -785,200 +704,4 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, p
     });
     return modalView.result;
   };
-}
-
-// -----------------------------------------------------------------------------------
-//
-// CONTROLLER: Project Timeline
-//
-// -----------------------------------------------------------------------------------
-// controllerProjectProponent.$inject = ['$scope', 'PROVINCES'];
-// /* @ngInject */
-// function controllerProjectProponent($scope, PROVINCES) {
-//  var projectProponent = this;
-
-//  projectProponent.provs = PROVINCES;
-
-//  $scope.$watch('project', function(newValue) {
-//    projectProponent.project = newValue;
-//  });
-// }
-
-// -----------------------------------------------------------------------------------
-//
-// CONTROLLER: Project Activities
-//
-// -----------------------------------------------------------------------------------
-controllerProjectActivities.$inject = [
-  '$scope',
-  '$rootScope',
-  'sActivity',
-  '_',
-  'ProjectModel',
-  'PhaseModel',
-  'PhaseBaseModel',
-  'MilestoneBaseModel',
-  'MilestoneModel',
-  'ActivityModel',
-  'ActivityBaseModel',
-  '$cookies'];
-
-/* @ngInject */
-function controllerProjectActivities(
-  $scope,
-  $rootScope,
-  sActivity,
-  _,
-  ProjectModel,
-  PhaseModel,
-  PhaseBaseModel,
-  MilestoneBaseModel,
-  MilestoneModel,
-  ActivityModel,
-  ActivityBaseModel,
-  $cookies
-  ) {
-
-  // get any cookie values and preselect the phase and milestone.
-  $scope.selectedPhaseId = $cookies.get('phase');
-  $scope.selectedMilestoneId = $cookies.get('milestone');
-
-  // Set the project to current model, just in case it already wasn't.
-  ProjectModel.setModel($scope.project);
-  // -----------------------------------------------------------------------------------
-  //
-  // Add Phase
-  //
-  // -----------------------------------------------------------------------------------
-  PhaseBaseModel.getCollection().then( function(data) {
-    $scope.allPhases = data;
-  });
-
-  $scope.addNewPhase = function() {
-    if($scope.newBasePhase) {
-      ProjectModel.addPhase($scope.newBasePhase.code).then( function(data) {
-        $scope.project.phases = angular.copy(data.phases);
-        $scope.showNewPhase = false;
-        $scope.$apply();
-      });
-    }
-  };
-
-  $scope.selectPhase = function(phase) {
-    if (phase) {
-      PhaseModel.setModel(phase);
-      $scope.selectedPhase = phase;
-
-      if ($cookies.get('phase') !== phase._id) {
-        $cookies.put('phase', phase._id);
-        // the phase has changed, reset the structures down the chain.
-        $cookies.put('milestone', undefined);
-        $cookies.put('activity', undefined);
-        $scope.milestones = phase.milestones;
-        $scope.activities = undefined;
-        $scope.selectedMilestone = undefined;
-      }
-    }
-  };
-  // -----------------------------------------------------------------------------------
-  //
-  // Add Milestone
-  //
-  // -----------------------------------------------------------------------------------
-  MilestoneBaseModel.getCollection().then( function(data) {
-    $scope.allMilestones = data;
-  });
-
-  $scope.addNewMilestone = function() {
-    if($scope.newBaseMilestone) {
-      PhaseModel.addMilestone($scope.newBaseMilestone.code).then( function(data) {
-        $scope.selectedPhase.milestones = angular.copy(data.milestones);
-        $scope.showNewMilestone = false;
-      });
-    }
-  };
-
-  $scope.selectMilestone = function(milestone) {
-    if (milestone) {
-      MilestoneModel.setModel(milestone);
-      $scope.selectedMilestone = milestone;
-      if ($cookies.get('milestone') !== milestone._id) {
-        $cookies.put('milestone', milestone._id);
-        $cookies.put('activity', undefined);
-        // the phase has changed, reset the structures down the chain.
-        $scope.activities = milestone.activities;
-        $scope.selectedActivity = undefined;
-      }
-    }
-  };
-  // -----------------------------------------------------------------------------------
-  //
-  // Add Activity
-  //
-  // -----------------------------------------------------------------------------------
-  ActivityBaseModel.getCollection().then( function(data) {
-    $scope.allActivities = data;
-  });
-
-  $scope.addNewActivity = function() {
-    if($scope.newBaseActivity) {
-      MilestoneModel.addActivity($scope.newBaseActivity.code).then( function(data) {
-        $scope.selectedMilestone.activities = angular.copy(data.activities);
-        $scope.showNewActivity = false;
-        $scope.$apply();
-      });
-    }
-  };
-
-  $scope.selectActivity = function(activity) {
-    if (activity) {
-      ActivityModel.setModel(activity);
-      $scope.selectedActivity = activity;
-      if ($cookies.get('activity') !== activity._id) {
-        $cookies.put('activity', undefined);
-      }
-    }
-  };
-  // var unbind = $rootScope.$on('refreshActivitiesForMilestone', function(event, data) {
-  //  // console.log(data.milestone);
-  //  $scope.selectMilestone(data.milestone);
-  // });
-  // $scope.$on('$destroy',unbind);
-
-
-  // wait until the list of phases loads.
-  // if one is set in the cookie, select it.
-  // this is triggered from the project load below.
-  // $scope.$watch(function () {
-  //  return $scope.project.phases;
-  // },function(newValue){
-  //  // if there is a preset, find and select it.
-  //  if ($scope.selectedPhaseId && newValue) {
-  //    _.each( newValue, function(phase) {
-  //      if (phase._id === $scope.selectedPhaseId) {
-  //        $scope.selectPhase( phase );
-  //      }
-  //    });
-  //  }
-  // });
-
-
-  // // select a milestone if there is one.
-  // $scope.$watch(function () {
-  //  return $scope.milestones;
-  // },function(newValue){
-  //  // console.log('mile', newValue);
-  //  // if there is a preset, select it.
-  //  if ($scope.selectedMilestoneId && newValue) {
-  //    _.each( newValue, function(milestone) {
-  //      if (milestone._id === $scope.selectedMilestoneId) {
-  //        $scope.selectMilestone( milestone );
-  //      }
-  //    });
-  //  }
-
-  // });
-
-
-
 }

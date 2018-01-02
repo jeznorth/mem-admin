@@ -12,3 +12,21 @@
     }
   }
 }
+
+.project-operator-table,
+.project-ownership-table {
+  table-layout: fixed;
+
+  .actions {
+    width: 6rem;
+  }
+  .name {
+    width: 33.3333%;
+  }
+}
+
+.project-ownership-table {
+  .input-group {
+    max-width: 15rem;
+  }
+}
