@@ -39,6 +39,22 @@ var find = function(collectionName, query, fields) {
   });
 };
 
+var findOne = function(collectionName, query) {
+  return new Promise(function(resolve, reject) {
+    MongoClient.connect(url, function(err, db) {
+
+      var collection = db.collection(collectionName);
+
+      collection.findOne(query, function(err, docs) {
+        if (err) reject(err);
+        db.close();
+        resolve(docs);
+      });
+
+    });
+  });
+};
+
 var insertAll = function(collectionName, docs) {
   return new Promise(function(resolve, reject) {
     MongoClient.connect(url, function(err, db) {
@@ -59,17 +75,48 @@ var insertAll = function(collectionName, docs) {
   });
 };
 
+var update = function(collectionName, query, doc) {
+  return new Promise(function(resolve, reject) {
+    MongoClient.connect(url, function(err, db) {
+
+      var collection = db.collection(collectionName);
+
+      collection.updateOne(query, { $set: doc } , { }, function(err, result) {
+        db.close();
+        if (err) {
+          reject(err);
+        } else {
+          console.log('updated document in ' + collectionName);
+          resolve(result);
+        }
+      });
+
+    });
+  });
+};
+
 var run = function() {
   return new Promise(function (resolve, reject) {
     console.log('start');
     Promise.resolve()
       .then(function() {
-        console.log('1 - get projects');
+        console.log('1 - get project default permissions');
+        return findOne('_defaults', { context: 'project', resource: 'project', type: 'default-permissions' });
+      })
+      .then(function(data) {
+        console.log('2 - update project default permissions');
+        data.defaults.permissions['manageFolders']  = ['sysadmin'];
+        data.defaults.permissions['manageDocumentPermissions'] = ['sysadmin'];
+        return update('_defaults', { _id: data._id }, data);
+      })
+      .then(function() {
+        console.log('3 - get projects');
         return find('projects', {}, {});;
       })
       .then(function(projects) {
         console.log('  - found ' + _.size(projects) + ' projects');
-        console.log('2 - build sysadmin permissions');
+        console.log('4 - build sysadmin permissions');
+        // Add application permissions first.
         var permissions = [{
           resource   : "application",
           permission : "editPublicContent",
@@ -86,6 +133,7 @@ var run = function() {
           role       : "sysadmin",
           __v        : 0
         }];
+        // Then add for each project.
         _.each(projects, function(project) {
           permissions.push({
             resource   : project._id.toString(),
@@ -105,12 +153,24 @@ var run = function() {
             role       : "sysadmin",
             __v        : 0
           });
+          permissions.push({
+            resource   : project._id.toString(),
+            permission : "manageFolders",
+            role       : "sysadmin",
+            __v        : 0
+          });
+          permissions.push({
+            resource   : project._id.toString(),
+            permission : "manageDocumentPermissions",
+            role       : "sysadmin",
+            __v        : 0
+          });
         });
         return permissions;
       })
       .then(function(permissions) {
         console.log('  - built ' + _.size(permissions) + ' permissions');
-        console.log('3 - add sysadmin permissions');
+        console.log('5 - add sysadmin permissions');
         return insertAll('_permissions', permissions);
       })
      .then(function(data) {
