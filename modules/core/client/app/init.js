@@ -25,7 +25,7 @@ angular.module(ApplicationConfiguration.applicationModuleName).config(['$locatio
   }
 ]);
 
-angular.module(ApplicationConfiguration.applicationModuleName).run(function ($window, $rootScope, $state, Authentication, _, $cookies, Application, ContextService, ADMIN_FEATURES, FEATURES) {
+angular.module(ApplicationConfiguration.applicationModuleName).run(function ($window, $rootScope, $state, $uibModalStack, Authentication, _, $cookies, Application, ContextService, ADMIN_FEATURES, FEATURES) {
 
 
   // Check authentication before changing state
@@ -217,6 +217,10 @@ angular.module(ApplicationConfiguration.applicationModuleName).run(function ($wi
     }
   });
 
+  // Close modals when navigating away from the current page (e.g.: browser back)
+  $rootScope.$on('$locationChangeStart', function() {
+    $uibModalStack.dismissAll();
+  });
 });
 
 // Ensures all modals can only be closed by clicking X or buttons
