@@ -20,17 +20,17 @@ angular.module('core')
 			}
 		};
 	}])
-	.service('AlertService', ['$rootScope', '$timeout', '$log', '$modal', '_', 'Authentication', function ($rootScope, $timeout, $log, $modal, _) {
+	.service('AlertService', ['$rootScope', '$timeout', '$log', '$uibModal', '_', 'Authentication', function ($rootScope, $timeout, $log, $uibModal, _) {
 
 		var service = this;
 
 		service.alert = function(type, message) {
 
 			return new Promise(function(fulfill, reject) {
-				var modal = $modal.open({
+				var modal = $uibModal.open({
 					animation: true,
 					templateUrl: 'modules/core/client/views/dialogs/alert.html',
-					controller: function ($scope, $state, $modalInstance, _) {
+					controller: function ($scope, $state, $uibModalInstance, _) {
 						var self = this;
 
 						switch (type) {
@@ -51,17 +51,18 @@ angular.module('core')
 						self.msg = message;
 
 						self.ok = function () {
-							$modalInstance.close('ok');
+							$uibModalInstance.close('ok');
 						};
 
 						self.cancel = function () {
-							$modalInstance.dismiss('cancel');
+							$uibModalInstance.dismiss('cancel');
 						};
 					},
 					controllerAs: 'alertDlg',
 					size: 'md',
 					windowClass: 'modal-alert',
-					backdropClass: 'modal-alert-backdrop'
+					backdrop: false,
+					backdropClass: 'testtttttt'
 				});
 
 				// do not care how this modal is closed, if a callback is provided, call it..

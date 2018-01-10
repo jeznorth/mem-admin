@@ -1,14 +1,10 @@
-.tab-pane {
-  padding: 4rem;
-  background: #fff;
-
-  fieldset {
-    margin-right: auto;
-    margin-left: auto;
-    max-width: 120rem;
-  }
+// Helper Classes
+.width-auto {
+  width: auto;
+  min-width: 30rem;
 }
 
+// Site Activity Module
 .site-activity {
   position: relative;
 
@@ -20,86 +16,31 @@
   select {
     width: 15rem;
   }
+
+  .btn-group {
+    .btn {
+      min-width: 8rem;
+  
+      &.active {
+        color: #fff;
+        background-color: #5cb85c;
+        border-color: #4cae4c;
+      }
+    }
+  }
 }
 
+// Form Components / Form Layout
 .form-footer {
-    @include flexbox();
-    padding-top: 3rem;
-    justify-content: flex-end;
-    &__buttons {
-        @include flex(0 0 auto);
-        .btn {
-            min-width: 8rem;
-        }
-    }
-}
-
-.view-body-container {
-    padding: 3rem;
-    overflow-y: scroll;
-}
-
-.nav-tabs {
-    margin-bottom: -2px;
-    > li {
-        > a {
-          padding: 1.25rem 2rem;
-          border-width: 0;
-          border-bottom-width: 0;
-          font-size: 1.4rem;
-          &:active,
-          &:focus,
-          &:hover {
-              border-width: 0;
-              border-bottom-width: 0;
-          }
-        }
-        &.active {
-          > a {
-            border-width: 0;
-            border-bottom-width: 0;
-            &:active,
-            &:focus,
-            &:hover {
-                border-width: 0;
-                border-bottom-width: 0;
-            }
-          }
-        }
-    }
-}
-
-.view-title {
-    @include flex(0 0 auto);
-    border-bottom: 2px solid #eee;
-    &__container {
-      @include flexbox();
-      @include flexflow(row nowrap);
-      margin: 0 auto;
-      padding: 3rem;
-    }
-    &__info {
-      @include flex(1 1 auto);
-
-      &--title {
-        margin-top: 0;
-        margin-bottom: 0.5rem;
-        font-size: 2.6rem;
-        font-weight: bold;
-      }
-
-      &--last-modified {
-        color: #999;
-      }
-
-    }
-    &__actions {
+  @include flexbox();
+  padding-top: 3rem;
+  justify-content: flex-end;
+  &__buttons {
       @include flex(0 0 auto);
-
       .btn {
-        min-width: 8rem;
+          min-width: 8rem;
       }
-    }
+  }
 }
 
 .form-group {
@@ -124,10 +65,117 @@ fieldset {
   }
 
   + fieldset {
-    margin-top: 4rem;
+    margin-top: 5rem;
   }
 }
 
+// Error Messages / Validation
+.has-error {
+  .form-control {
+    background: #ffffd8;
+  }
+}
+
+// View Containers
+.view-title,
+.view-body {
+  &__container {
+    max-width: 120rem;
+    margin: 0 auto;
+    padding: 3rem;
+  }
+}
+
+.view-title {
+  @include flex(0 0 auto);
+  border-bottom: 2px solid #eee;
+
+  &__container {
+    @include flexbox();
+    @include flexflow(row nowrap);
+  }
+
+  &__info {
+    @include flex(1 1 auto);
+
+    &--title {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-size: 2.6rem;
+      font-weight: bold;
+    }
+
+    &--last-modified {
+      color: #999;
+    }
+  }
+
+  &__actions {
+    @include flex(0 0 auto);
+
+    .btn {
+      min-width: 8rem;
+    }
+  }
+}
+
+.view-body {
+    @include flex(1 1 auto);
+    overflow-y: scroll;
+    background: #f1f1f1;
+
+    &__container {
+      padding-right: calc(3rem - 7px);
+    }
+}
+
+
+// Tabs
+.nav-tabs {
+  //margin-bottom: -2px;
+  border: none;
+
+  > li {
+    > a {
+      padding: 1.25rem 2rem;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      &:active,
+      &:focus,
+      &:hover {
+        border: none;
+      }
+    }
+
+    &.active {
+      > a {
+        border-width: 0;
+        border-bottom-width: 0;
+        &:active,
+        &:focus,
+        &:hover {
+            border-width: 0;
+            border-bottom-width: 0;
+        }
+      }
+    }
+  }
+}
+
+// Tab Pane Layout
+.tab-pane {
+  padding: 4rem;
+  background: #fff;
+
+  fieldset {
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 100rem;
+  }
+}
+
+// Tables
 table {
   thead {
     background: #eee;
@@ -139,6 +187,7 @@ table {
   }
 }
 
+// Buttons
 .btn {
   &-default,
   &-primary {
@@ -148,17 +197,39 @@ table {
   }
 }
 
-
-.has-error {
-  .form-control {
-    background: yellow;
-  }
-}
-
-
 // Button Toolbar
 .btn-toolbar {
   + .form-group {
     margin-top: 1.5rem;
   }
+}
+
+
+// Alerts
+.alert-danger {
+  color: #fff;
+  border: none;
+  background-color: $brand-danger;
+}
+
+.alert-contents {
+  &__icon {
+    margin-right: 0.25rem;
+    vertical-align: middle;
+  }
+
+  &__msg {
+    display: inline-block;
+    margin-top: 0.5rem;
+    vertical-align: middle;
+  }
+}
+
+// Icon Sizes
+.icon-24 {
+  font-size: 2.4rem;
+}
+
+.icon-16 {
+  font-size: 1.6rem;
 }

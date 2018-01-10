@@ -5,15 +5,16 @@ angular.module('project')
   .controller('controllerModalProjectImport', controllerModalProjectImport)
   .controller('controllerProjectPublicContent', controllerProjectPublicContent);
 
-
-// PROJECT ENTRY TOMBSTONE
-// ------------------------------------------------------------------------------
-controllerModalProjectImport.$inject = ['$scope', '$state', '$stateParams', 'Upload', '$modalInstance', '$timeout', 'UserModel', 'Project',  'ProjectModel', 'rProject', 'REGIONS', 'PROJECT_TYPES', '_', 'ENV'];
+// -----------------------------------------------------------------------------------
+//
+// CONTROLLER: Project Entry Tombstone
+//
+// -----------------------------------------------------------------------------------
+controllerModalProjectImport.$inject = ['Upload', '$modalInstance', '$timeout', '$scope', '$state', 'Project',  'ProjectModel', 'rProject', 'REGIONS', 'PROJECT_TYPES', '_', 'ENV'];
 /* @ngInject */
-function controllerModalProjectImport($scope, $state, $stateParams, Upload, $modalInstance, $timeout, UserModel, sProject, ProjectModel, rProject, REGIONS, PROJECT_TYPES, _, ENV) {
+function controllerModalProjectImport(Upload, $modalInstance, $timeout, $scope, $state, sProject, ProjectModel, rProject, REGIONS, PROJECT_TYPES, _, ENV) {
   var projectImport = this;
   $scope.environment = ENV;
-  $scope.currTab = $stateParams.currTab;
 
   // Setup default endpoint for import option
   $scope.defaultOption = '/api/projects/import/mem';
@@ -103,23 +104,24 @@ var setContentHtml = function(contentArray, page, type, html) {
   }
 };
 
-// PROJECT ENTRY TOMBSTONE (USED)
-// ------------------------------------------------------------------------------
-controllerProjectEntry.$inject = ['$scope', '$state', '$stateParams', '$modal', 'project', 'ProjectModel', 'REGIONS', 'PROJECT_TYPES', 'PROJECT_SUB_TYPES', 'PROJECT_ACTIVITIES_DEFAULTS', 'PROJECT_ACTIVITY_STATUS', 'PROJECT_CONTENT_DEFAULTS', 'CEAA_TYPES', '_', 'UserModel', 'OrganizationModel', 'Authentication', 'codeFromTitle', 'PhaseBaseModel', 'AlertService', 'Utils'];
+// -----------------------------------------------------------------------------------
+//
+// CONTROLLER: Project Entry Tombstone
+// Used.
+//
+// -----------------------------------------------------------------------------------
+controllerProjectEntry.$inject = ['$scope', '$state', '$stateParams', '$modal', 'project', 'REGIONS', 'PROJECT_TYPES', 'PROJECT_SUB_TYPES', 'PROJECT_ACTIVITIES_DEFAULTS', 'PROJECT_ACTIVITY_STATUS', 'PROJECT_CONTENT_DEFAULTS', 'CEAA_TYPES', '_', 'UserModel', 'ProjectModel', 'OrganizationModel', 'Authentication', 'codeFromTitle', 'PhaseBaseModel', 'AlertService', 'Utils'];
 /* @ngInject */
-function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, ProjectModel, REGIONS, PROJECT_TYPES, PROJECT_SUB_TYPES, PROJECT_ACTIVITIES_DEFAULTS, PROJECT_ACTIVITY_STATUS, PROJECT_CONTENT_DEFAULTS, CEAA_TYPES, _, UserModel, OrganizationModel, Authentication, codeFromTitle, PhaseBaseModel, AlertService, Utils) {
+function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, REGIONS, PROJECT_TYPES, PROJECT_SUB_TYPES, PROJECT_ACTIVITIES_DEFAULTS, PROJECT_ACTIVITY_STATUS, PROJECT_CONTENT_DEFAULTS, CEAA_TYPES, _, UserModel, ProjectModel, OrganizationModel, Authentication, codeFromTitle, PhaseBaseModel, AlertService, Utils) {
   $scope.project = project;
 
   ProjectModel.setModel($scope.project);
-
-  $scope.currTab = $stateParams.currTab;
 
   if ($scope.project.proponent && !_.isObject ($scope.project.proponent)) {
     OrganizationModel.getModel ($scope.project.proponent).then (function (org) {
       $scope.project.proponent = org;
     });
   }
-
   if ($scope.project.primaryContact && !_.isObject ($scope.project.primaryContact)) {
     UserModel.me ($scope.project.primaryContact)
     .then (function (userrecord) {
@@ -227,6 +229,13 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
     });
   };
 
+  $scope.onChangePhase = function () {
+    // The user decided to change the current phase.  Until we have a specific tiemline
+    // graphic, lets just set the phase code/name appropriately. Do not attempt to start/stop/complete
+    // various phases.
+    project.currentPhaseName = $scope.allPhases[project.currentPhaseCode];
+  };
+
   $scope.clearOrganization = function() {
     $scope.project.proponent = null;
   };
@@ -235,7 +244,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
     $scope.project.primaryContact = null;
   };
 
-  // SAVE PROJECT
+  // Save Project
   $scope.saveProject = function(isValid, currTab) {
     // Make sure the math works on ownership properties.
     var percentTotal = 0;
@@ -255,31 +264,29 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
       return false;
     }
 
-    // Save a new project
+    // Save new project
     if (ProjectModel.modelIsNew) {
       ProjectModel.add ($scope.project)
       .then( function(data) {
-        AlertService.success('Project Saved.');
         $state.go('p.detail', {projectid: data.code}, {reload: true});
       })
       .catch (function (err) {
-        AlertService.error('Project Saved.');
         console.error ('error = ', err);
       });
 
     // Save existing project
     } else {
       ProjectModel.saveModel($scope.project)
-      .then( function(data, currTab) {
-        AlertService.success('Project Saved.');
-        $state.go('p.edit', {projectid: data.code}, {curTab: currTab}, {reload: true});
+      .then( function(data) {
+        AlertService.success('Public content was saved.');
+        $state.go('p.edit', {projectid: data.code}, {reload: true});
+        return Promise.resolve();
       })
-      .catch (function (err) {
+      .catch (function(err) {
         AlertService.error('An error occurred.');
         console.error ('error = ', err);
       });
     }
-
   };
 
   $scope.onChangeProjectName = function () {
@@ -364,13 +371,13 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
       .then( function (p) {
         $scope.project = p;
         return ProjectModel.publishProject(p);
+        // $state.go('p.detail', {projectid: p.code});
       })
       .then( function (p) {
         $scope.project = p;
-        AlertService.success('Project Saved.');
+        $state.go('p.detail', {projectid: p.code}, {reload: true});
       })
       .catch (function (err) {
-        AlertService.error('Something happened.');
         console.error ('error = ', err);
       });
     });
@@ -473,8 +480,6 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
   };
 }
 
-// PROJECT PUBLIC CONTENT
-// ------------------------------------------------------------------------------
 controllerProjectPublicContent.$inject = ['$scope', '$state', '$stateParams', '$modal', 'project', 'ProjectModel', 'AlertService', 'ConfirmService', '_'];
 /* @ngInject */
 function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, project, ProjectModel, AlertService, ConfirmService, _) {
@@ -704,4 +709,5 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, p
     });
     return modalView.result;
   };
+
 }

@@ -102,7 +102,7 @@ angular
   )
   .constant('PROJECT_ACTIVITY_STATUS',
     [
-      '',
+      //'',
       'Active',
       'Complete',
       'Inactive',
