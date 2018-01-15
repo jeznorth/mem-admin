@@ -260,13 +260,13 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
 
     // Add this to the list if it's not already added.
     var found = _.find($scope.project.ownershipData, function (org) {
-      return org.organization === data._id;
+      return org.organization._id === data._id;
     });
     if (found) {
       // We already added this to the list, error.
       AlertService.error('The selected organization has been added already.');
     } else {
-      $scope.project.ownershipData.push({organization: data, sharePercent: 100});
+      $scope.project.ownershipData.push({ organization: data, sharePercent: 100 });
     }
   };
 
