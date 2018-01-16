@@ -1,56 +1,55 @@
-
 <div class="project-tombstone">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h2>Project Details</h2>
-		</div>
-		<div class="panel-body">
-			<div class="detail-row">
-				<label>Description</label>
-				<pre ng-bind-html="project.description"></pre>
-			</div>
-			<div class="row">
-				<div class='col-md-4'>
-					<div class="detail-row">
-						<label>Type</label>
-						<span class="value">{{ ::project.type }}</span>
-					</div>
-					<div class="detail-row">
-						<label>Permit Number</label>
-						<span class="value">{{ ::project.memPermitID }}</span>
-					</div>
-					<div class="detail-row">
-						<label>Status</label>
-						<span class="value">{{ ::project.currentPhaseName }}</span>
-					</div>
-					<div class="detail-row">
-						<label>Region</label>
-						<span class="value">{{ ::project.region | regionName }}</span>
-					</div>
-					<div class="detail-row">
-						<label>Lat/Long</label>
-						<span class="value">{{ ::project.lat }}, {{ ::project.lon }}</span>
-					</div>
-				</div>
-				<div class="col-md-8">
-					<div class="detail-row">
-						<label>Proponent/Operator</label>
-						<span class="value">{{ ::project.proponent.name || '-' }}</span>
-					</div>
-					<div class="detail-row">
-						<label>Ownership</label>
-						<span ng-repeat="org in project.ownershipData | orderBy : '-sharePercent'" class="value">{{ org.sharePercent}}% - {{ org.organization.name}}</span>
-					</div>
-					<div class="detail-row">
-						<label>Commodity(ies)</label>
-						<span class="value">{{ (project.commodity || '-') | titleCase }}</span>
-					</div>
-					<div class="detail-row">
-						<label>Tailings Impoundments</label>
-						<span class="value">{{ ::project.tailingsImpoundments || '-' }}</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2>Project Details</h2>
+    </div>
+    <div class="panel-body">
+      <div class="detail-row">
+        <label>Description</label>
+        <pre ng-bind-html="project.description"></pre>
+      </div>
+      <div class="row">
+        <div class='col-md-4'>
+          <div class="detail-row">
+            <label>Type</label>
+            <span class="value">{{ ::project.type }}</span>
+          </div>
+          <div class="detail-row">
+            <label>Permit Number</label>
+            <span class="value">{{ ::project.memPermitID }}</span>
+          </div>
+          <div class="detail-row">
+            <label>Status</label>
+            <span class="value">{{ ::project.currentPhaseName }}</span>
+          </div>
+          <div class="detail-row">
+            <label>Region</label>
+            <span class="value">{{ ::project.region | regionName }}</span>
+          </div>
+          <div class="detail-row">
+            <label>Lat/Long</label>
+            <span class="value">{{ ::project.lat }}, {{ ::project.lon }}</span>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="detail-row">
+            <label>Proponent/Operator</label>
+            <span class="value">{{ ::project.proponent.name || '-' }}</span>
+          </div>
+          <div class="detail-row">
+            <label>Ownership</label>
+            <span ng-repeat="org in project.ownershipData | orderBy : '-sharePercent'" class="value">{{ org.sharePercent}}% - {{ org.organization.name}}</span>
+          </div>
+          <div class="detail-row">
+            <label>Commodity(ies)</label>
+            <span class="value">{{ (project.commodities && project.commodities.length) ? project.commodities.join(', ') : '-' | titleCase }}</span>
+          </div>
+          <div class="detail-row">
+            <label>Tailings Impoundments</label>
+            <span class="value">{{ ::project.tailingsImpoundments || '-' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
