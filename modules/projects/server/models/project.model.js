@@ -182,7 +182,7 @@ module.exports = require ('../../../core/server/controllers/core.schema.controll
 
   ownership            : { type: String, default: '' },
   memPermitID          : { type: String, default: '', index: true },  // Used to relate mem permitID on import
-  commodity            : { type: String, default: '' },
+  commodities          : [ { type: String } ],
   tailingsImpoundments : { type: String, default: '' },
   epicStream           : { type: String, default: '' },
   directoryStructure   : { type: Object, default: null }
