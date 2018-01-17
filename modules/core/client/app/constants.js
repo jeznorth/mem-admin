@@ -100,6 +100,44 @@ angular
       'Sand & Gravel'
     ]
   )
+  .constant('PROJECT_COMMODITIES',
+    [{
+      type: 'Metal',
+      commodities: [
+        'Cadmium (Cd)',
+        'Copper (Cu)',
+        'Gold (Au)',
+        'Iron (Fe)',
+        'Lead (Pb)',
+        'Magnesium (Mg)',
+        'Magnetite',
+        'Mercury (Hg)',
+        'Molybdenum (Mo)',
+        'Muscovite (Mica)',
+        'Nickel (Ni)',
+        'Niobium (Nb)',
+        'Silver (Ag)',
+        'Zinc (Zn)'
+      ]
+    }, {
+      type: 'Coal',
+      commodities: [
+        'Coal',
+        'Thermal Coal'
+      ]
+    }, {
+      type: 'Industrial Mineral',
+      commodities: [
+        'Asbestos',
+        'Silica'
+      ]
+    }, {
+      type: 'Sand & Gravel',
+      commodities: [
+        'Sand & Gravel'
+      ]
+    }]
+  )
   .constant('PROJECT_ACTIVITY_STATUS',
     [
       //'',
@@ -138,67 +176,6 @@ angular
       }
     ]
   )
-  .constant('PROJECT_SUB_TYPES',
-    {
-      'Mining': [
-        'Coal Mines',
-        'Construction Stone and Industrial Mineral Quarries',
-        'Mineral Mines',
-        'Off-shore Mines',
-        'Placer Mineral Mines',
-        'Sand and Gravel Pits'
-      ],
-      'Energy-Electrical': [
-        'Electric Transmission Lines',
-        'Power Plants'
-      ],
-      'Energy-Petroleum & Natural Gas': [
-        'Energy Storage Facilities',
-        'Natural Gas Processing Plants',
-        'Off-shore Oil or Gas Facilities',
-        'Transmission Pipelines'
-      ],
-      'Transportation': [
-        'Airports',
-        'Ferry Terminals',
-        'Marine Port Facilities',
-        'Public Highways',
-        'Railways'
-      ],
-      'Water Management': [
-        'Dams',
-        'Dykes',
-        'Groundwater Extraction',
-        'Shoreline Modification',
-        'Water Diversion'
-      ],
-      'Industrial': [
-        'Forest Products Industries',
-        'Non-metallic Mineral Products Industries',
-        'Organic and Inorganic Chemical Industry',
-        'Other Industries',
-        'Primary Metals Industry'
-      ],
-      'Waste Disposal': [
-        'Hazardous Waste Facilities',
-        'Local Government Liquid Waste Management Facilities',
-        'Local Government Solid Waste Management Facilities'
-      ],
-      'Food Processing': [
-        'Fish Products Industry',
-        'Meat and Meat Products Industry',
-        'Poultry Products Industry'
-      ],
-      'Tourist Destination': [
-        'Golf Resorts',
-        'Marina Resorts',
-        'Resort Developments',
-        'Ski Resorts'
-      ],
-      'Other': [
-        'Other'
-      ]
-    })
   .constant('COLLECTION_TYPES',
     [
       'Annual Report',

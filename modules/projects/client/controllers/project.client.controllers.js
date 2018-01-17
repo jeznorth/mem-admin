@@ -110,9 +110,9 @@ var setContentHtml = function(contentArray, page, type, html) {
 // Used.
 //
 // -----------------------------------------------------------------------------------
-controllerProjectEntry.$inject = ['$scope', '$state', '$stateParams', '$modal', 'project', 'REGIONS', 'PROJECT_TYPES', 'PROJECT_SUB_TYPES', 'PROJECT_ACTIVITIES_DEFAULTS', 'PROJECT_ACTIVITY_STATUS', 'PROJECT_CONTENT_DEFAULTS', 'CEAA_TYPES', '_', 'UserModel', 'ProjectModel', 'OrganizationModel', 'Authentication', 'codeFromTitle', 'PhaseBaseModel', 'AlertService', 'Utils'];
+controllerProjectEntry.$inject = ['$scope', '$state', '$stateParams', '$modal', 'project', 'REGIONS', 'PROJECT_TYPES', 'PROJECT_COMMODITIES', 'PROJECT_ACTIVITIES_DEFAULTS', 'PROJECT_ACTIVITY_STATUS', 'PROJECT_CONTENT_DEFAULTS', 'CEAA_TYPES', '_', 'UserModel', 'ProjectModel', 'OrganizationModel', 'Authentication', 'codeFromTitle', 'PhaseBaseModel', 'AlertService', 'Utils'];
 /* @ngInject */
-function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, REGIONS, PROJECT_TYPES, PROJECT_SUB_TYPES, PROJECT_ACTIVITIES_DEFAULTS, PROJECT_ACTIVITY_STATUS, PROJECT_CONTENT_DEFAULTS, CEAA_TYPES, _, UserModel, ProjectModel, OrganizationModel, Authentication, codeFromTitle, PhaseBaseModel, AlertService, Utils) {
+function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, REGIONS, PROJECT_TYPES, PROJECT_COMMODITIES, PROJECT_ACTIVITIES_DEFAULTS, PROJECT_ACTIVITY_STATUS, PROJECT_CONTENT_DEFAULTS, CEAA_TYPES, _, UserModel, ProjectModel, OrganizationModel, Authentication, codeFromTitle, PhaseBaseModel, AlertService, Utils) {
   $scope.project = project;
 
   ProjectModel.setModel($scope.project);
@@ -144,7 +144,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
   $scope.questions = ProjectModel.getProjectIntakeQuestions();
   $scope.regions = REGIONS;
   $scope.types = PROJECT_TYPES;
-  $scope.subTypes = PROJECT_SUB_TYPES;
+  $scope.commodities = PROJECT_COMMODITIES;
   $scope.activityStatusItems = PROJECT_ACTIVITY_STATUS;
   $scope._ = _;
   $scope.CEAA = CEAA_TYPES;
@@ -156,6 +156,13 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
     $scope.allPhases = obj;
     $scope.$apply();
   });
+
+  // Commodities
+
+  var found = _.find($scope.commodities, function(list) {
+    return list.type === $scope.project.type;
+  });
+  $scope.commoditiesList = found ? found.commodities : [];
 
   // PROJECT DESCRIPTION FIELD
   $scope.tinymceOptions = {
@@ -177,13 +184,13 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
 
     // Add this to the list if it's not already added.
     var found = _.find($scope.project.ownershipData, function (org) {
-      return org.organization === data._id;
+      return org.organization._id === data._id;
     });
     if (found) {
       // We already added this to the list, error.
       AlertService.error('The selected organization has been added already.');
     } else {
-      $scope.project.ownershipData.push({organization: data, sharePercent: 100});
+      $scope.project.ownershipData.push({ organization: data, sharePercent: 100 });
     }
   };
 
@@ -227,6 +234,14 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
         });
       }
     });
+  };
+
+  $scope.onChangeType = function() {
+    var found = _.find($scope.commodities, function(list) {
+      return list.type === $scope.project.type;
+    });
+    $scope.commoditiesList = found ? found.commodities : [];
+    // Should we wipe out $scope.project.commodities if the type changes?
   };
 
   $scope.onChangePhase = function () {
