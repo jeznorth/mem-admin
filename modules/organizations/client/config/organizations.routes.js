@@ -99,24 +99,24 @@ angular.module('organizations').config(['$stateProvider', function ($stateProvid
 				return ProjectModel.forOrg(org._id);
 			}
         },
-        controller: function ($scope, $state, NgTableParams, org, users, projects, OrganizationModel, $filter, $modal, _, UserModel) {
+        controller: function ($scope, $state, NgTableParams, org, users, projects, OrganizationModel, $filter, $uibModal, _, UserModel) {
             $scope.org = org;
             $scope.tableParams = new NgTableParams ({count:10}, {dataset: users});
             var which = 'edit';
 
 			$scope.showSuccess = function(msg, transitionCallback, title) {
-				var modalDocView = $modal.open({
+				var modalDocView = $uibModal.open({
 					animation: true,
 					templateUrl: 'modules/utils/client/views/partials/modal-success.html',
-					controller: function($scope, $state, $modalInstance, _) {
+					controller: function($scope, $state, $uibModalInstance, _) {
 						var self = this;
 						self.title = title || 'Success';
 						self.msg = msg;
 						self.ok = function() {
-							$modalInstance.close($scope.org);
+							$uibModalInstance.close($scope.org);
 						};
 						self.cancel = function() {
-							$modalInstance.dismiss('cancel');
+							$uibModalInstance.dismiss('cancel');
 						};
 					},
 					controllerAs: 'self',
@@ -130,18 +130,18 @@ angular.module('organizations').config(['$stateProvider', function ($stateProvid
 			};
 
 			$scope.showError = function(msg, errorList, transitionCallback, title) {
-				var modalDocView = $modal.open({
+				var modalDocView = $uibModal.open({
 					animation: true,
 					templateUrl: 'modules/utils/client/views/partials/modal-error.html',
-					controller: function($scope, $state, $modalInstance, _) {
+					controller: function($scope, $state, $uibModalInstance, _) {
 						var self = this;
 						self.title = title || 'An error has occurred';
 						self.msg = msg;
 						self.ok = function() {
-							$modalInstance.close($scope.org);
+							$uibModalInstance.close($scope.org);
 						};
 						self.cancel = function() {
-							$modalInstance.dismiss('cancel');
+							$uibModalInstance.dismiss('cancel');
 						};
 					},
 					controllerAs: 'self',
@@ -167,18 +167,18 @@ angular.module('organizations').config(['$stateProvider', function ($stateProvid
 			};
 
 			$scope.deleteOrg = function () {
-				var modalDocView = $modal.open({
+				var modalDocView = $uibModal.open({
 					animation: true,
 					templateUrl: 'modules/utils/client/views/partials/modal-confirm-delete.html',
-					controller: function($scope, $state, $modalInstance, _) {
+					controller: function($scope, $state, $uibModalInstance, _) {
 						var self = this;
 						self.dialogTitle = "Delete Organization";
 						self.name = $scope.org.name;
 						self.ok = function() {
-							$modalInstance.close($scope.org);
+							$uibModalInstance.close($scope.org);
 						};
 						self.cancel = function() {
-							$modalInstance.dismiss('cancel');
+							$uibModalInstance.dismiss('cancel');
 						};
 					},
 					controllerAs: 'self',
@@ -380,7 +380,7 @@ angular.module('organizations').config(['$stateProvider', function ($stateProvid
             }
         },
 		controllerAs: 'userEditControl',
-		controller: function ($scope, $state, $filter, $modal, Authentication, user, org) {
+		controller: function ($scope, $state, $filter, $uibModal, Authentication, user, org) {
 			$scope.user = user;
 			$scope.org = org;
 			$scope.mode = 'add';
@@ -424,7 +424,7 @@ angular.module('organizations').config(['$stateProvider', function ($stateProvid
             }
         },
 		controllerAs: 'userEditControl',
-		controller: function ($scope, $state, $filter, $modal, Authentication, user, org) {
+		controller: function ($scope, $state, $filter, $uibModal, Authentication, user, org) {
 			$scope.user = user;
 			$scope.mode = 'edit';
 			$scope.readonly = false;
@@ -468,7 +468,7 @@ angular.module('organizations').config(['$stateProvider', function ($stateProvid
             }
         },
 		controllerAs: 'userEditControl',
-		controller: function ($scope, $state, $filter, $modal, Authentication, user, org) {
+		controller: function ($scope, $state, $filter, $uibModal, Authentication, user, org) {
 			$scope.user = user;
 			$scope.org = org;
 			$scope.mode = 'edit';

@@ -7,7 +7,7 @@ angular.module('projects')
 	// .directive('tmplProjectsPanels', directiveProjectsPanels)
 	.directive('tmplProjectsMap', directiveProjectsMap)
 
-	.directive('projectSearchChooser', function ($rootScope, $filter, $modal, NgTableParams, REGIONS, ProjectModel, _) {
+	.directive('projectSearchChooser', function ($rootScope, $filter, $uibModal, NgTableParams, REGIONS, ProjectModel, _) {
 		return {
 			restrict: 'A',
 			scope: {
@@ -18,14 +18,14 @@ angular.module('projects')
 			},
 			link: function (scope, element, attrs) {
 				element.on('click', function () {
-					$modal.open({
+					$uibModal.open({
 						animation: true,
 						templateUrl: 'modules/projects/client/views/project-search-chooser.html',
 						size: 'lg',
 						resolve: {
 						},
 						controllerAs: 's',
-						controller: function ($filter,$scope, $modalInstance) {
+						controller: function ($filter,$scope, $uibModalInstance) {
 							var s = this;
 							s.title = scope.title;
 							$scope.singleselectmode = scope.singleselectmode;
@@ -89,7 +89,7 @@ angular.module('projects')
 							};
 
 							s.cancel = function () {
-								$modalInstance.dismiss('cancel');
+								$uibModalInstance.dismiss('cancel');
 							};
 
 							s.ok = function () {
@@ -100,7 +100,7 @@ angular.module('projects')
 										selected.push(item);
 								});
 
-								$modalInstance.close(selected);
+								$uibModalInstance.close(selected);
 							};
 
 							s.search = function () {

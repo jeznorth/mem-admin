@@ -426,9 +426,9 @@ function directiveExpandPanel($compile) {
 // DIRECTIVE: Research Detail
 //
 // -----------------------------------------------------------------------------------
-directiveModalResearchDetail.$inject = ['$modal'];
+directiveModalResearchDetail.$inject = ['$uibModal'];
 /* @ngInject */
-function directiveModalResearchDetail($modal) {
+function directiveModalResearchDetail($uibModal) {
     var directive = {
         restrict:'A',
         scope : {
@@ -437,7 +437,7 @@ function directiveModalResearchDetail($modal) {
         },
 		link : function(scope, element, attrs) {
 			element.on('click', function() {
-				var modalDocView = $modal.open({
+				var modalDocView = $uibModal.open({
 					animation: true,
 					templateUrl: 'modules/utils/client/views/partials/modal-research-detail.html',
 					controller: 'controllerModalResearchDetail',
@@ -571,9 +571,9 @@ function directiveDateField(moment) {
 // DIRECTIVE: Modal Select Users
 //
 // -----------------------------------------------------------------------------------
-directiveModalSelectUsers.$inject = ['$modal'];
+directiveModalSelectUsers.$inject = ['$uibModal'];
 /* @ngInject */
-function directiveModalSelectUsers($modal) {
+function directiveModalSelectUsers($uibModal) {
 	var directive = {
 		restrict:'A',
 		scope : {
@@ -586,7 +586,7 @@ function directiveModalSelectUsers($modal) {
 			// console.log('here', scope.users);
 			console.log('cb', scope);
 			element.on('click', function() {
-				var modalUsersView = $modal.open({
+				var modalUsersView = $uibModal.open({
 					animation: true,
 					templateUrl: 'modules/utils/client/views/partials/modal-users-select.html',
 					controller: 'controllerModalUsersSelect',
@@ -632,9 +632,9 @@ function directiveModalSelectUsers($modal) {
 // DIRECTIVE: Modal User List
 //
 // -----------------------------------------------------------------------------------
-directiveModalRecipientList.$inject = ['$modal'];
+directiveModalRecipientList.$inject = ['$uibModal'];
 /* @ngInject */
-function directiveModalRecipientList($modal) {
+function directiveModalRecipientList($uibModal) {
     var directive = {
         restrict:'A',
         scope : {
@@ -642,7 +642,7 @@ function directiveModalRecipientList($modal) {
         },
 		link : function(scope, element, attrs) {
 			element.on('click', function() {
-				var modalUserList = $modal.open({
+				var modalUserList = $uibModal.open({
 					animation: true,
 					templateUrl: 'modules/utils/client/views/partials/modal-recipient-list.html',
 					controller: 'controllerModalRecipientList',
@@ -705,9 +705,9 @@ function directiveRequirementTally() {
 // DIRECTIVE: Modal User List
 //
 // -----------------------------------------------------------------------------------
-directiveModalUserContactInfo.$inject = ['$modal', 'UserModel'];
+directiveModalUserContactInfo.$inject = ['$uibModal', 'UserModel'];
 /* @ngInject */
-function directiveModalUserContactInfo($modal, UserModel) {
+function directiveModalUserContactInfo($uibModal, UserModel) {
     var directive = {
         restrict:'A',
         scope : {
@@ -715,7 +715,7 @@ function directiveModalUserContactInfo($modal, UserModel) {
         },
 		link : function(scope, element, attrs) {
 			element.on('click', function() {
-				var modalUserInfo = $modal.open({
+				var modalUserInfo = $uibModal.open({
 					animation: true,
 					templateUrl: 'modules/utils/client/views/partials/modal-user-contact-info.html',
 					controller: 'controllerModalUserContactInfo',
@@ -759,9 +759,9 @@ function directiveSelectOnClick($window) {
 // DIRECTIVE: Modal Select Items
 //
 // -----------------------------------------------------------------------------------
-directiveModalSelectItems.$inject = ['$modal'];
+directiveModalSelectItems.$inject = ['$uibModal'];
 /* @ngInject */
-function directiveModalSelectItems($modal) {
+function directiveModalSelectItems($uibModal) {
     var directive = {
        	restrict:'A',
        	scope : {
@@ -775,7 +775,7 @@ function directiveModalSelectItems($modal) {
 		},
 		link : function(scope, element, attrs) {
 			element.on('click', function() {
-				var modalSelectItems = $modal.open({
+				var modalSelectItems = $uibModal.open({
 					animation: true,
 					templateUrl: 'modules/utils/client/views/partials/modal-select-items.html',
 					controller: 'controllerModalSelectItems',
@@ -818,9 +818,9 @@ function directiveModalSelectItems($modal) {
 // DIRECTIVE: Date Pickerwindow
 //
 // -----------------------------------------------------------------------------------
-directiveModalDatePicker.$inject = ['$modal'];
+directiveModalDatePicker.$inject = ['$uibModal'];
 /* @ngInject */
-function directiveModalDatePicker($modal) {
+function directiveModalDatePicker($uibModal) {
     var directive = {
         restrict:'A',
         scope: {
@@ -829,7 +829,7 @@ function directiveModalDatePicker($modal) {
         },
 		link : function(scope, element, attrs) {
 			element.on('click', function() {
-				var modalAddComment = $modal.open({
+				var modalAddComment = $uibModal.open({
 					animation: true,
 					templateUrl: 'modules/utils/client/views/partials/modal-date-picker.html',
 					controller: 'controllerModalDatePicker',
@@ -861,9 +861,9 @@ function directiveModalDatePicker($modal) {
 // DIRECTIVE: Scroll Anchor
 //
 // -----------------------------------------------------------------------------------
-directiveScrollAnchor.$inject = ['$modal'];
+directiveScrollAnchor.$inject = ['$uibModal'];
 /* @ngInject */
-function directiveScrollAnchor($modal) {
+function directiveScrollAnchor($uibModal) {
     var directive = {
        	restrict:'A',
 		link : function(scope, element, attrs) {

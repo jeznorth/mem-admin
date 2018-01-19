@@ -18,15 +18,15 @@ angular.module('project')
 // CONTROLLER: Modal: View Project Schedule
 //
 // -----------------------------------------------------------------------------------
-controllerModalProjectSchedule.$inject = ['$modalInstance', 'PhaseModel', '_', 'rProject'];
+controllerModalProjectSchedule.$inject = ['$uibModalInstance', 'PhaseModel', '_', 'rProject'];
 /* @ngInject */
-function controllerModalProjectSchedule($modalInstance,  PhaseModel, _, rProject) {
+function controllerModalProjectSchedule($uibModalInstance,  PhaseModel, _, rProject) {
   var projSched = this;
 
   var savedOriginal = angular.copy(rProject.phases);
   projSched.phases = rProject.phases;
 
-  projSched.cancel = function () { $modalInstance.dismiss('cancel'); };
+  projSched.cancel = function () { $uibModalInstance.dismiss('cancel'); };
   projSched.ok = function () {
     // save each phase.
     _.each(projSched.phases, function(item) {
@@ -34,10 +34,10 @@ function controllerModalProjectSchedule($modalInstance,  PhaseModel, _, rProject
       PhaseModel.saveModel().then( function(res) {
         // console.log('saved');
       }).catch( function(err) {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
       });
     });
-    $modalInstance.close();
+    $uibModalInstance.close();
   };
 }
 // -----------------------------------------------------------------------------------
@@ -45,9 +45,9 @@ function controllerModalProjectSchedule($modalInstance,  PhaseModel, _, rProject
 // CONTROLLER: Modal: View Project VC
 //
 // -----------------------------------------------------------------------------------
-controllerProjectVC.$inject = ['$scope', 'rProjectVC', '_', '$modalInstance', 'VCModel'];
+controllerProjectVC.$inject = ['$scope', 'rProjectVC', '_', '$uibModalInstance', 'VCModel'];
 /* @ngInject */
-function controllerProjectVC($scope, rProjectVC, _, $modalInstance, sVCModel) {
+function controllerProjectVC($scope, rProjectVC, _, $uibModalInstance, sVCModel) {
     var projectVC = this;
 
     projectVC.roles = ['admin', 'project-team', 'working-group', 'first-nations', 'consultant'];
@@ -62,9 +62,9 @@ function controllerProjectVC($scope, rProjectVC, _, $modalInstance, sVCModel) {
 
     // on save, pass complete permission structure to the server
     projectVC.ok = function () {
-        $modalInstance.close();
+        $uibModalInstance.close();
     };
-    projectVC.cancel = function () { $modalInstance.dismiss('cancel'); };
+    projectVC.cancel = function () { $uibModalInstance.dismiss('cancel'); };
 
 }
 // -----------------------------------------------------------------------------------
@@ -72,9 +72,9 @@ function controllerProjectVC($scope, rProjectVC, _, $modalInstance, sVCModel) {
 // CONTROLLER: Modal: View Project VC Entry
 //
 // -----------------------------------------------------------------------------------
-controllerProjectVCEntry.$inject = ['rProjectVCEntry', '_', '$modalInstance'];
+controllerProjectVCEntry.$inject = ['rProjectVCEntry', '_', '$uibModalInstance'];
 /* @ngInject */
-function controllerProjectVCEntry(rProjectVCEntry, _, $modalInstance) {
+function controllerProjectVCEntry(rProjectVCEntry, _, $uibModalInstance) {
   var projectVCEntryModal = this;
 
   projectVCEntryModal.roles = ['admin', 'project-team', 'working-group', 'first-nations', 'consultant'];
@@ -84,18 +84,18 @@ function controllerProjectVCEntry(rProjectVCEntry, _, $modalInstance) {
 
   // on save, pass complete permission structure to the server
   projectVCEntryModal.ok = function () {
-    $modalInstance.close();
+    $uibModalInstance.close();
   };
-  projectVCEntryModal.cancel = function () { $modalInstance.dismiss('cancel'); };
+  projectVCEntryModal.cancel = function () { $uibModalInstance.dismiss('cancel'); };
 }
 // -----------------------------------------------------------------------------------
 //
 // CONTROLLER: Project Entry Tombstone
 //
 // -----------------------------------------------------------------------------------
-controllerModalProjectImport.$inject = ['Upload', '$modalInstance', '$timeout', '$scope', '$state', 'Project',  'ProjectModel', 'rProject', 'REGIONS', 'PROJECT_TYPES', '_', 'ENV'];
+controllerModalProjectImport.$inject = ['Upload', '$uibModalInstance', '$timeout', '$scope', '$state', 'Project',  'ProjectModel', 'rProject', 'REGIONS', 'PROJECT_TYPES', '_', 'ENV'];
 /* @ngInject */
-function controllerModalProjectImport(Upload, $modalInstance, $timeout, $scope, $state, sProject, ProjectModel, rProject, REGIONS, PROJECT_TYPES, _, ENV) {
+function controllerModalProjectImport(Upload, $uibModalInstance, $timeout, $scope, $state, sProject, ProjectModel, rProject, REGIONS, PROJECT_TYPES, _, ENV) {
   var projectImport = this;
   $scope.environment = ENV;
 
@@ -114,12 +114,12 @@ function controllerModalProjectImport(Upload, $modalInstance, $timeout, $scope, 
   });
 
   $scope.$on('importUploadComplete', function() {
-    $modalInstance.close();
+    $uibModalInstance.close();
   });
 
   $scope.$on('importUploadStart', function(event) {
     projectImport.upload();
-    $modalInstance.dismiss();
+    $uibModalInstance.dismiss();
   });
 
   projectImport.ok = function () {
@@ -131,7 +131,7 @@ function controllerModalProjectImport(Upload, $modalInstance, $timeout, $scope, 
   };
 
   projectImport.cancel = function () {
-    $modalInstance.dismiss();
+    $uibModalInstance.dismiss();
   };
 
   // Standard save make sure documents are uploaded before save.
@@ -193,9 +193,9 @@ var setContentHtml = function(contentArray, page, type, html) {
 // Used.
 //
 // -----------------------------------------------------------------------------------
-controllerProjectEntry.$inject = ['$scope', '$state', '$stateParams', '$modal', 'project', 'REGIONS', 'PROJECT_TYPES', 'PROJECT_COMMODITIES', 'PROJECT_ACTIVITIES_DEFAULTS', 'PROJECT_ACTIVITY_STATUS', 'PROJECT_CONTENT_DEFAULTS', 'CEAA_TYPES', '_', 'UserModel', 'ProjectModel', 'OrganizationModel', 'Authentication', 'codeFromTitle', 'PhaseBaseModel', 'AlertService', 'Utils'];
+controllerProjectEntry.$inject = ['$scope', '$state', '$stateParams', '$uibModal', 'project', 'REGIONS', 'PROJECT_TYPES', 'PROJECT_COMMODITIES', 'PROJECT_ACTIVITIES_DEFAULTS', 'PROJECT_ACTIVITY_STATUS', 'PROJECT_CONTENT_DEFAULTS', 'CEAA_TYPES', '_', 'UserModel', 'ProjectModel', 'OrganizationModel', 'Authentication', 'codeFromTitle', 'PhaseBaseModel', 'AlertService', 'Utils'];
 /* @ngInject */
-function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, REGIONS, PROJECT_TYPES, PROJECT_COMMODITIES, PROJECT_ACTIVITIES_DEFAULTS, PROJECT_ACTIVITY_STATUS, PROJECT_CONTENT_DEFAULTS, CEAA_TYPES, _, UserModel, ProjectModel, OrganizationModel, Authentication, codeFromTitle, PhaseBaseModel, AlertService, Utils) {
+function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, project, REGIONS, PROJECT_TYPES, PROJECT_COMMODITIES, PROJECT_ACTIVITIES_DEFAULTS, PROJECT_ACTIVITY_STATUS, PROJECT_CONTENT_DEFAULTS, CEAA_TYPES, _, UserModel, ProjectModel, OrganizationModel, Authentication, codeFromTitle, PhaseBaseModel, AlertService, Utils) {
   $scope.project = project;
 
   ProjectModel.setModel($scope.project);
@@ -271,7 +271,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
     });
     if (found) {
       // We already added this to the list, error.
-      AlertService.error('The selected organization has been added already.');
+      AlertService.error('The selected organization has been added already.', 4000);
     } else {
       $scope.project.ownershipData.push({ organization: data, sharePercent: 100 });
     }
@@ -279,20 +279,20 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
 
   $scope.deleteOwnership = function (data) {
     // Make sure they really want to do this
-    var modalDocView = $modal.open({
+    var modalDocView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-confirm-generic.html',
-      controller: function($scope, $state, $modalInstance, _) {
+      controller: function($scope, $state, $uibModalInstance, _) {
         var self = this;
         self.title = 'Remove '+ data.organization.name;
         self.question = 'Are you want to remove the ownership from this project?';
         self.actionOK = 'Ok';
         self.actionCancel = 'Cancel';
         self.ok = function() {
-          $modalInstance.close();
+          $uibModalInstance.close();
         };
         self.cancel = function() {
-          $modalInstance.dismiss('cancel');
+          $uibModalInstance.dismiss('cancel');
         };
       },
       controllerAs: 'self',
@@ -310,7 +310,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
       });
       if (!found) {
         // We already added this to the list, error.
-        AlertService.error('Could not delete the organization.');
+        AlertService.error('Could not delete the organization.', 4000);
       } else {
         _.remove($scope.project.ownershipData, {
             organization: data.organization
@@ -350,7 +350,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
     });
 
     if (percentTotal !== 100) {
-      AlertService.error("Can't save project until ownership on project amounts to 100%.");
+      AlertService.error("Can't save project until ownership on project amounts to 100%.", 4000);
       return false;
     }
 
@@ -388,20 +388,20 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
 
   $scope.cancelChanges = function (title, msg, okTitle, cancel) {
     //Are you sure you would like to exit and discard all changes
-    var modalDocView = $modal.open({
+    var modalDocView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-confirm-generic.html',
-      controller: function($scope, $state, $modalInstance, _) {
+      controller: function($scope, $state, $uibModalInstance, _) {
         var self = this;
         self.title = title || "thetitle";
         self.question = msg || "the message?";
         self.actionOK = okTitle || "theOK title";
         self.actionCancel = cancel || "cancel title";
         self.ok = function() {
-          $modalInstance.close($scope.project);
+          $uibModalInstance.close($scope.project);
         };
         self.cancel = function() {
-          $modalInstance.dismiss('cancel');
+          $uibModalInstance.dismiss('cancel');
         };
       },
       controllerAs: 'self',
@@ -425,20 +425,20 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
     }
 
     // Pop confirmation dialog, after OK, publish immediately.
-    var modalDocView = $modal.open({
+    var modalDocView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-confirm-generic.html',
-      controller: function($scope, $state, $modalInstance, _) {
+      controller: function($scope, $state, $uibModalInstance, _) {
         var self = this;
         self.title = title || "thetitle";
         self.question = msg || "the message?";
         self.actionOK = okTitle || "theOK title";
         self.actionCancel = cancel || "cancel title";
         self.ok = function() {
-          $modalInstance.close($scope.project);
+          $uibModalInstance.close($scope.project);
         };
         self.cancel = function() {
-          $modalInstance.dismiss('cancel');
+          $uibModalInstance.dismiss('cancel');
         };
       },
       controllerAs: 'self',
@@ -475,18 +475,18 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
   };
 
   $scope.showSuccess = function(msg, transitionCallback, title) {
-    var modalDocView = $modal.open({
+    var modalDocView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-success.html',
-      controller: function($scope, $state, $modalInstance, _) {
+      controller: function($scope, $state, $uibModalInstance, _) {
         var self = this;
         self.title = title || 'Success';
         self.msg = msg;
         self.ok = function() {
-          $modalInstance.close($scope.project);
+          $uibModalInstance.close($scope.project);
         };
         self.cancel = function() {
-          $modalInstance.dismiss('cancel');
+          $uibModalInstance.dismiss('cancel');
         };
       },
       controllerAs: 'self',
@@ -500,18 +500,18 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
   };
 
   $scope.showError = function(msg, errorList, transitionCallback, title) {
-    var modalDocView = $modal.open({
+    var modalDocView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-error.html',
-      controller: function($scope, $state, $modalInstance, _) {
+      controller: function($scope, $state, $uibModalInstance, _) {
         var self = this;
         self.title = title || 'An error has occurred';
         self.msg = msg;
         self.ok = function() {
-          $modalInstance.close($scope.project);
+          $uibModalInstance.close($scope.project);
         };
         self.cancel = function() {
-          $modalInstance.dismiss('cancel');
+          $uibModalInstance.dismiss('cancel');
         };
       },
       controllerAs: 'self',
@@ -535,18 +535,18 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
   };
 
   $scope.deleteProject = function() {
-    var modalDocView = $modal.open({
+    var modalDocView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-confirm-delete.html',
-      controller: function($scope, $state, $modalInstance, _) {
+      controller: function($scope, $state, $uibModalInstance, _) {
         var self = this;
         self.dialogTitle = "Delete Project";
         self.name = $scope.project.name;
         self.ok = function() {
-          $modalInstance.close($scope.project);
+          $uibModalInstance.close($scope.project);
         };
         self.cancel = function() {
-          $modalInstance.dismiss('cancel');
+          $uibModalInstance.dismiss('cancel');
         };
       },
       controllerAs: 'self',
@@ -571,9 +571,9 @@ function controllerProjectEntry ($scope, $state, $stateParams, $modal, project, 
   };
 }
 
-controllerProjectPublicContent.$inject = ['$scope', '$state', '$stateParams', '$modal', 'project', 'ProjectModel', 'AlertService', 'ConfirmService', '_'];
+controllerProjectPublicContent.$inject = ['$scope', '$state', '$stateParams', '$uibModal', 'project', 'ProjectModel', 'AlertService', 'ConfirmService', '_'];
 /* @ngInject */
-function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, project, ProjectModel, AlertService, ConfirmService, _) {
+function controllerProjectPublicContent ($scope, $state, $stateParams, $uibModal, project, ProjectModel, AlertService, ConfirmService, _) {
   $scope.project = project;
 
   ProjectModel.setModel($scope.project);
@@ -617,11 +617,11 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, p
 
     ProjectModel.saveModel($scope.project)
     .then(function() {
-      AlertService.success('Public content was saved.');
+      AlertService.success('Public content was saved.', 4000);
       $scope.goToPublicContent(currTab);
     })
     .catch (function (err) {
-      AlertService.error('Public content could not be saved.');
+      AlertService.error('Public content could not be saved.', 4000);
       console.error ('error = ', err);
     });
   };
@@ -648,11 +648,11 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, p
     var promote = function() {
       return ProjectModel.promote($scope.project)
         .then(function() {
-          AlertService.success('Public content was displayed on mines.nrs.');
+          AlertService.success('Public content was displayed on mines.nrs.', 4000);
           $scope.goToPublicContent();
         })
         .catch(function(res) {
-          AlertService.error('Public content could not be displayed on mines.nrs.');
+          AlertService.error('Public content could not be displayed on mines.nrs.', 4000);
           console.error("res:", res);
         });
     };
@@ -671,11 +671,11 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, p
     var demote = function() {
       return ProjectModel.demote($scope.project)
         .then(function() {
-          AlertService.success('Public content was removed from mines.nrs.');
+          AlertService.success('Public content was removed from mines.nrs.', 4000);
           $scope.goToPublicContent();
         })
         .catch(function(res) {
-          AlertService.error('Public content could not be removed from mines.nrs.');
+          AlertService.error('Public content could not be removed from mines.nrs.', 4000);
           console.error("res:", res);
         });
     };
@@ -708,7 +708,7 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, p
       var found = _.find($scope.project.externalLinks, function (l) { return l.link === link.link; });
       if (found) {
         // We already added this to the list, error.
-        AlertService.error('The external link has been added already.');
+        AlertService.error('The external link has been added already.', 4000);
       } else {
         $scope.project.externalLinks.push(link);
         _.each($scope.project.externalLinks, function (item, i) { item.order = i + 1; });
@@ -721,7 +721,7 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, p
       var i = _.findIndex($scope.project.externalLinks, function (l) { return l.link === link.link; });
       if (i < 0) {
         // Error
-        AlertService.error('Could not update the external link.');
+        AlertService.error('Could not update the external link.', 4000);
       } else {
         $scope.project.externalLinks[i] = newValue;
       }
@@ -734,7 +734,7 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, p
       var found = _.find($scope.project.externalLinks, function (l) { return l.link === link.link; });
       if (!found) {
         // Error
-        AlertService.error('Could not delete the external link.');
+        AlertService.error('Could not delete the external link.', 4000);
       } else {
         _.remove($scope.project.externalLinks, found);
         _.each($scope.project.externalLinks, function (item, i) { item.order = i + 1; });
@@ -744,18 +744,18 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, p
 
   // Delete External Link Confirmation Modal
   $scope.confirmDeleteLink = function (link) {
-    var modalView = $modal.open({
+    var modalView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-confirm-delete.html',
-      controller: function ($scope, $modalInstance) {
+      controller: function ($scope, $uibModalInstance) {
         var self = this;
         self.dialogTitle = "Delete Link";
         self.name = link.link;
         self.ok = function () {
-          $modalInstance.close(link);
+          $uibModalInstance.close(link);
         };
         self.cancel = function () {
-          $modalInstance.dismiss('cancel');
+          $uibModalInstance.dismiss('cancel');
         };
       },
       controllerAs: 'self',
@@ -767,14 +767,14 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, p
 
   // Manage External Link Modal
   $scope.openLinkDialog = function (link) {
-    var modalView = $modal.open({
+    var modalView = $uibModal.open({
       animation: true,
       controllerAs: 'self',
       scope: $scope,
       size: 'md',
       backdropClass: 'modal-alert-backdrop',
       templateUrl: 'modules/projects/client/views/project-partials/edit-external-links-modal.html',
-      controller: function ($scope, $modalInstance, _) {
+      controller: function ($scope, $uibModalInstance, _) {
         var self = this;
         var isNew = !link;
         self.title = isNew ? "Add External Link" : "Edit External Link";
@@ -790,11 +790,11 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $modal, p
         };
 
         self.onSave = function (newValue) {
-          $modalInstance.close(newValue);
+          $uibModalInstance.close(newValue);
         };
 
         self.onClose = function () {
-          $modalInstance.dismiss('cancel');
+          $uibModalInstance.dismiss('cancel');
         };
       }
     });

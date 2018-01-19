@@ -1,10 +1,10 @@
 <header class="app-header">
-	
+
 	<nav class="navbar">
 		<div class="navbar-header">
-			<button class="navbar-toggle collapsed" type="button" 
+			<button class="navbar-toggle collapsed" type="button"
 				data-target="#mainNav"
-				data-toggle="collapse"  
+				data-toggle="collapse"
 				aria-expanded="false"
 				aria-label="Toggle navigation">
 				<span class="sr-only">Toggle navigation</span>
@@ -28,17 +28,17 @@
 				</li>
 				<li class="dropdown" ng-if="'true' === ADMIN_FEATURES.enableSystemMenu && systemMenu.shouldRender(authentication.user)">
 					<a class="dropdown-toggle" title="System Configuration"
-						id="dropdownSystemMenu"  
+						id="dropdownSystemMenu"
 						ng-click="$event.preventDefault();"
-						data-toggle="dropdown" 
+						data-toggle="dropdown"
 						aria-haspopup="true"
 						aria-expanded="true">
 						<span>SYSTEM</span>
 						<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu pull-right" aria-labelledby="dropdownSystemMenu">
-						<li class="{{item.class}}" ng-class="{ active: $state.includes(item.state) }" 
-							ng-repeat="item in systemMenu.items | orderBy: 'position'" 
+						<li class="{{item.class}}" ng-class="{ active: $state.includes(item.state) }"
+							ng-repeat="item in systemMenu.items | orderBy: 'position'"
 							ng-if="item.shouldRender(authentication.user);">
 							<a ui-sref="{{item.state}}" ng-bind="item.title"></a>
 						</li>
@@ -56,10 +56,10 @@
 					</a>
 				</li>
 				<li class="custom-nav-item user-menu dropdown" ng-show="authentication.user">
-					<a class="dropdown-toggle" 
-						ng-click="$event.preventDefault();" 
-						id="userMenu" 
-						data-toggle="dropdown" 
+					<a class="dropdown-toggle"
+						ng-click="$event.preventDefault();"
+						id="userMenu"
+						data-toggle="dropdown"
 						aria-haspopup="true"
 						aria-expanded="true">
 						<span>{{ authentication.user.displayName }}</span>
@@ -74,5 +74,5 @@
 			</ul>
 		</div>
 	</nav>
-	
+
 </header>

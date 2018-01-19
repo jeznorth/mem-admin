@@ -2,13 +2,13 @@
 angular
 .module('documents')
 .factory('CategoriesFactory', ['TreeModel', '_', CategoriesFactory ])
-.controller('categorySelectModalController', ['$scope', '$modalInstance', '_', 'INSPECTION_TYPES', categorySelectModalControllerImpl ])
+.controller('categorySelectModalController', ['$scope', '$uibModalInstance', '_', 'INSPECTION_TYPES', categorySelectModalControllerImpl ])
 .controller('categorySelectController', ['CategoriesFactory', '_', '$scope', categorySelectControllerImpl ])
-.directive('categoriesModal', ['$modal', categoriesDirective ]) // x-categories-modal
-.directive('categoriesSelector', ['$modal', categoriesSelectorDirective ]); // x-categories-selector
+.directive('categoriesModal', ['$uibModal', categoriesDirective ]) // x-categories-modal
+.directive('categoriesSelector', ['$uibModal', categoriesSelectorDirective ]); // x-categories-selector
 
 // button x-categories-modal
-function categoriesDirective($modal) {
+function categoriesDirective($uibModal) {
 	return {
 		restrict: 'A',
 		scope: {
@@ -16,7 +16,7 @@ function categoriesDirective($modal) {
 		},
 		link: function (scope, element) {
 			element.on('click', function () {
-				$modal.open({
+				$uibModal.open({
 					animation: true,
 					templateUrl: 'modules/documents/client/components/doc-categories/doc-categories.modal.html',
 					controllerAs: 'vmm',
@@ -34,7 +34,7 @@ function categoriesDirective($modal) {
 
 
 // controller for the modal dialog
-function categorySelectModalControllerImpl($scope, $modalInstance, _, INSPECTION_TYPES) {
+function categorySelectModalControllerImpl($scope, $uibModalInstance, _, INSPECTION_TYPES) {
 	var self = this;
 	self.cancel = cancel;
 	self.ok = submit;
@@ -43,7 +43,7 @@ function categorySelectModalControllerImpl($scope, $modalInstance, _, INSPECTION
 	self.originalCategories = self.doc.documentCategories;
 
 	function cancel() {
-		$modalInstance.dismiss('cancel');
+		$uibModalInstance.dismiss('cancel');
 	}
 	function submit() {
 		var categories = self.categories;
@@ -83,7 +83,7 @@ function categorySelectModalControllerImpl($scope, $modalInstance, _, INSPECTION
 				personsContacted: null
 			};
 		}
-		$modalInstance.close(self.doc);
+		$uibModalInstance.close(self.doc);
 	}
 }
 

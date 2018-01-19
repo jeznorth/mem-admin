@@ -17,7 +17,7 @@
   <div class="modal-body"  ng-if="!confirmDlg.errMsg">
     <div class="alert alert-danger" ng-if="confirmDlg.hasBlockedContent" ng-bind-html="confirmDlg.bannerText">{{confirmDlg.bannerText}}</div>
 
-		<div ng-bind-html="confirmDlg.confirmText">{{confirmDlg.confirmText}}</div> 
+		<div ng-bind-html="confirmDlg.confirmText">{{confirmDlg.confirmText}}</div>
 		<ul class="confirm-list">
 			<li  ng-repeat="item in confirmDlg.combindedList">
         <span class="avatar" ng-class="{'disabled': !item.canBeDeleted}">

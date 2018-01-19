@@ -1,7 +1,7 @@
 'use strict';
 angular.module('documents')
 
-	.directive('documentMgrAddKeyword', ['$rootScope', '$modal', '$log', '_', 'DocumentMgrService', 'AlertService', 'TreeModel', function ($rootScope, $modal, $log, _, DocumentMgrService, AlertService, TreeModel) {
+	.directive('documentMgrAddKeyword', ['$rootScope', '$uibModal', '$log', '_', 'DocumentMgrService', 'AlertService', 'TreeModel', function ($rootScope, $uibModal, $log, _, DocumentMgrService, AlertService, TreeModel) {
 		return {
 			restrict: 'A',
 			scope: {
@@ -10,12 +10,12 @@ angular.module('documents')
 			},
 			link: function (scope, element, attrs) {
 				element.on('click', function () {
-					$modal.open({
+					$uibModal.open({
 						animation: true,
 						templateUrl: 'modules/documents/client/views/document-manager-add-keyword.html',
 						resolve: {},
 						controllerAs: 'addKeyword',
-						controller: function ($scope, $modalInstance) {
+						controller: function ($scope, $uibModalInstance) {
 							var self = this;
 
 							$scope.doc = scope.doc;
@@ -25,11 +25,11 @@ angular.module('documents')
 							self.documentDisplayName = $scope.doc.displayName;
 
 							self.cancel = function () {
-								$modalInstance.dismiss('cancel');
+								$uibModalInstance.dismiss('cancel');
 							};
 
 							self.ok = function () {
-								$modalInstance.close(self.entryText);
+								$uibModalInstance.close(self.entryText);
 							};
 
 						}

@@ -10,7 +10,7 @@ angular.module ('comment')
 // list of public comments from the point of view of the public
 //
 // -------------------------------------------------------------------------
-.directive ('tmplPublicCommentList', function ($modal, _) {
+.directive ('tmplPublicCommentList', function ($uibModal, _) {
 	return {
 		scope: {
 			period  : '=',
@@ -252,7 +252,7 @@ angular.module ('comment')
 			//
 			// -------------------------------------------------------------------------
 			s.detail = function (comment) {
-				$modal.open ({
+				$uibModal.open ({
 					animation: true,
 					templateUrl: 'modules/project-comments/client/views/public-comments/detail.html',
 					controllerAs: 's',
@@ -263,7 +263,7 @@ angular.module ('comment')
 							return CommentModel.getDocuments(comment._id);
 						}
 					},
-					controller: function ($scope, $modalInstance, docs) {
+					controller: function ($scope, $uibModalInstance, docs) {
 						var self = this;
 
 
@@ -297,8 +297,8 @@ angular.module ('comment')
 						}
 
 
-						self.cancel      = function () { $modalInstance.dismiss ('cancel'); };
-						self.ok          = function () { $modalInstance.close (self.comment); };
+						self.cancel      = function () { $uibModalInstance.dismiss ('cancel'); };
+						self.ok          = function () { $uibModalInstance.close (self.comment); };
 						self.pillars     	= self.comment.pillars.map (function (e) { return e; });
 						self.vcs 		   		= self.comment.valuedComponents.map (function (e) { return e.name; });
 						
@@ -318,7 +318,7 @@ angular.module ('comment')
 						self.submitForm = function(isValid) {
 							// check to make sure the form is completely valid
 							if (isValid) {
-								$modalInstance.close (self.comment);
+								$uibModalInstance.close (self.comment);
 							}
 						};
 
@@ -366,7 +366,7 @@ angular.module ('comment')
 // add a public comment
 //
 // -------------------------------------------------------------------------
-.directive ('addPublicComment', function ($modal, CommentModel, Upload, $timeout, _, $state) {
+.directive ('addPublicComment', function ($uibModal, CommentModel, Upload, $timeout, _, $state) {
 	return {
 		restrict: 'A',
 		scope: {
@@ -375,7 +375,7 @@ angular.module ('comment')
 		},
 		link : function(scope, element, attrs) {
 			element.on('click', function () {
-				$modal.open ({
+				$uibModal.open ({
 					animation: true,
 					templateUrl: 'modules/project-comments/client/views/public-comments/add.html',
 					controllerAs: 's',
@@ -386,7 +386,7 @@ angular.module ('comment')
 							return CommentModel.getNew ();
 						}
 					},
-					controller: function ($rootScope, $scope, $modalInstance, comment) {
+					controller: function ($rootScope, $scope, $uibModalInstance, comment) {
 						// console.log("Adding a comment.");
 						var s     = this;
 						s.step    = 1;
@@ -412,9 +412,9 @@ angular.module ('comment')
 						s.comment.removeFile = function(f) {
 							_.remove(s.fileList, f);
 						};
-						s.cancel  = function () { $modalInstance.dismiss ('cancel'); };
+						s.cancel  = function () { $uibModalInstance.dismiss ('cancel'); };
 						s.next    = function () { s.step++; };
-						s.ok      = function () { $modalInstance.close (s.comment); };
+						s.ok      = function () { $uibModalInstance.close (s.comment); };
 						s.submit  = function () {
 							// console.log("files:", s.fileList);
 							s.comment.inProgress = false;
@@ -497,7 +497,7 @@ angular.module ('comment')
 // add an open house thingamabob
 //
 // -------------------------------------------------------------------------
-.directive ('editOpenHouse', function ($modal) {
+.directive ('editOpenHouse', function ($uibModal) {
 	return {
 		restrict: 'A',
 		scope: {
@@ -513,13 +513,13 @@ angular.module ('comment')
 					scope.$apply();
 				}
 				else {
-					$modal.open ({
+					$uibModal.open ({
 						animation: true,
 						templateUrl: 'modules/project-comments/client/views/public-comments/open-house-edit.html',
 						controllerAs: 's',
 						size: 'md',
 						windowClass: 'public-comment-modal',
-						controller: function ($scope, $modalInstance) {
+						controller: function ($scope, $uibModalInstance) {
 							var s     = this;
 							s.period = scope.period;
 							s.project = scope.project;
@@ -531,12 +531,12 @@ angular.module ('comment')
 									description : ''
 								};
 							}
-							s.cancel  = function () { $modalInstance.dismiss ('cancel'); };
+							s.cancel  = function () { $uibModalInstance.dismiss ('cancel'); };
 							s.ok      = function () {
 								if (scope.mode === 'add') {
 									scope.period.openHouses.push (s.openHouse);
 								}
-								$modalInstance.close ();
+								$uibModalInstance.close ();
 							};
 						}
 					})
@@ -566,7 +566,7 @@ angular.module ('comment')
 // 		controllerAs: 'plist'
 // 	};
 // })
-// .directive ('editPeriodModal', ['$modal', function ($modal) {
+// .directive ('editPeriodModal', ['$uibModal', function ($uibModal) {
 // 	return {
 // 		restrict: 'A',
 // 		scope: {
@@ -576,7 +576,7 @@ angular.module ('comment')
 // 		link : function (scope, element, attrs) {
 // 			// console.log('my modal is running');
 // 			element.on ('click', function () {
-// 				var modalView = $modal.open ({
+// 				var modalView = $uibModal.open ({
 // 					animation: true,
 // 					templateUrl: 'modules/project-comments/client/views/period-edit.html',
 // 					controller: 'controllerEditPeriodModal',

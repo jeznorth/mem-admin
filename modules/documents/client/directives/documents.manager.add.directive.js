@@ -1,7 +1,7 @@
 'use strict';
 angular.module('documents')
 
-	.directive('documentMgrAddFolder', ['$rootScope', '$modal', '$log', '_', 'DocumentMgrService', 'AlertService', 'TreeModel', function ($rootScope, $modal, $log, _, DocumentMgrService, AlertService, TreeModel) {
+	.directive('documentMgrAddFolder', ['$rootScope', '$uibModal', '$log', '_', 'DocumentMgrService', 'AlertService', 'TreeModel', function ($rootScope, $uibModal, $log, _, DocumentMgrService, AlertService, TreeModel) {
 		return {
 			restrict: 'A',
 			scope: {
@@ -10,12 +10,12 @@ angular.module('documents')
 			},
 			link: function (scope, element, attrs) {
 				element.on('click', function () {
-					$modal.open({
+					$uibModal.open({
 						animation: true,
 						templateUrl: 'modules/documents/client/views/document-manager-add.html',
 						resolve: {},
 						controllerAs: 'addFolder',
-						controller: function ($scope, $modalInstance) {
+						controller: function ($scope, $uibModalInstance) {
 							var self = this;
 
 							$scope.project = scope.project;
@@ -28,18 +28,18 @@ angular.module('documents')
 							}
 
 							self.cancel = function () {
-								$modalInstance.dismiss('cancel');
+								$uibModalInstance.dismiss('cancel');
 							};
 
 							self.ok = function () {
 								DocumentMgrService.addDirectory($scope.project, $scope.node, self.entryText)
 									.then(
 										function (result) {
-											$modalInstance.close(result.data);
+											$uibModalInstance.close(result.data);
 										},
 										function (err) {
 											//$log.error('addDirectory error: ', JSON.stringify(err));
-											AlertService.error("Could not add folder: " + err.data.message);
+											AlertService.error("Could not add folder: " + err.data.message, 4000);
 										}
 									);
 							};
