@@ -1,6 +1,6 @@
 'use strict';
 angular.module('documents')
-  .directive('documentMgrRenameFolder', ['$rootScope', '$modal', '$log', '_', 'DocumentMgrService', 'AlertService', 'TreeModel', function ($rootScope, $modal, $log, _, DocumentMgrService, AlertService, TreeModel) {
+  .directive('documentMgrRenameFolder', ['$rootScope', '$uibModal', '$log', '_', 'DocumentMgrService', 'AlertService', 'TreeModel', function ($rootScope, $uibModal, $log, _, DocumentMgrService, AlertService, TreeModel) {
     return {
       restrict: 'A',
       scope: {
@@ -10,13 +10,13 @@ angular.module('documents')
       },
       link: function (scope, element, attrs) {
         element.on('click', function () {
-          $modal.open({
+          $uibModal.open({
             animation: true,
             size: 'lg',
             templateUrl: 'modules/documents/client/views/document-manager-add.html',
             resolve: {},
             controllerAs: 'addFolder',
-            controller: function ($scope, $modalInstance) {
+            controller: function ($scope, $uibModalInstance) {
               var self = this;
 
               $scope.project = scope.project;
@@ -25,11 +25,11 @@ angular.module('documents')
               self.entryText = '';
               self.title = "Rename Folder '" + $scope.node.model.folderObj.displayName + "'";
               if ($scope.node.model.name === 'ROOT') {
-                $modalInstance.dismiss('cancel');
+                $uibModalInstance.dismiss('cancel');
               }
 
               self.cancel = function () {
-                $modalInstance.dismiss('cancel');
+                $uibModalInstance.dismiss('cancel');
               };
 
               self.ok = function () {
@@ -39,16 +39,16 @@ angular.module('documents')
                 });
                 //If ${entryText} is a unique name for this directory, rename the folder, otherwise throw an error.
                 if (repeat) {
-                  AlertService.error(self.entryText + " already exists in this directory.");
+                  AlertService.error(self.entryText + " already exists in this directory.", 4000);
                 } else {
                   DocumentMgrService.renameDirectory($scope.project, $scope.node, self.entryText)
                   .then(
                     function (result) {
-                      $modalInstance.close(result.data);
+                      $uibModalInstance.close(result.data);
                     },
                     function (err) {
                       //$log.error('renameDirectory error: ', JSON.stringify(err));
-                      AlertService.error("Could not rename folder");
+                      AlertService.error("Could not rename folder", 4000);
                     }
                   );
                 }

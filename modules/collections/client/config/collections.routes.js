@@ -96,7 +96,7 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
         return CollectionModel.getModel($stateParams.collectionId);
       }
     },
-    controller: function($scope, $state, $modal, $location, NgTableParams, collection, project, CollectionModel, _) {
+    controller: function($scope, $state, $uibModal, $location, NgTableParams, collection, project, CollectionModel, _) {
       $scope.collection = collection;
       $scope.project = project;
 
@@ -107,18 +107,18 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
       $scope.linkedOtherDocuments = _.map(collection.otherDocuments, function(cd) { return cd.document; });
 
       $scope.showSuccess = function(msg, transitionCallback, title) {
-        var modalDocView = $modal.open({
+        var modalDocView = $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-success.html',
-          controller: function($scope, $state, $modalInstance, _) {
+          controller: function($scope, $state, $uibModalInstance, _) {
             var self = this;
             self.title = title || 'Success';
             self.msg = msg;
             self.ok = function() {
-              $modalInstance.close($scope.org);
+              $uibModalInstance.close($scope.org);
             };
             self.cancel = function() {
-              $modalInstance.dismiss('cancel');
+              $uibModalInstance.dismiss('cancel');
             };
           },
           controllerAs: 'self',
@@ -132,18 +132,18 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
       };
 
       $scope.showError = function(msg, errorList, transitionCallback, title) {
-        var modalDocView = $modal.open({
+        var modalDocView = $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-error.html',
-          controller: function($scope, $state, $modalInstance, _) {
+          controller: function($scope, $state, $uibModalInstance, _) {
             var self = this;
             self.title = title || 'An error has occurred';
             self.msg = msg;
             self.ok = function() {
-              $modalInstance.close($scope.org);
+              $uibModalInstance.close($scope.org);
             };
             self.cancel = function() {
-              $modalInstance.dismiss('cancel');
+              $uibModalInstance.dismiss('cancel');
             };
           },
           controllerAs: 'self',
@@ -157,20 +157,20 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
       };
 
       $scope.confirmMove = function(title, msg, moveFunc) {
-        var modalDocView = $modal.open({
+        var modalDocView = $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-confirm-generic.html',
-          controller: function($scope, $state, $modalInstance, _) {
+          controller: function($scope, $state, $uibModalInstance, _) {
             var self = this;
             self.title = title || 'Move document?';
             self.question = msg || 'Are you sure?';
             self.actionOK = 'Move';
             self.actionCancel = 'Cancel';
             self.ok = function() {
-              $modalInstance.close($scope.project);
+              $uibModalInstance.close($scope.project);
             };
             self.cancel = function() {
-              $modalInstance.dismiss('cancel');
+              $uibModalInstance.dismiss('cancel');
             };
           },
           controllerAs: 'self',
@@ -201,18 +201,18 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
       };
 
       $scope.delete = function() {
-        var modalView = $modal.open({
+        var modalView = $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-confirm-delete.html',
-          controller: function($scope, $state, $modalInstance) {
+          controller: function($scope, $state, $uibModalInstance) {
             var self = this;
             self.dialogTitle = "Delete Collection";
             self.name = $scope.collection.displayName;
             self.ok = function() {
-              $modalInstance.close($scope.collection);
+              $uibModalInstance.close($scope.collection);
             };
             self.cancel = function() {
-              $modalInstance.dismiss('cancel');
+              $uibModalInstance.dismiss('cancel');
             };
           },
           controllerAs: 'self',
@@ -345,20 +345,20 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
       };
 
       $scope.confirmPublishView = function(isPublishing) {
-        return $modal.open({
+        return $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-confirm-generic.html',
-          controller: function($scope, $state, $modalInstance, _) {
+          controller: function($scope, $state, $uibModalInstance, _) {
             var self = this;
             self.title = isPublishing ? 'Publish Collection?' : 'Unpublish Collection?';
             self.question = 'Are you sure you want to ' + (isPublishing ? 'publish "' : 'unpublish "') + $scope.collection.displayName + '"?';
             self.actionOK = isPublishing ? 'Publish' : 'Unpublish';
             self.actionCancel = 'Cancel';
             self.ok = function() {
-              $modalInstance.close($scope.project);
+              $uibModalInstance.close($scope.project);
             };
             self.cancel = function() {
-              $modalInstance.dismiss('cancel');
+              $uibModalInstance.dismiss('cancel');
             };
           },
           controllerAs: 'self',
@@ -408,7 +408,7 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
         return CollectionModel.getModel($stateParams.collectionId);
       }
     },
-    controller: function($scope, $state, $modal, $location, NgTableParams, collection, project, types, CollectionModel, _) {
+    controller: function($scope, $state, $uibModal, $location, NgTableParams, collection, project, types, CollectionModel, _) {
       $scope.collection = collection;
       $scope.project = project;
       $scope.types = types;
@@ -420,18 +420,18 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
       $scope.linkedOtherDocuments = _.map(collection.otherDocuments, function(cd) { return cd.document; });
 
       $scope.showSuccess = function(msg, transitionCallback, title) {
-        var modalDocView = $modal.open({
+        var modalDocView = $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-success.html',
-          controller: function($scope, $state, $modalInstance, _) {
+          controller: function($scope, $state, $uibModalInstance, _) {
             var self = this;
             self.title = title || 'Success';
             self.msg = msg;
             self.ok = function() {
-              $modalInstance.close($scope.org);
+              $uibModalInstance.close($scope.org);
             };
             self.cancel = function() {
-              $modalInstance.dismiss('cancel');
+              $uibModalInstance.dismiss('cancel');
             };
           },
           controllerAs: 'self',
@@ -445,18 +445,18 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
       };
 
       $scope.showError = function(msg, errorList, transitionCallback, title) {
-        var modalDocView = $modal.open({
+        var modalDocView = $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-error.html',
-          controller: function($scope, $state, $modalInstance, _) {
+          controller: function($scope, $state, $uibModalInstance, _) {
             var self = this;
             self.title = title || 'An error has occurred';
             self.msg = msg;
             self.ok = function() {
-              $modalInstance.close($scope.org);
+              $uibModalInstance.close($scope.org);
             };
             self.cancel = function() {
-              $modalInstance.dismiss('cancel');
+              $uibModalInstance.dismiss('cancel');
             };
           },
           controllerAs: 'self',
@@ -470,20 +470,20 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
       };
 
       $scope.confirmMove = function(title, msg, moveFunc) {
-        var modalDocView = $modal.open({
+        var modalDocView = $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-confirm-generic.html',
-          controller: function($scope, $state, $modalInstance, _) {
+          controller: function($scope, $state, $uibModalInstance, _) {
             var self = this;
             self.title = title || 'Move document?';
             self.question = msg || 'Are you sure?';
             self.actionOK = 'Move';
             self.actionCancel = 'Cancel';
             self.ok = function() {
-              $modalInstance.close($scope.project);
+              $uibModalInstance.close($scope.project);
             };
             self.cancel = function() {
-              $modalInstance.dismiss('cancel');
+              $uibModalInstance.dismiss('cancel');
             };
           },
           controllerAs: 'self',
@@ -631,18 +631,18 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
       };
 
       $scope.delete = function() {
-        var modalView = $modal.open({
+        var modalView = $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-confirm-delete.html',
-          controller: function($scope, $state, $modalInstance) {
+          controller: function($scope, $state, $uibModalInstance) {
             var self = this;
             self.dialogTitle = "Delete Collection";
             self.name = $scope.collection.displayName;
             self.ok = function() {
-              $modalInstance.close($scope.collection);
+              $uibModalInstance.close($scope.collection);
             };
             self.cancel = function() {
-              $modalInstance.dismiss('cancel');
+              $uibModalInstance.dismiss('cancel');
             };
           },
           controllerAs: 'self',
@@ -664,20 +664,20 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
       };
 
       $scope.confirmPublishView = function(isPublishing) {
-        return $modal.open({
+        return $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-confirm-generic.html',
-          controller: function($scope, $state, $modalInstance, _) {
+          controller: function($scope, $state, $uibModalInstance, _) {
             var self = this;
             self.title = isPublishing ? 'Publish Collection?' : 'Unpublish Collection?';
             self.question = 'Are you sure you want to ' + (isPublishing ? 'publish "' : 'unpublish "') + $scope.collection.displayName + '"?';
             self.actionOK = isPublishing ? 'Publish' : 'Unpublish';
             self.actionCancel = 'Cancel';
             self.ok = function() {
-              $modalInstance.close($scope.project);
+              $uibModalInstance.close($scope.project);
             };
             self.cancel = function() {
-              $modalInstance.dismiss('cancel');
+              $uibModalInstance.dismiss('cancel');
             };
           },
           controllerAs: 'self',

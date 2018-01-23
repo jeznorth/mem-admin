@@ -47,7 +47,7 @@ angular.module('users.admin.routes').config(['$stateProvider', function ($stateP
 			}
 		},
 		controllerAs: 'userEditControl',
-		controller: function ($scope, $state, $filter, $modal, Authentication, user) {
+		controller: function ($scope, $state, $filter, $uibModal, Authentication, user) {
 			$scope.user = user;
 			$scope.mode = 'add';
 			$scope.readonly = false;
@@ -83,7 +83,7 @@ angular.module('users.admin.routes').config(['$stateProvider', function ($stateP
 			}
 		},
 		controllerAs: 'userEditControl',
-		controller: function ($scope, $state, $filter, $modal, Authentication, user) {
+		controller: function ($scope, $state, $filter, $uibModal, Authentication, user) {
 			$scope.user = user;
 			$scope.mode = 'edit';
 			$scope.readonly = false;
@@ -119,7 +119,7 @@ angular.module('users.admin.routes').config(['$stateProvider', function ($stateP
 			}
 		},
 		controllerAs: 'userEditControl',
-		controller: function ($scope, $state, $filter, $modal, Authentication, user) {
+		controller: function ($scope, $state, $filter, $uibModal, Authentication, user) {
 			$scope.user = user;
 			$scope.mode = 'edit';
 			$scope.readonly = true;

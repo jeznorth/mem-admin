@@ -16,7 +16,7 @@ angular.module('groups.routes').config(['$stateProvider', function ($stateProvid
 						return ProjectGroupModel.forProject(project._id);
 					}
 				},
-				controller: function ($scope, $modal, $state, Authentication, NgTableParams, _, project, groups) {
+				controller: function ($scope, $uibModal, $state, Authentication, NgTableParams, _, project, groups) {
 					$scope.tableParams = new NgTableParams({count: 10}, {dataset: groups});
 					$scope.project = project;
 					$scope.authentication = Authentication;

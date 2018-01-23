@@ -2,13 +2,13 @@
 
 angular.module('project')
   // x-reorder-external-links-modal attribute of a button
-  .directive('reorderExternalLinksModal', ['$modal', '_', reorderExternalLinksModal])
+  .directive('reorderExternalLinksModal', ['$uibModal', '_', reorderExternalLinksModal])
   // x-reorder-collection-content element in the modal
   .directive('reorderExternalLinksContent', [reorderExternalLinks])
   .controller('externalLinksSortingController', externalLinksSortingController)
   ;
 
-function reorderExternalLinksModal($modal, _) {
+function reorderExternalLinksModal($uibModal, _) {
   return {
     restrict: 'A',
     scope: {
@@ -17,13 +17,13 @@ function reorderExternalLinksModal($modal, _) {
     },
     link: function (scope, element, attributes) {
       element.on('click', function () {
-        $modal.open({
+        $uibModal.open({
           animation: true,
           templateUrl: 'modules/projects/client/views/project-partials/reorder-external-links-modal.html',
           controllerAs: 'vmm',
           size: 'lg',
           windowClass: 'doc-sort-order-modal fs-modal',
-          controller: function ($modalInstance) {
+          controller: function ($uibModalInstance) {
             var vmm = this;
             // shallow copy of original list of links. We can sort this clone without affecting the original
             vmm.list = _.clone(scope.list);
@@ -31,11 +31,11 @@ function reorderExternalLinksModal($modal, _) {
             vmm.list.sort(function (link1, link2) { return link1.order - link2.order; });
 
             vmm.cancel = function () {
-              $modalInstance.dismiss('cancel');
+              $uibModalInstance.dismiss('cancel');
             };
 
             vmm.ok = function () {
-              $modalInstance.close(vmm.list);
+              $uibModalInstance.close(vmm.list);
             };
           }
         }).result

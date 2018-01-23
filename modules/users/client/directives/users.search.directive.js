@@ -18,7 +18,7 @@ angular.module('users')
 		};
 	})
 
-	.directive('userSearchChooser', function ($rootScope, $filter, $modal, NgTableParams, ProjectGroupModel, UserModel, _) {
+	.directive('userSearchChooser', function ($rootScope, $filter, $uibModal, NgTableParams, ProjectGroupModel, UserModel, _) {
 		return {
 			restrict: 'A',
 			scope: {
@@ -30,7 +30,7 @@ angular.module('users')
 			},
 			link: function (scope, element, attrs) {
 				element.on('click', function () {
-					$modal.open({
+					$uibModal.open({
 						animation: true,
 						templateUrl: 'modules/users/client/views/user-search-chooser.html',
 						size: 'lg',
@@ -51,7 +51,7 @@ angular.module('users')
 							}
 						},
 						controllerAs: 's',
-						controller: function ($filter,$scope, $modalInstance, projectGroups) {
+						controller: function ($filter,$scope, $uibModalInstance, projectGroups) {
 							var s = this;
 							s.title = scope.title;
 							$scope.singleselectmode = scope.singleselectmode;
@@ -118,7 +118,7 @@ angular.module('users')
 							};
 
 							s.cancel = function () {
-								$modalInstance.dismiss('cancel');
+								$uibModalInstance.dismiss('cancel');
 							};
 
 							s.ok = function () {
@@ -129,7 +129,7 @@ angular.module('users')
 										selected.push(item);
 								});
 
-								$modalInstance.close(selected);
+								$uibModalInstance.close(selected);
 							};
 
 							s.search = function () {

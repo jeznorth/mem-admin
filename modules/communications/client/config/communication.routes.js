@@ -20,7 +20,7 @@ angular.module('communications.routes').config(['$stateProvider', function ($sta
 						return CommunicationModel.forProject(project._id);
 					}
 				},
-				controller: function ($scope, $modal, $state, Authentication, NgTableParams, _, project, communications) {
+				controller: function ($scope, $uibModal, $state, Authentication, NgTableParams, _, project, communications) {
 					// let's just filter it out here...
 					var contentCommunications = _.filter(communications, function (o) {
 						return o.type === 'Content';

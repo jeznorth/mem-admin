@@ -175,7 +175,7 @@ angular.module('prototype').config(['$stateProvider', '_', function ($stateProvi
 		url: '/project-main',
 		resolve: {},
 		templateUrl: 'modules/prototype/client/views/project-main.html',
-		controller: function ($modal, $window, $timeout, $scope, NgTableParams, Application, Authentication, PrototypeModel, agencies, topics, projects, cedetails, authorizations, phases, inspections, actions, conditions, documents, project, uiGmapGoogleMapApi) {
+		controller: function ($uibModal, $window, $timeout, $scope, NgTableParams, Application, Authentication, PrototypeModel, agencies, topics, projects, cedetails, authorizations, phases, inspections, actions, conditions, documents, project, uiGmapGoogleMapApi) {
 			$scope.authentication = Authentication;
 			$scope.application = Application;
 
@@ -189,7 +189,7 @@ angular.module('prototype').config(['$stateProvider', '_', function ($stateProvi
 		url: '/documents',
 		resolve: {},
 		templateUrl: 'modules/prototype/client/views/documents.html',
-		controller: function ($modal, $window, $timeout, $scope, NgTableParams, Application, Authentication, PrototypeModel, agencies, topics, projects, cedetails, authorizations, phases, inspections, actions, conditions, documents, project, uiGmapGoogleMapApi) {
+		controller: function ($uibModal, $window, $timeout, $scope, NgTableParams, Application, Authentication, PrototypeModel, agencies, topics, projects, cedetails, authorizations, phases, inspections, actions, conditions, documents, project, uiGmapGoogleMapApi) {
 			$scope.authentication = Authentication;
 			$scope.application = Application;
 

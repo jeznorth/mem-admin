@@ -101,7 +101,7 @@ angular.module('irs').config(['$stateProvider', function ($stateProvider) {
 					});
 				}
 			},
-			controller: function (Utils, ProjectConditionModel, $scope, $state, project, ir, IrModel, report, InspectionReportModel, ArtifactModel, $modal, _, EnforcementModel, ENFORCEMENT_ACTIONS, ENFORCEMENT_STATUS) {
+			controller: function (Utils, ProjectConditionModel, $scope, $state, project, ir, IrModel, report, InspectionReportModel, ArtifactModel, $uibModal, _, EnforcementModel, ENFORCEMENT_ACTIONS, ENFORCEMENT_STATUS) {
 				$scope.ir = ir;
 				$scope.report = report;
 				$scope.project = project;
@@ -141,7 +141,7 @@ angular.module('irs').config(['$stateProvider', function ($stateProvider) {
 					});
 				};
 				$scope.openAddTopic = function() {
-					var modalDocView = $modal.open({
+					var modalDocView = $uibModal.open({
 						animation: true,
 						templateUrl: 'modules/artifacts/client/views/artifact-linker.html',
 						controller: 'controllerAddArtifactModal',
@@ -171,7 +171,7 @@ angular.module('irs').config(['$stateProvider', function ($stateProvider) {
 					});
 				};
 				$scope.openAddEnforcementAction = function (obj) {
-					var modalDocView = $modal.open({
+					var modalDocView = $uibModal.open({
 						animation: true,
 						templateUrl: 'modules/project-irs/client/views/ir-add-action.html',
 						controller: 'controllerAddEditEnforcementActionModal',
@@ -322,7 +322,7 @@ angular.module('irs').config(['$stateProvider', function ($stateProvider) {
 					});
 				}
 			},
-			controller: function (Utils, ProjectConditionModel, $scope, $state, ir, project, IrModel, ArtifactModel, $modal, _, ENFORCEMENT_ACTIONS, ENFORCEMENT_STATUS, EnforcementModel) {
+			controller: function (Utils, ProjectConditionModel, $scope, $state, ir, project, IrModel, ArtifactModel, $uibModal, _, ENFORCEMENT_ACTIONS, ENFORCEMENT_STATUS, EnforcementModel) {
 				$scope.ir = ir;
 				$scope.project = project;
 				$scope.canDelete = ir.userCan.delete;
@@ -414,7 +414,7 @@ angular.module('irs').config(['$stateProvider', function ($stateProvider) {
 					});
 				};
 				$scope.openAddTopic = function() {
-					var modalDocView = $modal.open({
+					var modalDocView = $uibModal.open({
 						animation: true,
 						templateUrl: 'modules/artifacts/client/views/artifact-linker.html',
 						controller: 'controllerAddArtifactModal',
@@ -446,7 +446,7 @@ angular.module('irs').config(['$stateProvider', function ($stateProvider) {
 					});
 				};
 				$scope.openAddEnforcementAction = function (obj) {
-					var modalDocView = $modal.open({
+					var modalDocView = $uibModal.open({
 						animation: true,
 						templateUrl: 'modules/project-irs/client/views/ir-add-action.html',
 						controller: 'controllerAddEditEnforcementActionModal',

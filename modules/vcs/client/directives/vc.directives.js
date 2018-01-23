@@ -20,7 +20,7 @@ angular.module ('vcs')
 // directive for adding or editing a vc
 //
 // -------------------------------------------------------------------------
-.directive ('editVcModal', ['$modal','$rootScope', function ($modal, $rootScope) {
+.directive ('editVcModal', ['$uibModal','$rootScope', function ($uibModal, $rootScope) {
 	return {
 		restrict: 'A',
 		scope: {
@@ -31,7 +31,7 @@ angular.module ('vcs')
 		link : function (scope, element, attrs) {
 			// console.log('editVcModal is running');
 			element.on ('click', function () {
-				var modalView = $modal.open ({
+				var modalView = $uibModal.open ({
 					animation    : true,
 					templateUrl  : 'modules/vcs/client/views/vc-edit.html',
 					controller   : 'controllerEditVcModal',
@@ -54,7 +54,7 @@ angular.module ('vcs')
 // so, essentially an artifact chooser
 //
 // -------------------------------------------------------------------------
-.directive ('vcLinker', function ($modal, VcModel, _) {
+.directive ('vcLinker', function ($uibModal, VcModel, _) {
 	return {
 		restrict: 'A',
 		scope: {
@@ -65,17 +65,17 @@ angular.module ('vcs')
 		},
 		link : function(scope, element, attrs) {
 			element.on('click', function () {
-				$modal.open ({
+				$uibModal.open ({
 					animation: true,
 					templateUrl: 'modules/vcs/client/views/vc-picker.html',
 					controllerAs: 's',
 					size: 'md',
 					windowClass: 'vc-chooser-view',
-					controller: function ($scope, $modalInstance) {
+					controller: function ($scope, $uibModalInstance) {
 						var s = this;
 						s.selected = scope.vclist;
 						s.vcs = scope.vcs; // The list of all current vcs on the project
-						s.cancel = function () { $modalInstance.dismiss ('cancel'); };
+						s.cancel = function () { $uibModalInstance.dismiss ('cancel'); };
 						s.findById = function (id) {
 							for (var i = 0; i < s.selected.length; i++) {
 						        if (s.selected[i]._id === id) {
@@ -87,7 +87,7 @@ angular.module ('vcs')
 						s.ok = function () {
 							// finish up and test.. maybe remove/create new directive
 							scope.vc.subComponents = s.selected;
-							$modalInstance.close (s.selected);
+							$uibModalInstance.close (s.selected);
 						};
 						s.dealwith = function (vc) {
 							var i = s.findById (vc._id);
@@ -108,7 +108,7 @@ angular.module ('vcs')
 		}
 	};
 })
-.directive ('vcChooser', function ($modal, VcModel, _) {
+.directive ('vcChooser', function ($uibModal, VcModel, _) {
 	return {
 		restrict: 'A',
 		scope: {
@@ -119,7 +119,7 @@ angular.module ('vcs')
 		},
 		link : function(scope, element, attrs) {
 			element.on('click', function () {
-				$modal.open ({
+				$uibModal.open ({
 					animation: true,
 					templateUrl: 'modules/vcs/client/views/vc-chooser.html',
 					controllerAs: 's',
@@ -130,7 +130,7 @@ angular.module ('vcs')
 							return VcModel.forProject (scope.project._id);
 						}
 					},
-					controller: function ($scope, $modalInstance, vcs) {
+					controller: function ($scope, $uibModalInstance, vcs) {
 						var s = this;
 						s.selected = scope.current;
 						s.vcs = vcs;
@@ -138,7 +138,7 @@ angular.module ('vcs')
 							prev[next._id] = next;
 							return prev;
 						}, {});
-						s.cancel = function () { $modalInstance.dismiss ('cancel'); };
+						s.cancel = function () { $uibModalInstance.dismiss ('cancel'); };
 						s.ok = function () {
 							var pills = {};
 							var tops = [];
@@ -156,7 +156,7 @@ angular.module ('vcs')
 							//console.log ('pills = ', JSON.stringify(pills));
 							//console.log ('scope.pillars = ', JSON.stringify(scope.pillars));
 							//console.log ('scope.topics = ', JSON.stringify(scope.topics));
-							$modalInstance.close (s.selected);
+							$uibModalInstance.close (s.selected);
 						};
 						s.dealwith = function (id) {
 							var i = s.selected.indexOf (id);
