@@ -135,10 +135,16 @@
                 required></select>
             </div>
             <div class="form-group" x-show-errors>
-              <label class="control-label" for="commodity">Commodities</label>
-              <input class="form-control" id="commodity" name="commodity" type="text" ng-model="project.commodity">
-              <div ng-messages="projectForm.commodity.$error" role="alert">
-                <p class="help-block error-text" ng-message="required">Commodity is required.</p>
+              <ui-select class="form-control" multiple id="commodities" name="commodities"
+              ng-model="project.commodities" ng-required="true"
+              close-on-select="false">
+              <ui-select-match placeholder="Enter a commodity">{{$item}}</ui-select-match>
+              <ui-select-choices repeat="c in commoditiesList | filter: $select.search">
+                <div ng-bind-html="c | highlight: $select.search"></div>
+              </ui-select-choices>
+              <ui-select-no-choice></ui-select-no-choice></ui-select>
+              <div ng-messages="projectForm.commodities.$error" role="alert">
+                <p class="help-block error-text" ng-message="required">Commodity/ies is required.</p>
               </div>
             </div>
           </fieldset>
@@ -382,7 +388,6 @@
           </fieldset>
         </div>
 
-<<<<<<< .mine
         <div class="form-footer clearfix">
           <div class="form-footer__buttons">
             <button class="btn btn-default"
@@ -407,100 +412,8 @@
             <button class="btn btn-primary" type="submit">
               Publish
             </button>
-
-
-
-=======
-    <!-- PROJECT INFORMATION TAB -->
-    <div class="tab-pane active" ng-show="form.curTab === 'Project Details'" ng-form="detailsForm">
-        <div class="form-group" x-show-errors>
-          <label class="control-label" for="name">Project Name<em class="required">(Required)</em></label>
-          <input class="form-control" title="Project Name" id="name" name="projectname"
-            ng-model="project.name"
-            ng-change="onChangeProjectName()"
-            required />
         </div>
-        <div class="form-group" x-show-errors>
-          <label class="control-label" for="shortDesc">Project Description<em class="required">(Required)</em></label>
-          <textarea title="Project Description" id="shortDesc" name="projectdesc" rows="5"
-            ng-model="project.description"
-            ui-tinymce="tinymceOptions"
-            required>
-          </textarea>
-        </div>
-        <div class="row">
-          <div class="col-md-4">
-            <div class="form-group" x-show-errors>
-              <label class="control-label" for="type">Type<em class="required">(Required)</em></label>
-              <select class="form-control" title="Project Type" id="type" name="type"
-                ng-model="project.type"
-                ng-change="onChangeType()"
-                ng-options="type for type in types"
-                required></select>
-            </div>
->>>>>>> .theirs
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-8 form-group" x-show-errors>
-            <label for="commodities" class="control-label">Commodity/ies</label>
-            <ui-select class="form-control" multiple id="commodities" name="commodities"
-              ng-model="project.commodities" ng-required="true"
-              close-on-select="false">
-              <ui-select-match placeholder="Enter a commodity">{{$item}}</ui-select-match>
-              <ui-select-choices repeat="c in commoditiesList | filter: $select.search">
-                <div ng-bind-html="c | highlight: $select.search"></div>
-              </ui-select-choices>
-              <ui-select-no-choice></ui-select-no-choice>
-            </ui-select>
-            <div ng-messages="projectForm.commodities.$error" role="alert">
-              <p class="help-block error-text" ng-message="required">Commodity/ies is required.</p>
-            </div>
-          </div>
-          <div class="col-md-4 form-group" x-show-errors>
-            <label for="tailingsImpoundments" class="control-label">Tailings Impoundments</label>
-            <input id="tailingsImpoundments" name="tailingsImpoundments" type="text" class="form-control" ng-model="project.tailingsImpoundments">
-            <div ng-messages="projectForm.tailingsImpoundments.$error" role="alert">
-              <p class="help-block error-text" ng-message="required">Tailings Impoundments is required.</p>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-4 form-group" x-show-errors>
-            <label class="control-label" for="region">Region<em class="required">(Required)</em></label>
-            <select class="form-control" if="region" id="region" name="region"
-              ng-model='project.region'
-              ng-options="key as value for (key, value) in regions" required></select>
-          </div>
-          <div class="lat-input col-sm-3 col-md-2 form-group" x-show-errors>
-            <label class="control-label">Latitude<em class="required">(Required)</em></label>
-            <input class="form-control" id="latitude" name="latitude" type="number" step="any"
-              ng-model="project.lat" required />
-          </div>
-          <div class="long-input col-sm-3 col-md-2 form-group" x-show-errors>
-            <label class="control-label">Longitude<em class="required">(Required)</em></label>
-            <input class="form-control" id="longitude" name="longitude" type="number" step="any"
-              ng-model="project.lon" required />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12 form-group" x-show-errors>
-            <label class="control-label" for="epicProjects">Related EPIC Projects</label>
-            <ui-select class="form-control" multiple id="epicProjects" name="epicProjects"
-              ng-model="project.epicProjectCodes"
-              close-on-select="false">
-              <ui-select-match placeholder="Enter a project name">{{$item.name}}</ui-select-match>
-              <ui-select-choices repeat="p.code as p in epicProjectsList | filter: {name: $select.search}">
-                <div ng-bind-html="p.name | highlight: $select.search"></div>
-              </ui-select-choices>
-              <ui-select-no-choice>EPIC projects are currently unavailable.</ui-select-no-choice>
-            </ui-select>
-          </div>
-        </div>
-    </div>
-
       </div>
     </div>
   </div>
-
 </form>
