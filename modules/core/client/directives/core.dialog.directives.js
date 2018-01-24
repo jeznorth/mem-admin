@@ -13,7 +13,7 @@ angular.module('core')
         onCancel: '=',
         okArgs: '='
       },
-      link: function (scope, element, attrs) {
+      link: function (scope, element) {
         element.on('click', function () {
           ConfirmService.confirmDialog(scope);
         });
@@ -24,8 +24,8 @@ angular.module('core')
     var service = this;
     service.confirmDialog = function(scope) {
 
-      return new Promise(function(fulfill, reject) {
-        var modal = $uibModal.open({
+      return new Promise(function(/* fulfill, reject */) {
+        $uibModal.open({
           animation: true,
           templateUrl: 'modules/core/client/views/dialogs/confirm.html',
           resolve: {},
@@ -47,7 +47,7 @@ angular.module('core')
             self.cancel = function () {
               if (scope.onCancel) {
                 scope.onCancel()
-                  .then(function (result) {
+                  .then(function (/* result */) {
                     $uibModalInstance.dismiss('cancel');
                   }, function (err) {
                     self.errorMsg = err.message;
@@ -84,5 +84,5 @@ angular.module('core')
       });
     };
 
-  }])
-;
+  }]);
+

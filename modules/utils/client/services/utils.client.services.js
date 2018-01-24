@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('utils')
-    .service('Utils', serviceUtils);
+  .service('Utils', serviceUtils);
 // -----------------------------------------------------------------------------------
 //
 // Service: Util Services
@@ -10,25 +10,16 @@ angular.module('utils')
 serviceUtils.$inject = ['$http', '$uibModal'];
 /* @ngInject */
 function serviceUtils($http, $uibModal) {
-  var getQuickLinks = function(req) {
+  var getQuickLinks = function(/* req */) {
     return $http({method:'GET',url: 'api/project'});
   };
-  // var getProjectMilestones = function(req) {
-  //  return $http({method:'GET',url: API + '/v1/projectMilestones'});
-  // };
-  var getCommonLayers = function(req) {
+  var getCommonLayers = function(/* req */) {
     return [];
   };
-  var getResearchFocus = function(req) {
+  var getResearchFocus = function(/* req */) {
     return [];
   };
-//    var getResearchResults = function(req) {
-  //  return $http({method:'GET',url: API + '/v1/research/' + req.term });
-  // };
-  // var getProjectResearchDetail = function(req) {
-  //  return $http({method:'GET',url: API + '/v1/researchDetail/' + req.seed + '/' + req.term });
-  // }
-  var getRoles = function(req) {
+  var getRoles = function(/* req */) {
     return $http({method:'GET',url: 'api/roles' });
   };
 
@@ -77,28 +68,28 @@ function serviceUtils($http, $uibModal) {
     return modal.result;
   };
 
-  var getEpicProjects = function(req) {
+  var getEpicProjects = function(/* req */) {
     var hostnameEPIC;
 
     switch (window.location.hostname) {
-      case 'localhost':
-        // Local
-        hostnameEPIC = 'http://localhost:3000';
-        break;
+    case 'localhost':
+      // Local
+      hostnameEPIC = 'http://localhost:3000';
+      break;
 
-      case 'mem-mmt-dev.pathfinder.gov.bc.ca':
-        // Dev
-        hostnameEPIC = 'https://esm-master.pathfinder.gov.bc.ca';
-        break;
+    case 'mem-mmt-dev.pathfinder.gov.bc.ca':
+      // Dev
+      hostnameEPIC = 'https://esm-master.pathfinder.gov.bc.ca';
+      break;
 
-      case 'mem-mmt-test.pathfinder.gov.bc.ca':
-        // Test
-        hostnameEPIC = 'https://test.projects.eao.gov.bc.ca';
-        break;
+    case 'mem-mmt-test.pathfinder.gov.bc.ca':
+      // Test
+      hostnameEPIC = 'https://test.projects.eao.gov.bc.ca';
+      break;
 
-      default:
-        // Prod
-        hostnameEPIC = 'https://projects.eao.gov.bc.ca';
+    default:
+      // Prod
+      hostnameEPIC = 'https://projects.eao.gov.bc.ca';
     }
 
     return $http({ method:'GET', url: hostnameEPIC + '/api/projects/picklist/ext' });

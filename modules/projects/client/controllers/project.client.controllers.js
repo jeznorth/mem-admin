@@ -3,14 +3,11 @@
 angular.module('project')
   // General
   .controller('controllerModalProjectSchedule', controllerModalProjectSchedule)
-
   .controller('controllerProjectVC', controllerProjectVC)
   .controller('controllerProjectVCEntry', controllerProjectVCEntry)
-
   .controller('controllerProjectEntry', controllerProjectEntry)
   .controller('controllerModalProjectImport', controllerModalProjectImport)
   .controller('controllerProjectPublicContent', controllerProjectPublicContent)
-
   .controller('controllerProjectActivities', controllerProjectActivities);
 
 // -----------------------------------------------------------------------------------
@@ -20,10 +17,8 @@ angular.module('project')
 // -----------------------------------------------------------------------------------
 controllerModalProjectSchedule.$inject = ['$uibModalInstance', 'PhaseModel', '_', 'rProject'];
 /* @ngInject */
-function controllerModalProjectSchedule($uibModalInstance,  PhaseModel, _, rProject) {
+function controllerModalProjectSchedule($uibModalInstance, PhaseModel, _, rProject) {
   var projSched = this;
-
-  var savedOriginal = angular.copy(rProject.phases);
   projSched.phases = rProject.phases;
 
   projSched.cancel = function () { $uibModalInstance.dismiss('cancel'); };
@@ -31,9 +26,8 @@ function controllerModalProjectSchedule($uibModalInstance,  PhaseModel, _, rProj
     // save each phase.
     _.each(projSched.phases, function(item) {
       PhaseModel.setModel(item);
-      PhaseModel.saveModel().then( function(res) {
-        // console.log('saved');
-      }).catch( function(err) {
+      PhaseModel.saveModel().then( function(/* res */) {
+      }).catch( function(/* err */) {
         $uibModalInstance.dismiss('cancel');
       });
     });
@@ -48,23 +42,23 @@ function controllerModalProjectSchedule($uibModalInstance,  PhaseModel, _, rProj
 controllerProjectVC.$inject = ['$scope', 'rProjectVC', '_', '$uibModalInstance', 'VCModel'];
 /* @ngInject */
 function controllerProjectVC($scope, rProjectVC, _, $uibModalInstance, sVCModel) {
-    var projectVC = this;
+  var projectVC = this;
 
-    projectVC.roles = ['admin', 'project-team', 'working-group', 'first-nations', 'consultant'];
-    projectVC.vc = rProjectVC;
+  projectVC.roles = ['admin', 'project-team', 'working-group', 'first-nations', 'consultant'];
+  projectVC.vc = rProjectVC;
 
-    // Set current model for VC
-    sVCModel.setModel(rProjectVC);
+  // Set current model for VC
+  sVCModel.setModel(rProjectVC);
 
-    sVCModel.getCollection().then(function(data){
-        projectVC.valuecomponents = data;
-    });
+  sVCModel.getCollection().then(function(data){
+    projectVC.valuecomponents = data;
+  });
 
-    // on save, pass complete permission structure to the server
-    projectVC.ok = function () {
-        $uibModalInstance.close();
-    };
-    projectVC.cancel = function () { $uibModalInstance.dismiss('cancel'); };
+  // on save, pass complete permission structure to the server
+  projectVC.ok = function () {
+    $uibModalInstance.close();
+  };
+  projectVC.cancel = function () { $uibModalInstance.dismiss('cancel'); };
 
 }
 // -----------------------------------------------------------------------------------
@@ -93,7 +87,7 @@ function controllerProjectVCEntry(rProjectVCEntry, _, $uibModalInstance) {
 // CONTROLLER: Project Entry Tombstone
 //
 // -----------------------------------------------------------------------------------
-controllerModalProjectImport.$inject = ['Upload', '$uibModalInstance', '$timeout', '$scope', '$state', 'Project',  'ProjectModel', 'rProject', 'REGIONS', 'PROJECT_TYPES', '_', 'ENV'];
+controllerModalProjectImport.$inject = ['Upload', '$uibModalInstance', '$timeout', '$scope', '$state', 'Project', 'ProjectModel', 'rProject', 'REGIONS', 'PROJECT_TYPES', '_', 'ENV'];
 /* @ngInject */
 function controllerModalProjectImport(Upload, $uibModalInstance, $timeout, $scope, $state, sProject, ProjectModel, rProject, REGIONS, PROJECT_TYPES, _, ENV) {
   var projectImport = this;
@@ -107,7 +101,7 @@ function controllerModalProjectImport(Upload, $uibModalInstance, $timeout, $scop
   $scope.$watch('files', function (newValue) {
     if (newValue) {
       projectImport.inProgress = false;
-      _.each( newValue, function(file, idx) {
+      _.each( newValue, function(file) {
         projectImport.fileList.push(file);
       });
     }
@@ -117,7 +111,7 @@ function controllerModalProjectImport(Upload, $uibModalInstance, $timeout, $scop
     $uibModalInstance.close();
   });
 
-  $scope.$on('importUploadStart', function(event) {
+  $scope.$on('importUploadStart', function(/* event */) {
     projectImport.upload();
     $uibModalInstance.dismiss();
   });
@@ -136,7 +130,6 @@ function controllerModalProjectImport(Upload, $uibModalInstance, $timeout, $scop
 
   // Standard save make sure documents are uploaded before save.
   projectImport.upload = function() {
-    // console.log("Got file:",projectImport.fileList);
     var docCount = projectImport.fileList.length;
     projectImport.fileList.forEach(function (item) {
       // Check file type
@@ -145,23 +138,17 @@ function controllerModalProjectImport(Upload, $uibModalInstance, $timeout, $scop
         file: item
       });
 
-      upload.then(function (response) {
+      upload.then(function (/* response */) {
         $timeout(function () {
-          //console.log('filedata', response.data);
           // // when the last file is finished, send complete event.
           if (--docCount === 0) {
             // emit to parent.
             $scope.$emit('importUploadComplete');
           }
-          // console.log("we're done with ",response);
           item.processingComplete = true;
         });
-      }, function (response) {
-        // if (response.status > 0) {
-        //  projectImport.errorMsg = response.status + ': ' + response.data;
-        // } else {
-        //  _.remove($scope.files, file);
-        // }
+      }, function (/* response */) {
+        // swallow rejected promise error
       }, function (evt) {
         item.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
       });
@@ -207,12 +194,12 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
   }
   if ($scope.project.primaryContact && !_.isObject ($scope.project.primaryContact)) {
     UserModel.me ($scope.project.primaryContact)
-    .then (function (userrecord) {
-      $scope.project.primaryContact = userrecord;
-    })
-    .catch (function (err) {
-      console.error ('Error getting user record:');
-    });
+      .then (function (userrecord) {
+        $scope.project.primaryContact = userrecord;
+      })
+      .catch (function (/* err */) {
+        // swallow rejected promise error
+      });
   }
 
   if ($stateParams.projectid === 'new') {
@@ -263,7 +250,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
   }
 
   $scope.addOwnershipOrganization = function (data) {
-    if (!data) return;
+    if (!data) {return;}
 
     // Add this to the list if it's not already added.
     var found = _.find($scope.project.ownershipData, function (org) {
@@ -282,7 +269,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     var modalDocView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-confirm-generic.html',
-      controller: function($scope, $state, $uibModalInstance, _) {
+      controller: function($scope, $state, $uibModalInstance) {
         var self = this;
         self.title = 'Remove '+ data.organization.name;
         self.question = 'Are you want to remove the ownership from this project?';
@@ -301,19 +288,18 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
       windowClass: 'modal-alert',
       backdropClass: 'modal-alert-backdrop'
     });
-    modalDocView.result.then(function (res) {
-      var index = null;
-      var found = _.find($scope.project.ownershipData, function (org, idx) {
-          if (org.organization._id === data.organization._id) {
-            index = idx; return true;
-          }
+    modalDocView.result.then(function (/* res */) {
+      var found = _.find($scope.project.ownershipData, function (org) {
+        if (org.organization._id === data.organization._id) {
+          return true;
+        }
       });
       if (!found) {
         // We already added this to the list, error.
         AlertService.error('Could not delete the organization.', 4000);
       } else {
         _.remove($scope.project.ownershipData, {
-            organization: data.organization
+          organization: data.organization
         });
       }
     });
@@ -363,20 +349,20 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
 
     if (ProjectModel.modelIsNew) {
       ProjectModel.add ($scope.project)
-      .then( function(data) {
-        $state.go('p.detail', {projectid: data.code}, {reload: true});
-      })
-      .catch (function (err) {
-        console.error ('error = ', err);
-      });
+        .then( function(data) {
+          $state.go('p.detail', {projectid: data.code}, {reload: true});
+        })
+        .catch (function (/* err */) {
+          // swallow rejected promise error
+        });
     } else {
       ProjectModel.saveModel($scope.project)
-      .then( function(data) {
-        $state.go('p.detail', {projectid: data.code}, {reload: true});
-      })
-      .catch (function (err) {
-        console.error ('error = ', err);
-      });
+        .then( function(data) {
+          $state.go('p.detail', {projectid: data.code}, {reload: true});
+        })
+        .catch (function (/* err */) {
+          // swallow rejected promise error
+        });
     }
   };
 
@@ -391,7 +377,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     var modalDocView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-confirm-generic.html',
-      controller: function($scope, $state, $uibModalInstance, _) {
+      controller: function($scope, $state, $uibModalInstance) {
         var self = this;
         self.title = title || "thetitle";
         self.question = msg || "the message?";
@@ -411,7 +397,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
       backdropClass: 'modal-alert-backdrop'
     });
     // do not care how this modal is closed, just go to the desired location...
-    modalDocView.result.then(function (res) {
+    modalDocView.result.then(function (/* res */) {
       $state.go('p.detail', {}, {reload: true});
     });
   };
@@ -428,7 +414,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     var modalDocView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-confirm-generic.html',
-      controller: function($scope, $state, $uibModalInstance, _) {
+      controller: function($scope, $state, $uibModalInstance) {
         var self = this;
         self.title = title || "thetitle";
         self.question = msg || "the message?";
@@ -448,29 +434,27 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
       backdropClass: 'modal-alert-backdrop'
     });
     // do not care how this modal is closed, just go to the desired location...
-    modalDocView.result.then(function (res) {
+    modalDocView.result.then(function (/* res */) {
       // add some default fields
       $scope.project.subtitle = $scope.project.name ? $scope.project.name + ' Overview' : 'Overview';
       $scope.project.content = PROJECT_CONTENT_DEFAULTS;
       setContentHtml($scope.project.content, 'Mines', 'Intro', $scope.project.description);
 
-      // console.log("Submitting project.");
       ProjectModel.add ($scope.project)
-      .then (function (data) {
-        return ProjectModel.submit(data);
-      })
-      .then( function (p) {
-        $scope.project = p;
-        return ProjectModel.publishProject(p);
-        // $state.go('p.detail', {projectid: p.code});
-      })
-      .then( function (p) {
-        $scope.project = p;
-        $state.go('p.detail', {projectid: p.code}, {reload: true});
-      })
-      .catch (function (err) {
-        console.error ('error = ', err);
-      });
+        .then (function (data) {
+          return ProjectModel.submit(data);
+        })
+        .then( function (p) {
+          $scope.project = p;
+          return ProjectModel.publishProject(p);
+        })
+        .then( function (p) {
+          $scope.project = p;
+          $state.go('p.detail', {projectid: p.code}, {reload: true});
+        })
+        .catch (function (/* err */) {
+          // swallow rejected promise error
+        });
     });
   };
 
@@ -478,7 +462,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     var modalDocView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-success.html',
-      controller: function($scope, $state, $uibModalInstance, _) {
+      controller: function($scope, $state, $uibModalInstance) {
         var self = this;
         self.title = title || 'Success';
         self.msg = msg;
@@ -496,14 +480,14 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
       backdropClass: 'modal-alert-backdrop'
     });
     // do not care how this modal is closed, just go to the desired location...
-    modalDocView.result.then(function (res) {transitionCallback(); }, function (err) { transitionCallback(); });
+    modalDocView.result.then(function (/* res */) {transitionCallback(); }, function (/* err */) { transitionCallback(); });
   };
 
   $scope.showError = function(msg, errorList, transitionCallback, title) {
     var modalDocView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-error.html',
-      controller: function($scope, $state, $uibModalInstance, _) {
+      controller: function($scope, $state, $uibModalInstance) {
         var self = this;
         self.title = title || 'An error has occurred';
         self.msg = msg;
@@ -521,7 +505,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
       backdropClass: 'modal-alert-backdrop'
     });
     // do not care how this modal is closed, just go to the desired location...
-    modalDocView.result.then(function (res) {transitionCallback(); }, function (err) { transitionCallback(); });
+    modalDocView.result.then(function (/* res */) {transitionCallback(); }, function (/* err */) { transitionCallback(); });
   };
 
   var goToList = function() {
@@ -538,7 +522,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     var modalDocView = $uibModal.open({
       animation: true,
       templateUrl: 'modules/utils/client/views/partials/modal-confirm-delete.html',
-      controller: function($scope, $state, $uibModalInstance, _) {
+      controller: function($scope, $state, $uibModalInstance) {
         var self = this;
         self.dialogTitle = "Delete Project";
         self.name = $scope.project.name;
@@ -553,20 +537,18 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
       scope: $scope,
       size: 'md'
     });
-    modalDocView.result.then(function (res) {
+    modalDocView.result.then(function (/* res */) {
       ProjectModel.removeProject($scope.project)
-        .then(function (res) {
+        .then(function (/* res */) {
           // deleted show the message, and go to list...
           $scope.showSuccess('"'+ $scope.project.name +'"' + ' was deleted successfully.', goToList, 'Delete Success');
         })
-        .catch(function (res) {
-          console.log("res:", res);
+        .catch(function (/* res */) {
           // could have errors from a delete check...
-          var failure = _.has(res, 'message') ? res.message : undefined;
           $scope.showError('"'+ $scope.project.name +'"' + ' was not deleted.', [], reloadEdit, 'Delete Error');
         });
     }, function () {
-      //console.log('delete modalDocView error');
+      // swallow rejected promise error
     });
   };
 }
@@ -591,13 +573,13 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $uibModal
     content_css: '/modules/core/client/css/core.css'
   };
 
-  $scope.mineIntro  = getContentHtml($scope.project.content, 'Mines', 'Intro');
-  $scope.authIntro  = getContentHtml($scope.project.content, 'Auth',  'Intro');
-  $scope.compIntro  = getContentHtml($scope.project.content, 'Comp',  'Intro');
+  $scope.mineIntro = getContentHtml($scope.project.content, 'Mines', 'Intro');
+  $scope.authIntro = getContentHtml($scope.project.content, 'Auth', 'Intro');
+  $scope.compIntro = getContentHtml($scope.project.content, 'Comp', 'Intro');
   $scope.otherIntro = getContentHtml($scope.project.content, 'Other', 'Intro');
 
   // Convert years to numbers
-  $scope.morePermitsLinkYear     = parseInt($scope.project.morePermitsLinkYear, 10)     || null;
+  $scope.morePermitsLinkYear = parseInt($scope.project.morePermitsLinkYear, 10) || null;
   $scope.moreInspectionsLinkYear = parseInt($scope.project.moreInspectionsLinkYear, 10) || null;
 
   $scope.saveProject = function(isValid, currTab) {
@@ -608,22 +590,21 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $uibModal
     }
 
     setContentHtml($scope.project.content, 'Mines', 'Intro', $scope.mineIntro);
-    setContentHtml($scope.project.content, 'Auth',  'Intro', $scope.authIntro);
-    setContentHtml($scope.project.content, 'Comp',  'Intro', $scope.compIntro);
+    setContentHtml($scope.project.content, 'Auth', 'Intro', $scope.authIntro);
+    setContentHtml($scope.project.content, 'Comp', 'Intro', $scope.compIntro);
     setContentHtml($scope.project.content, 'Other', 'Intro', $scope.otherIntro);
 
-    $scope.project.morePermitsLinkYear     = $scope.morePermitsLinkYear;
+    $scope.project.morePermitsLinkYear = $scope.morePermitsLinkYear;
     $scope.project.moreInspectionsLinkYear = $scope.moreInspectionsLinkYear;
 
     ProjectModel.saveModel($scope.project)
-    .then(function() {
-      AlertService.success('Public content was saved.', 4000);
-      $scope.goToPublicContent(currTab);
-    })
-    .catch (function (err) {
-      AlertService.error('Public content could not be saved.', 4000);
-      console.error ('error = ', err);
-    });
+      .then(function() {
+        AlertService.success('Public content was saved.', 4000);
+        $scope.goToPublicContent(currTab);
+      })
+      .catch (function (/* err */) {
+        AlertService.error('Public content could not be saved.', 4000);
+      });
   };
 
   $scope.cancelChanges = function(currTab) {
@@ -651,9 +632,8 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $uibModal
           AlertService.success('Public content was displayed on mines.nrs.', 4000);
           $scope.goToPublicContent();
         })
-        .catch(function(res) {
+        .catch(function(/* res */) {
           AlertService.error('Public content could not be displayed on mines.nrs.', 4000);
-          console.error("res:", res);
         });
     };
 
@@ -674,9 +654,8 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $uibModal
           AlertService.success('Public content was removed from mines.nrs.', 4000);
           $scope.goToPublicContent();
         })
-        .catch(function(res) {
+        .catch(function(/* res */) {
           AlertService.error('Public content could not be removed from mines.nrs.', 4000);
-          console.error("res:", res);
         });
     };
 
@@ -688,7 +667,7 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $uibModal
       cancelText   : 'No',
       onOk         : demote,
     });
- };
+  };
 
   // Reload public content page
   $scope.goToPublicContent = function(currTab) {
@@ -804,23 +783,6 @@ function controllerProjectPublicContent ($scope, $state, $stateParams, $uibModal
 
 // -----------------------------------------------------------------------------------
 //
-// CONTROLLER: Project Timeline
-//
-// -----------------------------------------------------------------------------------
-// controllerProjectProponent.$inject = ['$scope', 'PROVINCES'];
-// /* @ngInject */
-// function controllerProjectProponent($scope, PROVINCES) {
-//  var projectProponent = this;
-
-//  projectProponent.provs = PROVINCES;
-
-//  $scope.$watch('project', function(newValue) {
-//    projectProponent.project = newValue;
-//  });
-// }
-
-// -----------------------------------------------------------------------------------
-//
 // CONTROLLER: Project Activities
 //
 // -----------------------------------------------------------------------------------
@@ -852,7 +814,7 @@ function controllerProjectActivities(
   ActivityModel,
   ActivityBaseModel,
   $cookies
-  ) {
+) {
 
   // get any cookie values and preselect the phase and milestone.
   $scope.selectedPhaseId = $cookies.get('phase');
@@ -954,46 +916,4 @@ function controllerProjectActivities(
       }
     }
   };
-  // var unbind = $rootScope.$on('refreshActivitiesForMilestone', function(event, data) {
-  //  // console.log(data.milestone);
-  //  $scope.selectMilestone(data.milestone);
-  // });
-  // $scope.$on('$destroy',unbind);
-
-
-  // wait until the list of phases loads.
-  // if one is set in the cookie, select it.
-  // this is triggered from the project load below.
-  // $scope.$watch(function () {
-  //  return $scope.project.phases;
-  // },function(newValue){
-  //  // if there is a preset, find and select it.
-  //  if ($scope.selectedPhaseId && newValue) {
-  //    _.each( newValue, function(phase) {
-  //      if (phase._id === $scope.selectedPhaseId) {
-  //        $scope.selectPhase( phase );
-  //      }
-  //    });
-  //  }
-  // });
-
-
-  // // select a milestone if there is one.
-  // $scope.$watch(function () {
-  //  return $scope.milestones;
-  // },function(newValue){
-  //  // console.log('mile', newValue);
-  //  // if there is a preset, select it.
-  //  if ($scope.selectedMilestoneId && newValue) {
-  //    _.each( newValue, function(milestone) {
-  //      if (milestone._id === $scope.selectedMilestoneId) {
-  //        $scope.selectMilestone( milestone );
-  //      }
-  //    });
-  //  }
-
-  // });
-
-
-
 }

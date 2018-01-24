@@ -75,7 +75,7 @@ module.exports = function (grunt) {
 			},
 			serverJS: {
 				files: _.union(defaultAssets.server.gruntConfig, defaultAssets.server.allJS),
-				tasks: ['jshint'],
+				tasks: ['eslint'],
 				options: {
 					livereload: true
 				}
@@ -88,7 +88,7 @@ module.exports = function (grunt) {
 			},
 			clientJS: {
 				files: defaultAssets.client.js,
-				tasks: ['jshint'],
+				tasks: ['eslint'],
 				options: {
 					livereload: true
 				}
@@ -115,15 +115,10 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-		jshint: {
-			all: {
-				src: _.union(defaultAssets.server.gruntConfig, defaultAssets.server.allJS, defaultAssets.client.js, testAssets.tests.server, testAssets.tests.client, testAssets.tests.e2e),
-				options: {
-					jshintrc: true,
-					node: true,
-					mocha: true,
-					jasmine: true
-				}
+		eslint: {
+			target: 'modules/**/*.js',
+			options: {
+				configFile: '.eslintrc'
 			}
 		},
 		csslint: {
@@ -309,8 +304,8 @@ module.exports = function (grunt) {
 	});
 
 	// Lint CSS and JavaScript files.
-	grunt.registerTask('lint', ['sass', 'less', 'jshint', 'csslint']);
-	grunt.registerTask('default', ['sass']);
+	grunt.registerTask('lint', ['sass', 'less', 'eslint', 'csslint']);
+	grunt.registerTask('default', ['sass', 'eslint']);
 
 	// Lint project files and minify them into two production files.
 	grunt.registerTask('build', ['env:dev', 'lint', 'ngAnnotate', 'uglify', 'cssmin', 'buildconstants']);

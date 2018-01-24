@@ -4,8 +4,7 @@
 // Model for Project
 //
 // =========================================================================
-module.exports = require ('../../../core/server/controllers/core.schema.controller')
-('Project', {
+module.exports = require ('../../../core/server/controllers/core.schema.controller')('Project', {
   __audit: true,
   __access: [
     'addUsersToContext',
@@ -51,7 +50,7 @@ module.exports = require ('../../../core/server/controllers/core.schema.controll
   __status      : ['Initiated', 'Submitted', 'In Progress', 'Certified', 'Not Certified', 'Decommissioned'],
   __codename    : 'unique',
   duration      : { type:Number, default: 90 },
-  epicProjectID : { type:Number, default: 0, index:true},  // Used to relate ePIC imports
+  epicProjectID : { type:Number, default: 0, index:true}, // Used to relate ePIC imports
   shortName     : { type:String, default: '' },
   eacDecision   : { type:String, default: '' },
   CEAALink      : { type:String, default: '' },
@@ -181,7 +180,7 @@ module.exports = require ('../../../core/server/controllers/core.schema.controll
   }],
 
   ownership            : { type: String, default: '' },
-  memPermitID          : { type: String, default: '', index: true },  // Used to relate mem permitID on import
+  memPermitID          : { type: String, default: '', index: true }, // Used to relate mem permitID on import
   commodities          : [ { type: String } ],
   tailingsImpoundments : { type: String, default: '' },
   epicStream           : { type: String, default: '' },

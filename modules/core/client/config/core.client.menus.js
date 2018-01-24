@@ -14,11 +14,11 @@ angular.module('core').run(['Menus', 'ENV', 'ADMIN_FEATURES', 'FEATURES', functi
   // -------------------------------------------------------------------------
   Menus.addMenu('systemMenu', {
     permissions: [
-    'application.listOrganizations',
-    'application.listNews',
-    'application.listTemplates',
-    'application.listValuedComponents',
-    'application.listContacts'
+      'application.listOrganizations',
+      'application.listNews',
+      'application.listTemplates',
+      'application.listValuedComponents',
+      'application.listContacts'
     ]
   });
   Menus.addMenuItem('systemMenu', {

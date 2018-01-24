@@ -1,22 +1,22 @@
 'use strict';
 
 angular.module('utils')
-	.filter('advancedFilter', filterAdvancedFilter)
-	.filter('projectPhaseContributor', filterProjectPhaseContributor)
-	.filter('regionName', filterRegionName)
-	.filter('stripIDR', filterStripIDR)
-	.filter('kebab', filterKebab)
-	.filter('contains', filterContains)
-	.filter('projectBucketNotComplete', filterProjectBucketNotComplete)
-	.filter('projects', filterProjects)
-	.filter('isInTheFuture', filterIsInTheFuture)
-	.filter('isInThePast', filterIsInThePast)
-	.filter('max15Words', filterMax15Words)
-	.filter('maxWords', filterMaxWords)
-	.filter('wordCount', filterWordCount)
-	.filter('safeHtml', filterSafeHtml)
-	.filter('titleCase', filterTitleCase)
-	.filter('chunk', filterChunk);
+  .filter('advancedFilter', filterAdvancedFilter)
+  .filter('projectPhaseContributor', filterProjectPhaseContributor)
+  .filter('regionName', filterRegionName)
+  .filter('stripIDR', filterStripIDR)
+  .filter('kebab', filterKebab)
+  .filter('contains', filterContains)
+  .filter('projectBucketNotComplete', filterProjectBucketNotComplete)
+  .filter('projects', filterProjects)
+  .filter('isInTheFuture', filterIsInTheFuture)
+  .filter('isInThePast', filterIsInThePast)
+  .filter('max15Words', filterMax15Words)
+  .filter('maxWords', filterMaxWords)
+  .filter('wordCount', filterWordCount)
+  .filter('safeHtml', filterSafeHtml)
+  .filter('titleCase', filterTitleCase)
+  .filter('chunk', filterChunk);
 
 // -----------------------------------------------------------------------------------
 //
@@ -26,35 +26,27 @@ angular.module('utils')
 filterAdvancedFilter.$inject = ['$filter'];
 /* @ngInject */
 function filterAdvancedFilter($filter) {
-	return function(data, text){
-    		if (text) {
-			var textArr = text.split(' ');
-			angular.forEach(textArr, function(test){
-				if(test){
-					data = $filter('filter')(data, test);
-				}
-			});
-		}
-		return data;
-	};
+  return function(data, text){
+    if (text) {
+      var textArr = text.split(' ');
+      angular.forEach(textArr, function(test){
+        if(test){
+          data = $filter('filter')(data, test);
+        }
+      });
+    }
+    return data;
+  };
 }
 // -----------------------------------------------------------------------------------
 //
 // FILTER: Projects Phases - mark up the project to show what group owns it.
 //
 // -----------------------------------------------------------------------------------
-filterProjectPhaseContributor.$inject = ['$filter', '_'];
-/* @ngInject */
-function filterProjectPhaseContributor($filter, _) {
-	return function(input) {
-		// var cur = _.findWhere(Global.projectPhases, {name: input});
-		// if (cur) {
-		// 	if (cur.groups.indexOf( Global.user.type ) !== -1) {
-		// 		return true;
-		// 	}
-		// }
-		return false;
-	};
+function filterProjectPhaseContributor() {
+  return function(/* input */) {
+    return false;
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -64,9 +56,9 @@ function filterProjectPhaseContributor($filter, _) {
 filterRegionName.$inject = ['REGIONS'];
 /* @ngInject */
 function filterRegionName(REGIONS) {
-	return function(input) {
-		return REGIONS[input] || 'Not Defined';
-	};
+  return function(input) {
+    return REGIONS[input] || 'Not Defined';
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -76,9 +68,9 @@ function filterRegionName(REGIONS) {
 filterStripIDR.$inject = [];
 /* @ngInject */
 function filterStripIDR() {
-	return function(input) {
-		return input.replace(/\s*\(.*?\)\s*/g, "");
-	};
+  return function(input) {
+    return input.replace(/\s*\(.*?\)\s*/g, "");
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -88,9 +80,9 @@ function filterStripIDR() {
 filterKebab.$inject = ['_'];
 /* @ngInject */
 function filterKebab(_) {
-	return function(input) {
-		return _.kebabCase(input);
-	};
+  return function(input) {
+    return _.kebabCase(input);
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -100,9 +92,9 @@ function filterKebab(_) {
 filterContains.$inject = ['_'];
 /* @ngInject */
 function filterContains(_) {
-	return function(input, term) {
-		return (_.indexOf(input, term) > -1);
-	};
+  return function(input, term) {
+    return (_.indexOf(input, term) > -1);
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -112,15 +104,15 @@ function filterContains(_) {
 filterProjectBucketNotComplete.$inject = ['_'];
 /* @ngInject */
 function filterProjectBucketNotComplete(_) {
-	return function(input) {
-		var output = [];
-		_.each(input, function(item) {
-			if (item.progress < 100) {
-				output.push(item);
-			}
-		});
-		return output;
-	};
+  return function(input) {
+    var output = [];
+    _.each(input, function(item) {
+      if (item.progress < 100) {
+        output.push(item);
+      }
+    });
+    return output;
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -130,13 +122,13 @@ function filterProjectBucketNotComplete(_) {
 filterProjects.$inject = ['_'];
 /* @ngInject */
 function filterProjects(_) {
-	return function(input) {
-		var output = [];
-		_.each(input, function(item) {
-			output.push(item);
-		});
-		return output;
-	};
+  return function(input) {
+    var output = [];
+    _.each(input, function(item) {
+      output.push(item);
+    });
+    return output;
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -147,9 +139,9 @@ function filterProjects(_) {
 filterIsInTheFuture.$inject = ['_', 'moment'];
 /* @ngInject */
 function filterIsInTheFuture(_, moment) {
-	return function(input) {
-		return moment(input) > moment();
-	};
+  return function(input) {
+    return moment(input) > moment();
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -160,9 +152,9 @@ function filterIsInTheFuture(_, moment) {
 filterIsInThePast.$inject = ['_', 'moment'];
 /* @ngInject */
 function filterIsInThePast(_, moment) {
-	return function(input) {
-		return moment(input) < moment();
-	};
+  return function(input) {
+    return moment(input) < moment();
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -172,9 +164,9 @@ function filterIsInThePast(_, moment) {
 filterMax15Words.$inject = ['_'];
 /* @ngInject */
 function filterMax15Words(_) {
-	return function(input) {
-    	return _.take(_.words(input), 15).join(' ');
-    };
+  return function(input) {
+    return _.take(_.words(input), 15).join(' ');
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -184,14 +176,13 @@ function filterMax15Words(_) {
 filterMaxWords.$inject = ['_'];
 /* @ngInject */
 function filterMaxWords(_) {
-	return function(input, num, showAll) {
-		// console.log(input, num, showAll);
-		if (_.words(input).length > num && !showAll) {
-	    		return _.take(_.words(input), num).join(' ') + '...';
-		} else {
-			return input;
-		}
-	};
+  return function(input, num, showAll) {
+    if (_.words(input).length > num && !showAll) {
+      return _.take(_.words(input), num).join(' ') + '...';
+    } else {
+      return input;
+    }
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -201,9 +192,9 @@ function filterMaxWords(_) {
 filterWordCount.$inject = ['_'];
 /* @ngInject */
 function filterWordCount(_) {
-	return function(input) {
-		return _.words(input).length;
-	};
+  return function(input) {
+    return _.words(input).length;
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -213,9 +204,9 @@ function filterWordCount(_) {
 filterSafeHtml.$inject = ['$sce'];
 /* @ngInject */
 function filterSafeHtml($sce) {
-	return function(input) {
-    	return $sce.trustAsHtml(input);
-    };
+  return function(input) {
+    return $sce.trustAsHtml(input);
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -225,10 +216,10 @@ function filterSafeHtml($sce) {
 filterTitleCase.$inject = [];
 /* @ngInject */
 function filterTitleCase() {
-	return function(input) {
-		input = input || '';
-     	return input.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-	};
+  return function(input) {
+    input = input || '';
+    return input.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+  };
 }
 // -----------------------------------------------------------------------------------
 //
@@ -238,5 +229,5 @@ function filterTitleCase() {
 filterChunk.$inject = ['_'];
 /* @ngInject */
 function filterChunk(_) {
-	return _.memoize(_.chunk);
+  return _.memoize(_.chunk);
 }

@@ -35,26 +35,26 @@ function controllerProjectsSearch($scope, $state, Authentication, ProjectModel, 
   projectsSearch.performSearch = function() {
     var query = {};
 
-    if (projectsSearch.search.Permit)  {
+    if (projectsSearch.search.Permit) {
       query.memPermitID = projectsSearch.search.Permit;
     }
-    if (projectsSearch.search.type)  {
+    if (projectsSearch.search.type) {
       query.type = projectsSearch.search.type;
     }
-    if (projectsSearch.search.region)  {
+    if (projectsSearch.search.region) {
       query.region = projectsSearch.search.region;
     }
-    if (projectsSearch.search.status)  {
+    if (projectsSearch.search.status) {
       query.status = projectsSearch.search.status;
     }
-    if (projectsSearch.search.eacDecision)  {
+    if (projectsSearch.search.eacDecision) {
       query.eacDecision = projectsSearch.search.eacDecision;
     }
     if (projectsSearch.search.keywords) {
       query.keywords = {'$in': projectsSearch.search.keywords.split(' ') };
     }
 
-    ProjectModel.getQuery (query).then( function(data) {
+    ProjectModel.getQuery (query).then( function(/* data */) {
       projectsSearch.projects = [];
       projectsSearch.foundSet = true;
     }).catch( function(err) {
@@ -88,19 +88,18 @@ function controllerProjectsList($scope, Authentication, _, uiGmapGoogleMapApi, $
       click: function(marker, eventName, model) {
         // Is there an open comment period?
         CommentPeriodModel.forProject(model._id)
-        .then( function (periods) {
-          var isOpen = false;
-          _.each(periods, function (period) {
-            var today   = new Date ();
-            var start   = new Date (period.dateStarted);
-            var end   = new Date (period.dateCompleted);
-            var open  = start < today && today < end;
-            if (open) {
-              model.isOpen = true;
-              model.period = period;
-            }
+          .then( function (periods) {
+            _.each(periods, function (period) {
+              var today = new Date ();
+              var start = new Date (period.dateStarted);
+              var end = new Date (period.dateCompleted);
+              var open = start < today && today < end;
+              if (open) {
+                model.isOpen = true;
+                model.period = period;
+              }
+            });
           });
-        });
         projectList.map.window.model = model;
         projectList.map.window.show = true;
       }
@@ -113,7 +112,7 @@ function controllerProjectsList($scope, Authentication, _, uiGmapGoogleMapApi, $
       },
       options: {
         // offset to fit the custom icon
-          // pixelOffset: new maps.Size(0, -35, 'px', 'px')
+        // pixelOffset: new maps.Size(0, -35, 'px', 'px')
       } // define when map is ready
     },
     clusterOptions: {
@@ -144,57 +143,36 @@ function controllerProjectsList($scope, Authentication, _, uiGmapGoogleMapApi, $
   $scope.$parent.$watch('filterObj', function(newValue) {
     if (!_.isEmpty(newValue)) {
       projectList.projectsFiltered = $filter("filter")(projectList.projects, function (item) {
-        var notFound = false;
+        var notFound = true;
         if ( !newValue['currentPhase.name'] || (angular.lowercase(item.currentPhase.name).indexOf(angular.lowercase(newValue['currentPhase.name']))) > -1 || item.currentPhase.name === "") {
-          // console.log("cur:",item.currentPhase.name);
-        } else {
-          notFound = true;
+          notFound = false;
         }
         if ( !newValue.region || (angular.lowercase(item.region).indexOf(angular.lowercase(newValue.region))) > -1 || item.region === "") {
-          // console.log("cur:",item.region);
-        } else {
-          notFound = true;
+          notFound = false;
         }
         if ( !newValue.type || (angular.lowercase(item.type).indexOf(angular.lowercase(newValue.type))) > -1 || item.type === "") {
-          // console.log("cur:",item.type);
-        } else {
-          notFound = true;
+          notFound = false;
         }
         if ( !newValue.name || (angular.lowercase(item.name).indexOf(angular.lowercase(newValue.name))) > -1 || item.name === "") {
-          // console.log("cur:",item.name);
-        } else {
-          notFound = true;
+          notFound = false;
         }
         if ( !newValue.memPermitID || (angular.lowercase(item.name).indexOf(angular.lowercase(newValue.memPermitID))) > -1 || item.memPermitID === "") {
-          // console.log("cur:",item.name);
-        } else {
-          notFound = true;
+          notFound = false;
         }
         if ( !newValue.eacDecision || (angular.lowercase(item.eacDecision).indexOf(angular.lowercase(newValue.eacDecision))) > -1 || item.eacDecision === "") {
-          // console.log("cur:",item.eacDecision);
-        } else {
-          notFound = true;
+          notFound = false;
         }
         if ( !newValue.openCommentPeriod || (item.openCommentPeriod === newValue.openCommentPeriod)) {
-          //console.log("cur:",item.openCommentPeriod);
-        } else {
-          notFound = true;
+          notFound = false;
         }
-        if (!notFound) return item;
+        if (!notFound) { return item; }
       });
     }
   }, true);
 
   projectList.clearFilter = function() {
     $scope.$parent.filterObj = undefined;
-    // console.log($scope.$parent.filterObj);
   };
-
-  // projectList.types = PROJECT_TYPES;
-  // projectList.regions = REGIONS;
-  // projectList.status = PROJECT_STATUS_PUBLIC;
-
-
   projectList.auth = Authentication;
 
   $scope.$watch('projects', function(newValue) {
