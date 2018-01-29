@@ -361,3 +361,63 @@ ui-view {
         }
     }
 }
+
+
+// View Containers
+.view-title,
+.view-body {
+  &__container {
+    padding: 3rem;
+  }
+}
+
+.view-title {
+    @include flex(0 0 auto);
+    border-bottom: 2px solid #eee;
+  
+    &__container {
+      @include flexbox();
+      @include flexflow(row nowrap);
+    }
+  
+    &__info {
+      @include flex(1 1 auto);
+  
+      &--title {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        font-size: 2.6rem;
+        font-weight: bold;
+      }
+  
+      &--last-modified {
+        color: #999;
+      }
+    }
+  
+    &__actions {
+      @include flex(0 0 auto);
+  
+      .btn {
+        min-width: 8rem;
+      }
+    }
+  }
+
+  .view-body {
+    @include flex(1 1 auto);
+    overflow-y: scroll;
+    background: #f1f1f1;
+
+    &__container {
+      padding-right: calc(3rem - 7px);
+    }
+}
+
+.view-body {
+    &__container {
+        max-width: 120rem;
+        max-width: 120rem;
+        margin: 0 auto;
+    }
+}

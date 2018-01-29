@@ -1,34 +1,13 @@
-.edit-project-form {
-  .view-title-container {
-    .btn {
-      min-width: 8rem;
-    }
+fieldset {
+  legend {
+    margin-bottom: 3rem;
+    padding-bottom: 0.75rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+    border-bottom: 2px solid #000;
   }
 
-  .form-footer {
-    @include flexbox();
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid #ccc;
-    justify-content: flex-end;
-
-    &__buttons {
-      @include flex(0 0 auto);
-
-      .btn {
-        min-width: 8rem;
-      }
-    }
-  }
-
-  .tab-pane {
-    max-width: 1280px;
-  }
-
-  .checkbox {
-    label {
-      padding-left: 2rem;
-      font-weight: bold;
-    }
+  + fieldset {
+    margin-top: 5rem;
   }
 }

@@ -231,3 +231,50 @@ textarea {
 		border-color: $danger-text;
 	}
 }
+
+
+// Form Components / Form Layout
+.form-footer {
+	@include flexbox();
+	padding-top: 3rem;
+	justify-content: flex-end;
+	&__buttons {
+		@include flex(0 0 auto);
+		.btn {
+			min-width: 8rem;
+		}
+	}
+}
+
+.form-group {
+	+ .form-group {
+		margin-top: 3rem;
+		margin-bottom: 0;
+	}
+}
+
+.form-control {
+	padding: 1rem;
+	height: auto;
+}
+
+fieldset {
+	legend {
+		margin-bottom: 3rem;
+		padding-bottom: 0.75rem;
+		font-size: 1.8rem;
+		font-weight: bold;
+		border-bottom: 2px solid #000;
+	}
+
+	+ fieldset {
+		margin-top: 5rem;
+	}
+}
+
+	// Error Messages / Validation
+.has-error {
+	.form-control {
+		background: #ffffd8;
+	}
+}
