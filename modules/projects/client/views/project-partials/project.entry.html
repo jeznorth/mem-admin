@@ -363,6 +363,7 @@
         </fieldset>
       </div>
 
+      <!-- MINES.NRS FIELDS -->
       <div class="tab-pane" ng-show="form.curTab === 'Public Content'">
         <!-- Mine Summary -->
         <fieldset>
@@ -468,21 +469,32 @@
         </fieldset>
       </div>
 
-      <div class="form-footer clearfix">
+    </div>
+
+    <div class="form-footer clearfix">
         <div class="form-footer__buttons">
           <button class="btn btn-default"
             ng-if="!isNew"
-            ng-click="cancelChanges('Cancel Changes', 'Are you sure you would like to exit and discard all changes', 'Cancel Changes', 'Go Back')">
+            ng-click="cancelChanges('Cancel Changes', 'Are you sure you would like to exit and discard all changes?', 'Yes', 'No')">
             Cancel
           </button>
           <button class="btn btn-default"
-            ng-if="isNew" ui-sref="projects">
+            ng-if="isNew"
+            ui-sref="projects">
             Cancel
           </button>
           <button class="btn btn-primary" type="submit"
-            ng-if="project.status !== 'Initiated'"
-            ng-click="saveProject(projectForm.$valid)">
+            ng-click="saveProject(projectForm.$valid, form.curTab)">
             Save
+          </button>
+          <button class="btn btn-primary" type="submit">
+            Publish
+          </button>
+          <button class="btn btn-danger"
+            ng-click="deleteProject()"
+            ng-if="!isNew && !project.isPublished && project.userCan.delete">
+            <span class="glyphicon glyphicon-trash"></span>
+            <span>Delete Project</span>
           </button>
           <button class="btn btn-success"
             ng-click="submitProject(projectForm.$valid, 'Submit Project', 'Are you sure you would like to submit this project. Clicking OK will make this project and its content publicly available.', 'Submit Project', 'Cancel')"
@@ -492,7 +504,6 @@
         </div>
       </div>
 
-    </div>
   </div>
 
 </form>

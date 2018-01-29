@@ -217,7 +217,7 @@ textarea {
 // Form Components / Form Layout
 .form-footer {
 	@include flexbox();
-	padding-top: 3rem;
+	padding: 3rem;
 	justify-content: flex-end;
 	&__buttons {
 		@include flex(0 0 auto);
@@ -230,7 +230,6 @@ textarea {
 // VALIDATION
 .form-validation-msg {
 	margin-left: 0.25rem;
-	font-size: 1.2rem;
 	font-weight: normal;
 	color: #999;
 }
