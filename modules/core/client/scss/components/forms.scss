@@ -42,9 +42,10 @@ textarea {
 }
 
 .form-group {
+	margin-bottom: 0;
+
 	+ .form-group {
 		margin-top: 3rem;
-		margin-bottom: 0;
 	}
 }
 

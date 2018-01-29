@@ -1,13 +1,22 @@
-fieldset {
-  legend {
-    margin-bottom: 3rem;
-    padding-bottom: 0.75rem;
-    font-size: 1.8rem;
-    font-weight: bold;
-    border-bottom: 2px solid #000;
-  }
 
-  + fieldset {
-    margin-top: 5rem;
+// External Links
+.external-links-table {
+  .actions {
+    width: 10rem;
+  }
+  .title {
+    width: 33.3333%
+  }
+}
+
+// Operator and Ownership Details
+.project-operator-table,
+.project-ownership-table {
+  .actions {
+    width: 6rem;
+  }
+  .name,
+  .url {
+    width: 33.3333%
   }
 }
