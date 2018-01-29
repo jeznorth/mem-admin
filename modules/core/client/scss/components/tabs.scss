@@ -1,44 +1,66 @@
 // Tabs
 .nav-tabs {
-	//margin-bottom: -2px;
 	border: none;
-  
+
 	> li {
-	  > a {
-		padding: 1.25rem 2rem;
-		border: none;
-		font-size: 1.4rem;
-		cursor: pointer;
-		&:active,
-		&:focus,
-		&:hover {
-		  border: none;
-		}
-	  }
-  
-	  &.active {
+		margin: 0;
+
 		> a {
-		  border-width: 0;
-		  border-bottom-width: 0;
-		  &:active,
-		  &:focus,
-		  &:hover {
-			  border-width: 0;
-			  border-bottom-width: 0;
-		  }
+			padding: 1.25rem 2rem;
+			border: none;
+			font-size: 1.4rem;
+			font-weight: bold;
+			cursor: pointer;
+			
+			&:active,
+			&:focus,
+			&:hover {
+				border: none;
+			}
+
+			.glyphicon {
+				display: none;
+				margin-top: -0.5rem;
+				margin-right: 0.25rem;
+				font-size: 1.8rem;
+				vertical-align: middle;
+			}
 		}
-	  }
+
+		&.active {
+			> a {
+				border-width: 0;
+				border-bottom-width: 0;
+				
+				&:active,
+				&:focus,
+				&:hover {
+					border-width: 0;
+					border-bottom-width: 0;
+				}
+			}
+		}
+
+		&.has-error {
+			> a {
+				color: $danger-bg;
+
+				.glyphicon {
+					display: inline-block;
+				}
+			}
+		}
 	}
-  }
-  
-  // Tab Pane Layout
-  .tab-pane {
+}
+
+// Tab Pane Layout
+.tab-pane {
 	padding: 4rem;
 	background: #fff;
-  
+
 	fieldset {
-	  margin-right: auto;
-	  margin-left: auto;
-	  max-width: 100rem;
+		margin-right: auto;
+		margin-left: auto;
+		max-width: 100rem;
 	}
-  }
+}
