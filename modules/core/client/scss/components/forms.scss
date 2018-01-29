@@ -1,3 +1,5 @@
+$form-control-border-radius: 4px;
+
 form {
 	section {
 		margin-bottom: 2rem;
@@ -13,22 +15,16 @@ form {
 }
 
 fieldset {
-	margin-bottom: 1rem;
-	&:last-child { margin-bottom: 0; }
-}
-
-legend {
-	margin-bottom: 1.5rem;
-	border-bottom: none;
-	font-size: 1.8rem;
-	font-weight: bold;
-
-	em {
-		@extend .form-validation-msg;
+	legend {
+		margin-bottom: 3rem;
+		padding-bottom: 0.75rem;
+		font-size: 1.8rem;
+		font-weight: bold;
+		border-bottom: 2px solid #000;
 	}
 
-	&.no-margin {
-		margin-bottom: 0.5rem;
+	+ fieldset {
+		margin-top: 5rem;
 	}
 }
 
@@ -40,10 +36,14 @@ textarea {
 	padding: 0 2rem;
 }
 
-.form-group {
-	margin-bottom: 2rem;
+.form-control {
+	padding: 1rem;
+	height: auto;
+}
 
-	&.no-margin {
+.form-group {
+	+ .form-group {
+		margin-top: 3rem;
 		margin-bottom: 0;
 	}
 }
@@ -73,23 +73,6 @@ textarea {
 	background: #EEE;
 	border: 1px solid #DDD;
 	border-radius: 4px;
-}
-
-.form-validation-msg {
-	margin-left: 0.25rem;
-	font-size: 1.2rem;
-	font-weight: normal;
-	color: #999;
-}
-
-.control-label {
-	em {
-		@extend .form-validation-msg;
-	}
-
-	em.required {
-		display: none;
-	}
 }
 
 .checkbox-row {
@@ -148,12 +131,14 @@ textarea {
 
 // TINY MCE OVERRIDES
 .mce-tinymce {
+	border-radius: 4px;
 	border: 1px solid #ddd;
 }
 
 .mce-content-body {
 	height: auto;
 	min-height: auto;
+	margin: 0 0.5rem;
 	background-color: transparent;
 	font-family: $font-family-sans-serif;
 	font-size: 14px;
@@ -161,6 +146,16 @@ textarea {
 	p { 
 		line-height: 20px;
 	}
+}
+
+.mce-toolbar-grp {
+	border-top-right-radius: $form-control-border-radius;
+	border-top-left-radius: $form-control-border-radius;
+}
+
+.mce-edit-area {
+	border-bottom-right-radius: $form-control-border-radius;
+	border-bottom-left-radius: $form-control-border-radius;
 }
 
 // UI SELECT MODULE
@@ -175,17 +170,17 @@ textarea {
 				margin-bottom: 0;
 				padding: 6px 12px;
 				width: auto !important;
-				height: 34px;
+				height: 41px;
 			}
 		}
 
 		.ui-select-match {
 			&-item {
-				margin-top: 2px;
+				margin-top: 4px;
 				margin-right: 0;
 				margin-bottom: 0;
-				margin-left: 2px;
-				padding: 0.35rem 1rem;
+				margin-left: 4px;
+				padding: 0.5rem 1rem;
 				color: $select-tag-color;
 				border-color: $select-tag-bg;
 				background-color: $select-tag-bg;
@@ -218,21 +213,6 @@ textarea {
 	}
 }
 
-// VALIDATION
-.has-error {
-	.control-label {
-		em.required {
-			display: inline;
-			color: $danger-text;
-		}
-	}
-
-	.mce-tinymce {
-		border-color: $danger-text;
-	}
-}
-
-
 // Form Components / Form Layout
 .form-footer {
 	@include flexbox();
@@ -246,35 +226,41 @@ textarea {
 	}
 }
 
-.form-group {
-	+ .form-group {
-		margin-top: 3rem;
-		margin-bottom: 0;
+// VALIDATION
+.form-validation-msg {
+	margin-left: 0.25rem;
+	font-size: 1.2rem;
+	font-weight: normal;
+	color: #999;
+}
+
+.control-label {
+	em {
+		@extend .form-validation-msg;
+	}
+
+	em.required {
+		display: none;
 	}
 }
 
-.form-control {
-	padding: 1rem;
-	height: auto;
-}
-
-fieldset {
-	legend {
-		margin-bottom: 3rem;
-		padding-bottom: 0.75rem;
-		font-size: 1.8rem;
-		font-weight: bold;
-		border-bottom: 2px solid #000;
-	}
-
-	+ fieldset {
-		margin-top: 5rem;
-	}
-}
-
-	// Error Messages / Validation
 .has-error {
+	.control-label {
+		em.required {
+			display: inline;
+			color: $danger-text;
+		}
+	}
+
 	.form-control {
-		background: #ffffd8;
+		background: $form-control-error-bg;
+	}
+
+	.mce-tinymce {
+		border-color: $danger-text;
+	}
+
+	.mce-edit-area {
+		background: $form-control-error-bg;
 	}
 }
