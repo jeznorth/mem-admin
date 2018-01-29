@@ -15,14 +15,19 @@
 
 <div class="view-body-container">
 
-  <!-- PROJECT MAP -->
-  <main class="project-map">
-      <tmpl-map id="anchor-map" x-project="project"></tmpl-map>
-  </main>
-
   <!-- PROJECT INFO -->
-  <aside class="project-info">
-    <tmpl-project-tombstone id="anchor-tombstone" x-project="project"></tmpl-project-tombstone>
-  </aside>
+  <section class="project-info">
+      <tmpl-project-tombstone id="anchor-tombstone" x-project="project"></tmpl-project-tombstone>
+    </section>
+  
+  <!-- PROJECT MAP -->
+  <section class="project-map">
+    <div class="panel panel-default no-margin">
+      <div class="panel-heading">
+        <h2>Project Map</h2>
+      </div>
+      <tmpl-map id="anchor-map" x-project="project"></tmpl-map>
+    </div>
+  </section>
 
 </div>
