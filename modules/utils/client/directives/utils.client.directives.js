@@ -825,8 +825,8 @@ function directiveModalDatePicker($uibModal) {
         restrict:'A',
         scope: {
         	selectedDate: '=',
-        	title: '@'
-        },
+			title: '@'
+		},
 		link : function(scope, element, attrs) {
 			element.on('click', function() {
 				var modalAddComment = $uibModal.open({
@@ -834,7 +834,7 @@ function directiveModalDatePicker($uibModal) {
 					templateUrl: 'modules/utils/client/views/partials/modal-date-picker.html',
 					controller: 'controllerModalDatePicker',
 					controllerAs: 'modalDatePick',
-					size: 'md',
+					windowClass: 'datepicker__modal',
 					resolve: {
 			            	rChosenDate: function() {
 			            		return scope.selectedDate;
@@ -848,7 +848,7 @@ function directiveModalDatePicker($uibModal) {
                     if (!chosenDate) {
                         scope.selectedDate = null;
                     } else {
-                        scope.selectedDate = chosenDate;
+												scope.selectedDate = chosenDate;
                     }
 				}, function () {});
 			});

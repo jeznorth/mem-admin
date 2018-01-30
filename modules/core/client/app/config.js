@@ -14,8 +14,6 @@ var ApplicationConfiguration = (function () {
     'uiGmapgoogle-maps',
     'ngTable',
     'angularMoment',
-    'ui.bootstrap.datepicker',
-    'ui.bootstrap.timepicker',
     'mwl.confirm',
     'ngFileUpload',
     'duScroll',
