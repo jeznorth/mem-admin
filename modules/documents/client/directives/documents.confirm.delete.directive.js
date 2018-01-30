@@ -30,8 +30,8 @@ angular.module('documents')
 				controllerAs: 'confirmDlg',
 				controller: function ($scope, $uibModalInstance) {
 					var NO_AUTH         = "Not authorized to delete";
-					var HAS_CONTENT = "Folder is not empty";
-					var IS_PUBLISHED = "Published content cannot be deleted";
+					var HAS_CONTENT = "Folders must be empty before they can be deleted";
+					var IS_PUBLISHED = "Content must be unpublished before it can be deleted";
 					var self = this;
 					/*
 						Set the following to true, during development, if you want to test the server side delete API.
@@ -140,20 +140,20 @@ angular.module('documents')
 						var fileCnt            = self.files.length;
 						var deletableFolderCnt = self.deletableFolders.length;
 						var deletableFileCnt   = self.deletableFiles.length;
-						var CONFIRM_DELETE     = "Confirm Delete File(s) and/or Folder(s)";
-						var CANNOT_DELETE      = "Cannot Delete File(s) and/or Folder(s)";
-						var INFO_DELETE        = "Files and folders must be unpublished before they can be deleted. <br/> Folders with content cannot be deleted.";
+						var CONFIRM_DELETE     = "Delete File(s) and/or Folder(s)";
+						var CANNOT_DELETE      = "Delete File(s) and/or Folder(s)";
+						var INFO_DELETE        = "One or more of the following files or folders cannot be deleted.";
 						self.allBlocked        = false;
 						self.hasBlockedContent = false;
 
 						if (deletableFolderCnt > 0 || deletableFileCnt > 0) {
 							self.title           = CONFIRM_DELETE;
-							self.confirmText     = "Are you sure you want to permanently delete the following file(s) and/or folder(s)? This action CANNOT be undone.";
+							self.confirmText     = "Are you sure you want to <strong>PERMANENTLY</strong> delete the following file(s) and/or folder(s)? This action <strong>CANNOT</strong> be undone.";
 							if (folderCnt > deletableFolderCnt || fileCnt > deletableFileCnt ) {
 								self.hasBlockedContent = true;
 								self.bannerText        = INFO_DELETE;
-								self.title             = CONFIRM_DELETE + "<br> " + CANNOT_DELETE;
-								self.confirmText      += " <br/> Published content and folders with content will not be deleted.";
+								self.title             = CONFIRM_DELETE;
+								// self.confirmText      += "Are you sure you want to delete the following file(s) and/or folder(s)? This action cannot be undone.";
 							}
 							self.showSubmit      = true;
 							self.cancelText      = 'Cancel';
@@ -186,8 +186,8 @@ angular.module('documents')
 						if (!item.canBeDeleted) {
 							item.reason = (
 								!item.userCanDelete   ? NO_AUTH : 
-								item.isPublished	? (item.hasChildren	? HAS_CONTENT + "<br/> "+ IS_PUBLISHED : IS_PUBLISHED) : 
-								item.hasChildren	? HAS_CONTENT :  ""
+								item.isPublished	? "<ul>" + "<li>" + (item.hasChildren ? HAS_CONTENT + "</li><li>" + IS_PUBLISHED : IS_PUBLISHED) + "</li></ul>" : 
+								item.hasChildren	? "<ul>" + "<li>" + HAS_CONTENT :  "" + "</li></ul>"
 							);
 						}
 					}

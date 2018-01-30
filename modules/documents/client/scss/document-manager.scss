@@ -91,3 +91,36 @@
         }
     }
 }
+
+.delete-confirmation {
+    &__list {
+        border-radius: 4px;
+        background: #fff;
+
+        .fb-list-item {
+            &:hover {
+                background: transparent;
+            }
+            &.has-error {
+                color: $danger-bg;
+
+                .glyphicon {
+                    color: inherit;
+                }
+
+                .name {
+                    font-weight: bold;
+                }
+            }
+
+            .reason {
+                margin-top: 0.5rem;
+                padding-left: 2.15rem;
+
+                li {
+                    list-style-type: disc;
+                }
+            }
+        }
+    }
+}
