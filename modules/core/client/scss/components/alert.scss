@@ -99,3 +99,18 @@ $alert-width: 64rem;
 .text-danger {
 	color: $danger-text !important;
 }
+
+.alert {
+	position: relative;
+
+	.glyphicon {
+		position: absolute;
+		top: 1.5rem;
+		left: 1.5rem;
+		font-size: 1.8rem;
+
+		+ .alert-msg {
+			padding-left: 3rem;
+		}
+	}
+}
