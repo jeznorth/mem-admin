@@ -17,8 +17,8 @@
   <div class="modal-body" ng-if="!confirmDlg.errMsg">
 
 		<div class="m-b-2" ng-bind-html="confirmDlg.confirmText"></div>
-		
-		<div class="m-b-2" ng-class="{'alert alert-danger': confirmDlg.hasBlockedContent}">
+
+		<div class="m-b-2" ng-class="{'alert alert-danger': confirmDlg.hasBlockedContent}" ng-if="confirmDlg.hasBlockedContent">
 			<span class="glyphicon glyphicon-ban-circle"></span>
 			<span class="alert-msg" ng-bind-html="confirmDlg.bannerText"></span>
 		</div>
