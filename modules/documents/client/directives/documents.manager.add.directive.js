@@ -35,7 +35,7 @@ angular.module('documents')
                 self.newname = self.entryText;
                 //Check if ther eis already a folder of name ${entryText} in current directory
                 self.repeat = _.find($scope.node.children, function(element) {
-                  return element.model.name === self.entryText;
+                  return element.model.name.toLowerCase() === self.entryText.toLowerCase();
                 });
                 //If ${entryText} is a unique name for this directory, create the folder, otherwise throw an error
                 if (self.repeat) {
@@ -53,7 +53,6 @@ angular.module('documents')
                   );
                 }
               };
-
             }
           }).result.then(function (data) {
             $rootScope.$broadcast('documentMgrRefreshNode', { directoryStructure: data });

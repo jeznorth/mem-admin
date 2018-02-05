@@ -38,14 +38,14 @@ angular.module('documents')
                 self.newname = self.entryText;
                 //Check if there is already a folder of name ${entryText} in current directory.
                 self.repeat = _.find($scope.node.parent.children, function(element) {
-                  return element.model.name === self.entryText;
+                  return element.model.name.toLowerCase() === self.entryText.toLowerCase();
                 });
                 //If ${entryText} is a unique name for this directory, rename the folder, otherwise throw an error.
                 if (self.repeat) {
                   self.validationMessage = "Enter a unique name for this folder.";
                 } else {
                   self.validationMessage = '';
-                  DocumentMgrService.renameDirectory($scope.project, $scope.node, self.entryText)
+                  DocumentMgrService.renameDirectory($scope.project, $scope.node, self.newname)
                   .then(
                     function (result) {
                       $uibModalInstance.close(result.data);
