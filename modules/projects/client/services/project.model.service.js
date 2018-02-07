@@ -162,6 +162,3 @@ angular.module('project').factory ('ProjectModel', function (ModelBase, _) {
 });
 
 
-
-
-

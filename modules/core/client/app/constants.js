@@ -1,5 +1,3 @@
-/* global _ */
-
 'use strict';
 angular
   .module('core')
@@ -70,7 +68,7 @@ angular
   )
   .constant('VCTYPES',
     [ 'Valued Component',
-    'Pathway Component'
+      'Pathway Component'
     ]
   )
   .constant('PILLARS',
@@ -151,11 +149,11 @@ angular
   )
   .constant('PROJECT_ACTIVITIES_DEFAULTS',
     [
-      { name: 'Design',                 status : '', order: 0 },
-      { name: 'Construction',           status : '', order: 1 },
-      { name: 'Operation',              status : '', order: 2 },
-      { name: 'Closure',                status : '', order: 3 },
-      { name: 'Reclamation',            status : '', order: 4 },
+      { name: 'Design', status : '', order: 0 },
+      { name: 'Construction', status : '', order: 1 },
+      { name: 'Operation', status : '', order: 2 },
+      { name: 'Closure', status : '', order: 3 },
+      { name: 'Reclamation', status : '', order: 4 },
       { name: 'Monitoring & Reporting', status : '', order: 5 }
     ]
   )
@@ -312,7 +310,7 @@ angular
       'redirectHomepageToGeorgeMassey': false
     }
   )
-    // types with shortest length last
+// types with shortest length last
   .constant('INSPECTION_TYPES', ['Inspection Report Response', 'Inspection Report Follow Up', 'Inspection Report'] )
 
   .constant('SALUTATIONS', ['Mr','Mrs','Miss','Ms','Dr','Capt','Prof','Rev','Other'])

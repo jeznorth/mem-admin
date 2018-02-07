@@ -5,8 +5,7 @@ angular.module('project')
   .directive('reorderExternalLinksModal', ['$uibModal', '_', reorderExternalLinksModal])
   // x-reorder-collection-content element in the modal
   .directive('reorderExternalLinksContent', [reorderExternalLinks])
-  .controller('externalLinksSortingController', externalLinksSortingController)
-  ;
+  .controller('externalLinksSortingController', externalLinksSortingController);
 
 function reorderExternalLinksModal($uibModal, _) {
   return {
@@ -15,7 +14,7 @@ function reorderExternalLinksModal($uibModal, _) {
       list: '=',
       onSave: '='
     },
-    link: function (scope, element, attributes) {
+    link: function (scope, element) {
       element.on('click', function () {
         $uibModal.open({
           animation: true,
@@ -44,10 +43,8 @@ function reorderExternalLinksModal($uibModal, _) {
               scope.onSave(sortedList);
             }
           })
-          .catch(function (err) {
-            if ('cancel' !== err && 'backdrop click' !== err) {
-              console.log('Error in reorderExternalLinksModal ', err);
-            }
+          .catch(function (/* err */) {
+            // swallow rejected promise error
           });
       });
     }
@@ -67,9 +64,9 @@ function reorderExternalLinks() {
   return directive;
 }
 
-externalLinksSortingController.$inject = ['$scope', '$document', '$timeout'];
+externalLinksSortingController.$inject = ['$scope'];
 /* @ngInject */
-function externalLinksSortingController($scope, $document, $timeout) {
+function externalLinksSortingController($scope) {
   // initialize form values
   var vm = this;
   vm.dragging = false;
@@ -87,12 +84,12 @@ function externalLinksSortingController($scope, $document, $timeout) {
   };
 
   /** Set the list into dragging state, meaning the items that are being dragged are hidden. */
-  vm.onDragStart = function (event) {
+  vm.onDragStart = function (/* event */) {
     vm.dragging = true;
   };
 
   /** Reset dragging state on the list */
-  vm.onDragEnd = function (event) {
+  vm.onDragEnd = function (/* event */) {
     vm.dragging = false;
   };
 

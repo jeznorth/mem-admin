@@ -7,10 +7,10 @@
 //
 // =========================================================================
 var mongoose = require ('mongoose');
-var _        = require ('lodash');
-var access   = require ('./core.access.controller');
+var _ = require ('lodash');
+var access = require ('./core.access.controller');
 
-var emptyPromise = function (t) {return new Promise (function (r, e) { r (t); }); };
+var emptyPromise = function (t) {return new Promise (function (r/* , e */) { r (t); }); };
 
 // -------------------------------------------------------------------------
 //
@@ -26,54 +26,46 @@ _.extend (DBModel.prototype, {
   //
   // these are all the things that can be extended form the base
   //
-  name             : 'Application',     // required : name of the model
-  baseQuery        : {},            // optional : base query to be applied to all queries
-  decorate         : emptyPromise,  // optional : extra decoration function
-  validate         : emptyPromise,  // optional : business rules validation function
-  preprocessAdd    : emptyPromise,  // optional : pre-processing
-  postprocessAdd   : emptyPromise,  // optional : post-processing
-  preprocessUpdate : emptyPromise,  // optional : pre-processing
-  postprocessUpdate: emptyPromise,  // optional : post-processing
-  populate         : '',            // optional : populate clause for all queries
-  sort             : '',            // optional : sort clause for all queries
-  decorateCollection : true,       // optional : decorate collections as well as singles ?
+  name             : 'Application', // required : name of the model
+  baseQuery        : {}, // optional : base query to be applied to all queries
+  decorate         : emptyPromise, // optional : extra decoration function
+  validate         : emptyPromise, // optional : business rules validation function
+  preprocessAdd    : emptyPromise, // optional : pre-processing
+  postprocessAdd   : emptyPromise, // optional : post-processing
+  preprocessUpdate : emptyPromise, // optional : pre-processing
+  postprocessUpdate: emptyPromise, // optional : post-processing
+  populate         : '', // optional : populate clause for all queries
+  sort             : '', // optional : sort clause for all queries
+  decorateCollection : true, // optional : decorate collections as well as singles ?
   // -------------------------------------------------------------------------
   //
   // initialize
   //
   // -------------------------------------------------------------------------
   _init : function (opts) {
-    // console.log ('dbmodel._init:', opts);
     if (!opts.context) {
-      console.error ('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Invalid options passed to dbmodel '+this.name);
       throw (new Error ('Invalid options passed to dbmodel '+this.name));
-    } else {
-      //console.log('opts = ', JSON.stringify(opts));
     }
-    this.opts       = opts;
-    this.user       = opts.user;
-    this.context    = opts.context   || 'application';
-    this.userRoles  = opts.userRoles || [];
-    this.isAdmin    = false;
-    this.roles      = [];
-    // console.log ('new ', this.name);
-    // console.log ('this.user      = ', (this.user && this.user.username) ? this.user.username : '?');
-    // console.log ('this.context   = ', this.context  );
-    // console.log ('this.userRoles = ', JSON.stringify(this.userRoles));
+    this.opts = opts;
+    this.user = opts.user;
+    this.context = opts.context || 'application';
+    this.userRoles = opts.userRoles || [];
+    this.isAdmin = false;
+    this.roles = [];
     //
     // keep a pointer to mongoose, and set our local schema/model
     //
-    this.mongoose   = mongoose;
-    this.model      = mongoose.model (this.name);
-    this.err        = (!this.model) ? new Error ('Model not provided when instantiating ESM Model') : false;
+    this.mongoose = mongoose;
+    this.model = mongoose.model (this.name);
+    this.err = (!this.model) ? new Error ('Model not provided when instantiating ESM Model') : false;
     //
     // this will tell us whether or not to set the audit fileds on save
     //
-    this.useAudit   = _.has (this.model.schema.methods, 'setAuditFields');
+    this.useAudit = _.has (this.model.schema.methods, 'setAuditFields');
     //
     // this will let us know whether or not to use the security stuff
     //
-    this.useRoles   = _.has (this.model.schema.methods, 'unpublish');
+    this.useRoles = _.has (this.model.schema.methods, 'unpublish');
     //
     // a function pointer to either the real or fake decorator
     //
@@ -109,10 +101,10 @@ _.extend (DBModel.prototype, {
     //
     // allows the extended classes to also bind
     //
-    if (this.bind) _.bindAll (this, this.bind);
-    this.filter      = {};
+    if (this.bind) {_.bindAll (this, this.bind);}
+    this.filter = {};
     this.resetAccess = false;
-    this.force       = false;
+    this.force = false;
     //
     // this is called seperately so that the user can be reset during other processing
     // if required
@@ -147,8 +139,6 @@ _.extend (DBModel.prototype, {
     if (this.useRoles && !this.isAdmin) {
       _.extend (this.baseQ, accessQuery);
     }
-    // console.log ('my roles are:', this.roles);
-    // console.log ('base query is:', this.baseQ);
   },
   // -------------------------------------------------------------------------
   //
@@ -185,8 +175,6 @@ _.extend (DBModel.prototype, {
     // the default access level is set to 'read'
     //
     this.setAccess ('read');
-    // console.log ('dbmodel: roles', this.roles);
-    // console.log ('dbmodel: isAdmin', this.isAdmin);
   },
   // -------------------------------------------------------------------------
   //
@@ -253,7 +241,6 @@ _.extend (DBModel.prototype, {
   //
   // -------------------------------------------------------------------------
   findById : function (id) {
-    //console.log('findById =  ', id)
     return this.findOne ({_id : id})
       .then (this.permissions)
       .then (this.decorate);
@@ -267,18 +254,16 @@ _.extend (DBModel.prototype, {
   //
   // -------------------------------------------------------------------------
   findOne : function (query, fields) {
-    //console.log ('dbmodel.findOne:', query, fields);
     var self = this;
     query = query || {};
     return new Promise (function (resolve, reject) {
-      if (self.err) return reject (self.err);
+      if (self.err) {return reject (self.err);}
       var q = _.extend ({}, self.baseQ, query);
-      //console.log ('q = ',q);
       self.model.findOne (q)
-      .populate (self.populate)
-      .select (fields)
-      .exec ()
-      .then (resolve, self.complete (reject, 'findone'));
+        .populate (self.populate)
+        .select (fields)
+        .exec ()
+        .then (resolve, self.complete (reject, 'findone'));
       if (self.resetAccess) {
         self.resetAccess = false;
         self.setAccess ('read');
@@ -289,10 +274,10 @@ _.extend (DBModel.prototype, {
     var self = this;
     query = query || {};
     var q = _.extend ({}, this.baseQ, query);
-    return new Promise (function (resolve, reject) {
+    return new Promise (function (resolve/* , reject */) {
       self.model.findOne (q, function (err, m) {
-        if (!_.isEmpty(m)) resolve (true);
-        else resolve (false);
+        if (!_.isEmpty(m)) {resolve (true);}
+        else {resolve (false);}
       });
     });
   },
@@ -302,21 +287,18 @@ _.extend (DBModel.prototype, {
   //
   // -------------------------------------------------------------------------
   findMany : function (query, fields, sortby) {
-    // console.log ('dbmodel.findMany:', query, fields);
     var sort = sortby || this.sort;
     var self = this;
     query = query || {};
     return new Promise (function (resolve, reject) {
-      if (self.err) return reject (self.err);
+      if (self.err) {return reject (self.err);}
       var q = _.extend ({}, self.baseQ, query);
-      //console.log ('findMany.query = ' + JSON.stringify(query, null, 4));
-      //console.log ('findMany.q = ' + JSON.stringify(q, null, 4));
       self.model.find (q)
-      .sort (sort)
-      .populate (self.populate)
-      .select (fields)
-      .exec ()
-      .then (resolve, self.complete (reject, 'findmany'));
+        .sort (sort)
+        .populate (self.populate)
+        .select (fields)
+        .exec ()
+        .then (resolve, self.complete (reject, 'findmany'));
       if (self.resetAccess) {
         self.resetAccess = false;
         self.setAccess ('read');
@@ -329,11 +311,10 @@ _.extend (DBModel.prototype, {
   //
   // -------------------------------------------------------------------------
   searchMany : function (keywords, dateRangeStart, dateRangeEnd, project, proponent, ownership, fields, sortby, page, limit, getCount) {
-    // console.log ('dbmodel.findMany:', keywords, fields);
     var sort = sortby || this.sort;
     var self = this;
     return new Promise (function (resolve, reject) {
-      if (self.err) return reject (self.err);
+      if (self.err) {return reject (self.err);}
       var q = {};
       if (keywords) {
         q = _.extend ({}, self.baseQ, { $text: { $search: keywords }});
@@ -356,15 +337,6 @@ _.extend (DBModel.prototype, {
         var orgs = proponent.split(',');
         q = _.extend (q, { "proponent": {$in : orgs}});
       }
-      // if (ownership) {
-      //  var owns = ownership.split(',');
-      //  q = _.extend (q, { "ownershipData": { $elemMatch: { organization: ownership }}});
-      // }
-      // console.log("q:", q);
-      // console.log("limit:", limit);
-      // console.log("limit:", Number(limit));
-      // console.log("page:", Number(page));
-      // console.log("skip:", page*limit);
       var doFind = function() {
         return self.model.find(q)
           .sort(sort)
@@ -378,13 +350,13 @@ _.extend (DBModel.prototype, {
       if (getCount) {
         self.model.find(q).count(function(e, count) {
           doFind()
-          .then(function(results) {
-            resolve({ count: count, results: results });
-          }, self.complete(reject, 'findmany'));
+            .then(function(results) {
+              resolve({ count: count, results: results });
+            }, self.complete(reject, 'findmany'));
         });
       } else {
         doFind()
-        .then(resolve, self.complete(reject, 'findmany'));
+          .then(resolve, self.complete(reject, 'findmany'));
       }
 
       if (self.resetAccess) {
@@ -397,16 +369,15 @@ _.extend (DBModel.prototype, {
     var self = this;
     query = query || {};
     return new Promise (function (resolve, reject) {
-      if (self.err) return reject (self.err);
+      if (self.err) {return reject (self.err);}
       var q = _.extend ({}, self.baseQ, query);
-      // console.log ('q = ',q);
       self.model.find (q)
-      .sort (sort)
-      .limit (1)
-      .populate (self.populate)
-      .select (fields)
-      .exec ()
-      .then (resolve, self.complete (reject, 'findfirst'));
+        .sort (sort)
+        .limit (1)
+        .populate (self.populate)
+        .select (fields)
+        .exec ()
+        .then (resolve, self.complete (reject, 'findfirst'));
       if (self.resetAccess) {
         self.resetAccess = false;
         self.setAccess ('read');
@@ -417,29 +388,27 @@ _.extend (DBModel.prototype, {
     var self = this;
     return new Promise (function (resolve, reject) {
       self.findFirst (query, fields, sort).then (function (a) {
-        if (a && a.length > 0) return a[0];
-        else return null;
+        if (a && a.length > 0) {return a[0];}
+        else {return null;}
       })
-      .catch (resolve, reject);
+        .catch (resolve, reject);
     });
   },
   distinct : function (field, query) {
     var self = this;
     query = query || {};
     return new Promise (function (resolve, reject) {
-      if (self.err) return reject (self.err);
+      if (self.err) {return reject (self.err);}
       var q = _.extend ({}, self.baseQ, query);
       self.model.distinct (field, q)
-      .exec ()
-      .then (resolve, self.complete (reject, 'distinct'));
+        .exec ()
+        .then (resolve, self.complete (reject, 'distinct'));
     });
   },
   findAndUpdate : function (obj) {
     var self = this;
-  // console.log (JSON.stringify (obj, null, 4));
     return new Promise (function (resolve, reject) {
       self.model.findOne ({_id:obj._id}, function (err, doc) {
-        // console.log ("DOC:",doc);
         if (doc) {
           doc.set (obj);
           doc.save ().then (resolve, self.complete (reject, 'findandupdate'));
@@ -451,7 +420,6 @@ _.extend (DBModel.prototype, {
   },
   newFromObject: function (obj) {
     var self = this;
-    // console.log (self.name +' newthing = ', obj);
     var m = new self.model (obj);
     return this.saveDocument (m);
   },
@@ -467,13 +435,11 @@ _.extend (DBModel.prototype, {
   // -------------------------------------------------------------------------
   saveDocument : function (doc) {
     var self = this;
-    //console.log('saveDocument doc = ', JSON.stringify(doc, null, 4));
-    //console.log('saveDocument roles = ', JSON.stringify(self.roles, null, 4));
     return new Promise (function (resolve, reject) {
       if (!self.force && self.useRoles && !self.hasPermission (self.userRoles, doc.write)) {
         return reject (new Error ('saveDocument: Write operation not permitted for this '+self.name+' object'));
       }
-      if (self.useAudit) doc.setAuditFields (self.user);
+      if (self.useAudit) {doc.setAuditFields (self.user);}
       doc.save ().then (resolve, self.complete (reject, 'savedocument'));
     });
   },
@@ -483,7 +449,7 @@ _.extend (DBModel.prototype, {
   //
   // -------------------------------------------------------------------------
   setDocument : function (doc, values) {
-    return new Promise (function (resolve, reject) {
+    return new Promise (function (resolve/* , reject */) {
       resolve (doc.set (values));
     });
   },
@@ -496,7 +462,7 @@ _.extend (DBModel.prototype, {
     var self = this;
     return new Promise (function (resolve, reject) {
       var m = new self.model (o);
-      if (!m) return reject (new Error ('newDocument: Cannot create new '+self.name));
+      if (!m) {return reject (new Error ('newDocument: Cannot create new '+self.name));}
       return resolve (m);
     });
   },
@@ -531,12 +497,9 @@ _.extend (DBModel.prototype, {
   // -------------------------------------------------------------------------
   addPermissions : function (model) {
     var self = this;
-    //console.log ('dbmodel.addPermissions (1) context = ' + JSON.stringify(self.context));
-    //console.log ('dbmodel.addPermissions (2) user = ' + JSON.stringify(self.user.username));
-    //console.log ('dbmodel.addPermissions (3) resource = ' + JSON.stringify(model._id));
 
     return new Promise (function (resolve, reject) {
-      if (!model) resolve (model);
+      if (!model) {resolve (model);}
       else if (self.isAdmin) {
         _.each (model.allPermissions (), function (key) {
           model.userCan[key] = true;
@@ -547,24 +510,21 @@ _.extend (DBModel.prototype, {
         _.each (model.allPermissions (), function (key) {
           model.userCan[key] = false;
         });
-        //console.log ('dbmodel.addPermissions (4) access.userPermissions...');
         access.userPermissions ({
           context  : self.context,
           user     : self.user.username,
           resource : model._id
         })
-        .then (function (ps) {
-          //console.log ('dbmodel.addPermissions (5) access.userPermissions result = ', JSON.stringify(ps));
-          ps.map (function (perm) {
-            model.userCan[perm] = true;
-          });
-          model.userCan.read = self.hasPermission (self.roles, model.read);
-          model.userCan.write = self.hasPermission (self.roles, model.write);
-          model.userCan.delete = self.hasPermission (self.roles, model.delete);
-          //console.log ('dbmodel.addPermissions (6) access.userPermissions model.userCan = ', JSON.stringify(model.userCan));
-          return model;
-        })
-        .then (resolve, self.complete (reject, 'addPermissions'));
+          .then (function (ps) {
+            ps.map (function (perm) {
+              model.userCan[perm] = true;
+            });
+            model.userCan.read = self.hasPermission (self.roles, model.read);
+            model.userCan.write = self.hasPermission (self.roles, model.write);
+            model.userCan.delete = self.hasPermission (self.roles, model.delete);
+            return model;
+          })
+          .then (resolve, self.complete (reject, 'addPermissions'));
       }
     });
   },
@@ -575,13 +535,10 @@ _.extend (DBModel.prototype, {
   // -------------------------------------------------------------------------
   decoratePermission : function (models) {
     var self = this;
-    // console.log ('decoratePermission roles', self.roles);
-    // console.log ('decoratePermission isAdmin', self.isAdmin);
     if (_.isArray (models)) {
       return self.decorateCollection ? (Promise.all (models.map (self.addPermissions))) : models;
     } else {
-      return new Promise (function (resolve, reject) {
-        //console.log ('dbmodel.decoratePermission call addPermissions.');
+      return new Promise (function (resolve/* , reject */) {
         resolve (self.addPermissions (models));
       });
     }
@@ -601,35 +558,29 @@ _.extend (DBModel.prototype, {
     // this sets ALL permissions. If the permission is not included then
     // it is essentially deleted
     //
-    model.read   = [];
-    model.write  = [];
+    model.read = [];
+    model.write = [];
     model.delete = [];
     var self = this;
     return access.deleteAllPermissions ({
       resource: model._id
     })
-    .then (function () {
+      .then (function () {
       //
       // everything is empty, now add
       //
-      return self.addModelPermissions (model, definition);
-    });
+        return self.addModelPermissions (model, definition);
+      });
   },
   setModelPermissions : function (model, definition) {
     if (!definition) {
-      // console.log("returning early");
       return Promise.resolve(null);
     }
-    //console.log('setModelPermissions.model = ' + JSON.stringify(model, null, 4));
-    //console.log('setModelPermissions.definition = ' + JSON.stringify(definition, null, 4));
     //
     // this sets only the passed in permissions and leaves the other ones alone
     //
     var promisesPromises = [];
     _.each (definition, function (roles, permission) {
-      //console.log("permission:", JSON.stringify(permission, null, 4));
-      //console.log("roles:", JSON.stringify(roles, null, 4));
-      //console.log("unique roles:", JSON.stringify(_.uniq(roles), null, 4));
       promisesPromises.push (access.setPermissionRoles ({
         resource   : model._id,
         permission : permission,
@@ -641,16 +592,9 @@ _.extend (DBModel.prototype, {
       // this has to be done last becuase it prepends the role
       // with the context for listing
       //
-      //console.log("definition.read:", JSON.stringify(definition.read, null, 4));
-      //console.log("definition.write:", JSON.stringify(definition.write, null, 4));
-      //console.log("definition.delete:", JSON.stringify(definition.delete, null, 4));
-      //console.log("model.read:", JSON.stringify(model.read, null, 4));
-      //console.log("model.write:", JSON.stringify(model.write, null, 4));
-      //console.log("model.delete:", JSON.stringify(model.delete, null, 4));
-      definition.read   = definition.read || model.read;
-      definition.write  = definition.write || model.write;
+      definition.read = definition.read || model.read;
+      definition.write = definition.write || model.write;
       definition.delete = definition.delete || model.delete;
-      //console.log("setRoles:", JSON.stringify(definition, null, 4));
       model.setRoles (definition);
       return definition;
     });
@@ -704,14 +648,13 @@ _.extend (DBModel.prototype, {
     var self = this;
     var Defaults = this.mongoose.model ('_Defaults');
     return new Promise (function (resolve, reject) {
-      // console.log("getModelPermissionDefaults!!:", self.name.toLowerCase());
       Defaults.findOne ({
         resource : self.name.toLowerCase (),
         level    : 'global',
         type     : 'default-permissions',
       })
-      .exec ()
-      .then (resolve, self.complete (reject, 'getModelPermissionDefaults'));
+        .exec ()
+        .then (resolve, self.complete (reject, 'getModelPermissionDefaults'));
     });
   },
   // -------------------------------------------------------------------------
@@ -737,108 +680,96 @@ _.extend (DBModel.prototype, {
     // passed in permissions just for the read array, and leverage the default write/delete from
     // the _defaults table.  Do not inherit anything.
 
-    if (!this.useRoles) return Promise.resolve (model);
+    if (!this.useRoles) {return Promise.resolve (model);}
     var self = this;
     return new Promise (function (resolve, reject) {
-      var context     ;
-      var resource    ;
-      var parray      ;
-      var definitions ;
-      var defaults    ;
-      var ownerroles  ;
-      var permissions ;
+      var parray;
+      var defaults;
+      var ownerroles;
+      var permissions;
 
       self.getModelPermissionDefaults ()
-      .then (function (defaultObject) {
-        //console.log("defaultObject: ",JSON.stringify(defaultObject, null, 4));
-        resource    = model._id;
-        parray      = [];
-        definitions = {};
-        defaults    = defaultObject.defaults;
-        ownerroles  = defaults.roles;
-        permissions = defaults.permissions;
-        //
-        // determine the context
-        // default to application
-        // if this is a project, then use its code
-        // otherwise if it has a project, use its project._id
-        // or if not populated use the project field to get the _id
-        //
-        if (defaultObject.context === 'project') {
-          if (self.name.toLowerCase () === 'project') {
-            return model._id;
-          } else if (model.project && model.project.code) {
-            return model.project._id;
-          } else if (model.project) {
-            return self.mongoose.model ('Project').findOne ({_id:model.project}).exec ()
-            .then (function (m) {
-              return m._id;
-            });
+        .then (function (defaultObject) {
+          parray = [];
+          defaults = defaultObject.defaults;
+          ownerroles = defaults.roles;
+          permissions = defaults.permissions;
+          //
+          // determine the context
+          // default to application
+          // if this is a project, then use its code
+          // otherwise if it has a project, use its project._id
+          // or if not populated use the project field to get the _id
+          //
+          if (defaultObject.context === 'project') {
+            if (self.name.toLowerCase () === 'project') {
+              return model._id;
+            } else if (model.project && model.project.code) {
+              return model.project._id;
+            } else if (model.project) {
+              return self.mongoose.model ('Project').findOne ({_id:model.project}).exec ()
+                .then (function (m) {
+                  return m._id;
+                });
+            } else {
+              return 'application';
+            }
           } else {
             return 'application';
           }
-        } else {
-          return 'application';
-        }
-      })
-      .then (function (context) {
-        //console.log("context: ",JSON.stringify(context, null, 4));
+        })
+        .then (function (context) {
         //
         // this part deals with only the roles, it ensures that they are all actually
         // set up properly on the given context
         //
-        _.each (ownerroles, function (roles, owner) {
-          //console.log("owner: ",JSON.stringify(context, null, 4));
-          //console.log("roles: ",JSON.stringify(roles, null, 4));
-          parray.push (access.addRoleDefinitions ({
-            context : context,
-            owner   : owner,
-            roles   : roles
-          }));
-        });
-        //
-        // now set permissions
-        //
-        //console.log("permissions: ",JSON.stringify(permissions, null, 4));
-        if (forceReadPermissions) {
+          _.each (ownerroles, function (roles, owner) {
+            parray.push (access.addRoleDefinitions ({
+              context : context,
+              owner   : owner,
+              roles   : roles
+            }));
+          });
+          //
+          // now set permissions
+          //
+          if (forceReadPermissions) {
           // Set the forceReadPermissions without inheriting the artifact perms
-          permissions.read = forceReadPermissions;
-        }
-        parray.push (self.setModelPermissions (model, permissions));
-        return Promise.all (parray);
-      })
-      .then (function () {
-        if (optionalInheritFromId) {
-          var ArtifactModel = mongoose.model ('Artifact');
-          return ArtifactModel.findOne({_id: optionalInheritFromId});
-        } else {
-          return model;
-        }
-      })
-      .then (function (m) {
-        if (optionalInheritFromId) {
+            permissions.read = forceReadPermissions;
+          }
+          parray.push (self.setModelPermissions (model, permissions));
+          return Promise.all (parray);
+        })
+        .then (function () {
+          if (optionalInheritFromId) {
+            var ArtifactModel = mongoose.model ('Artifact');
+            return ArtifactModel.findOne({_id: optionalInheritFromId});
+          } else {
+            return model;
+          }
+        })
+        .then (function (m) {
+          if (optionalInheritFromId) {
           // If inheriting, make sure public role is removed before setting this
           // document's read perm
-          var inheritPerms = {
-            'read': m.read,
-            'write': m.write,
-            'delete': m.delete
-          };
-          // console.log("inheritPerms:", inheritPerms.read);
-          // Remove public from inheritance mode
-          _.remove(inheritPerms.read, function (elem) {
-            return elem === 'public';
-          });
-          // console.log("inheritPerms:", inheritPerms.read);
-          return self.setModelPermissions (model, inheritPerms);
-        } else {
+            var inheritPerms = {
+              'read': m.read,
+              'write': m.write,
+              'delete': m.delete
+            };
+            // Remove public from inheritance mode
+            _.remove(inheritPerms.read, function (elem) {
+              return elem === 'public';
+            });
+            return self.setModelPermissions (model, inheritPerms);
+          } else {
+            return model;
+          }
+        })
+        .then( function () {
           return model;
-        }
-      })
-      .then( function () {
-        return model;
-      })
-      .then (resolve, self.complete (reject, 'applyModelPermissionDefaults'));
+        })
+        .then (resolve, self.complete (reject, 'applyModelPermissionDefaults'));
     });
   },
   // -------------------------------------------------------------------------
@@ -859,12 +790,11 @@ _.extend (DBModel.prototype, {
   // =========================================================================
   saveAndReturn : function (doc) {
     var self = this;
-    // console.log ('in save and return with ',doc, self);
     return new Promise (function (resolve, reject) {
       self.saveDocument (doc)
-      .then (self.permissions)
-      .then (self.decorate)
-      .then (resolve, self.complete (reject, 'saveAndReturn'));
+        .then (self.permissions)
+        .then (self.decorate)
+        .then (resolve, self.complete (reject, 'saveAndReturn'));
     });
   },
   // -------------------------------------------------------------------------
@@ -878,8 +808,8 @@ _.extend (DBModel.prototype, {
     var self = this;
     return new Promise (function (resolve, reject) {
       self.findUniqueCode (code, '', function (err, newcode) {
-        if (err) return reject (err);
-        else resolve (newcode);
+        if (err) {return reject (err);}
+        else {resolve (newcode);}
       });
     });
   },
@@ -908,18 +838,17 @@ _.extend (DBModel.prototype, {
   // -------------------------------------------------------------------------
   create : function (obj, optionalInheritFromId, forceReadPermissions) {
     var self = this;
-    // console.log ('creating', obj.code);
     return new Promise (function (resolve, reject) {
       self.newDocument (obj)
-      .then ( function (m) {
-        return self.applyModelPermissionDefaults(m, optionalInheritFromId, forceReadPermissions);
-      })
-      .then (self.preprocessAdd)
-      .then (self.saveDocument)
+        .then ( function (m) {
+          return self.applyModelPermissionDefaults(m, optionalInheritFromId, forceReadPermissions);
+        })
+        .then (self.preprocessAdd)
+        .then (self.saveDocument)
       //.then (self.permissions)
-      .then (self.postprocessAdd)
-      .then (self.decorate)
-      .then (resolve, self.complete (reject, 'create'));
+        .then (self.postprocessAdd)
+        .then (self.decorate)
+        .then (resolve, self.complete (reject, 'create'));
     });
   },
 
@@ -934,13 +863,13 @@ _.extend (DBModel.prototype, {
     var self = this;
     return new Promise (function (resolve, reject) {
       self.setDocument (oldDoc, newDoc)
-      .then (self.preprocessUpdate)
-      .then (self.validate)
-      .then (self.saveDocument)
-      .then (self.permissions)
-      .then (self.postprocessUpdate)
-      .then (self.decorate)
-      .then (resolve, self.complete (reject, 'update'));
+        .then (self.preprocessUpdate)
+        .then (self.validate)
+        .then (self.saveDocument)
+        .then (self.permissions)
+        .then (self.postprocessUpdate)
+        .then (self.decorate)
+        .then (resolve, self.complete (reject, 'update'));
     });
   },
 
@@ -953,7 +882,7 @@ _.extend (DBModel.prototype, {
     var self = this;
     return new Promise (function (resolve, reject) {
       self.deleteDocument (doc)
-      .then (resolve, self.complete (reject, 'delete'));
+        .then (resolve, self.complete (reject, 'delete'));
     });
   },
   // -------------------------------------------------------------------------
@@ -965,9 +894,9 @@ _.extend (DBModel.prototype, {
     var self = this;
     return new Promise (function (resolve, reject) {
       self.newDocument ()
-      .then (self.permissions)
-      .then (self.decorate)
-      .then (resolve, self.complete (reject, 'new'));
+        .then (self.permissions)
+        .then (self.decorate)
+        .then (resolve, self.complete (reject, 'new'));
     });
   },
   // -------------------------------------------------------------------------
@@ -981,8 +910,8 @@ _.extend (DBModel.prototype, {
     var self = this;
     return new Promise (function (resolve, reject) {
       self.permissions (model)
-      .then (self.decorate)
-      .then (resolve, self.complete (reject, 'read'));
+        .then (self.decorate)
+        .then (resolve, self.complete (reject, 'read'));
     });
   },
   // -------------------------------------------------------------------------
@@ -997,9 +926,9 @@ _.extend (DBModel.prototype, {
     var self = this;
     return new Promise (function (resolve, reject) {
       self.findMany (q, f, s)
-      .then (self.permissions)
-      .then (self.decorateAll)
-      .then (resolve, self.complete (reject, 'list'));
+        .then (self.permissions)
+        .then (self.decorateAll)
+        .then (resolve, self.complete (reject, 'list'));
     });
   },
   // -------------------------------------------------------------------------
@@ -1008,16 +937,16 @@ _.extend (DBModel.prototype, {
   //
   // -------------------------------------------------------------------------
   one : function (q, f, p) {
-    if (p) this.populate = p;
+    if (p) {this.populate = p;}
     q = q || {};
     q = _.extend ({}, this.baseQ, q);
     f = f || {};
     var self = this;
     return new Promise (function (resolve, reject) {
       self.findOne (q, f)
-      .then (self.permissions)
-      .then (self.decorate)
-      .then (resolve, self.complete (reject, 'one'));
+        .then (self.permissions)
+        .then (self.decorate)
+        .then (resolve, self.complete (reject, 'one'));
     });
   },
   // -------------------------------------------------------------------------
@@ -1027,7 +956,7 @@ _.extend (DBModel.prototype, {
   //
   // -------------------------------------------------------------------------
   listwrite : function (q, f, p) {
-    if (p) this.populate = p;
+    if (p) {this.populate = p;}
     q = q || {};
     if (_.has (this.model.schema.paths, 'dateCompleted')) {
       q.dateCompleted = { "$eq": null };
@@ -1043,7 +972,7 @@ _.extend (DBModel.prototype, {
     });
   },
   listforaccess : function (access, q, f, p) {
-    if (p) this.populate = p;
+    if (p) {this.populate = p;}
     q = q || {};
     this.setAccessOnce (access);
     q = _.extend ({}, this.baseQ, q);
@@ -1056,20 +985,20 @@ _.extend (DBModel.prototype, {
     });
   },
   listIgnoreAccess: function(q, f, p) {
-    if (p) this.populate = p;
+    if (p) {this.populate = p;}
     q = q || {};
     this.setAccessOnce ('ignoring the access permissions, object may not have the correct ones yet...');
     q = _.extend ({}, this.baseQ, q);
     var self = this;
     return new Promise (function (resolve, reject) {
       self.findMany (q, f)
-      .then (self.permissions)
-      .then (self.decorateAll)
-      .then (resolve, self.complete (reject, 'listIgnoreAccess'));
+        .then (self.permissions)
+        .then (self.decorateAll)
+        .then (resolve, self.complete (reject, 'listIgnoreAccess'));
     });
   },
   oneIgnoreAccess : function (q, f, p) {
-    if (p) this.populate = p;
+    if (p) {this.populate = p;}
     q = q || {};
     this.setAccessOnce ('ignoring the access permissions, object may not have the correct ones yet...');
     q = _.extend ({}, this.baseQ, q);
@@ -1077,9 +1006,9 @@ _.extend (DBModel.prototype, {
     var self = this;
     return new Promise (function (resolve, reject) {
       self.findOne (q, f)
-      .then (self.permissions)
-      .then (self.decorate)
-      .then (resolve, self.complete (reject, 'oneIgnoreAccess'));
+        .then (self.permissions)
+        .then (self.decorate)
+        .then (resolve, self.complete (reject, 'oneIgnoreAccess'));
     });
   },
 
@@ -1090,7 +1019,6 @@ _.extend (DBModel.prototype, {
   // -------------------------------------------------------------------------
   complete : function (reject, funct) {
     return function (err) {
-      console.log('dbmodel.'+funct+': '+err.message);
       reject (new Error ('dbmodel.'+funct+': '+err.message));
     };
   }

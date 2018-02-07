@@ -1,82 +1,60 @@
 'use strict';
 
 angular.module('maps')
-	.controller('controllerMap', controllerMap);
+  .controller('controllerMap', controllerMap);
 
 // -----------------------------------------------------------------------------------
 //
 // CONTROLLER: Maps
 //
 // -----------------------------------------------------------------------------------
-controllerMap.$inject = ['$scope', 'Authentication', 'uiGmapGoogleMapApi', '$filter', '_', 'ArtifactModel', 'Document'];
+controllerMap.$inject = ['$scope'];
 /* @ngInject */
-function controllerMap($scope, Authentication, uiGmapGoogleMapApi, $filter, _, ArtifactModel, Document) {
-	var mpl = this;
-	$scope.showPoint = false;
+function controllerMap($scope) {
+  var mpl = this;
+  $scope.showPoint = false;
 
-	if ($scope.project) {
-		mpl.center = {latitude: $scope.project.lat, longitude: $scope.project.lon};
-	} else {
-		mpl.center = {latitude: 54.726668, longitude: -127.647621};
-	}
-	
-	mpl.layers = {};
-	mpl.markers = [];
-	// mpl.KMLLayers = [];
+  if ($scope.project) {
+    mpl.center = {latitude: $scope.project.lat, longitude: $scope.project.lon};
+  } else {
+    mpl.center = {latitude: 54.726668, longitude: -127.647621};
+  }
 
-	mpl.map = {
-		center: mpl.center,
-		zoom: 5,
-		options: {
-			scrollwheel: false,
-			minZoom: 4
-		},
-		markers: mpl.projectFiltered // array of models to display
-	};
+  mpl.layers = {};
+  mpl.markers = [];
 
-	$scope.$watch('showPoint', function(newValue){
-		if (newValue) {
-			mpl.projectFiltered = mpl.markers;
-		} else {
-			mpl.projectFiltered = [];
-		}
-	});
+  mpl.map = {
+    center: mpl.center,
+    zoom: 5,
+    options: {
+      scrollwheel: false,
+      minZoom: 4
+    },
+    markers: mpl.projectFiltered // array of models to display
+  };
 
-	$scope.$watch('project', function(newValue) {
-		if (newValue) {
+  $scope.$watch('showPoint', function(newValue){
+    if (newValue) {
+      mpl.projectFiltered = mpl.markers;
+    } else {
+      mpl.projectFiltered = [];
+    }
+  });
 
-			mpl.center = {
-				latitude: newValue.lat,
-				longitude: newValue.lon
-			};
+  $scope.$watch('project', function(newValue) {
+    if (newValue) {
 
-			mpl.markers.push({
-				id: newValue._id,
-				latitude: newValue.lat,
-				longitude: newValue.lon
-			});
+      mpl.center = {
+        latitude: newValue.lat,
+        longitude: newValue.lon
+      };
 
-			// // Go through the project's artifacts, and run through all their
-			// // main documents and supporting documents.  If a KML is detected,
-			// // show it.  This should behave as per what the user can/can't see
-			// // with respect to their Artifact/Document privileges.
-
-			// // Mem doesn't have artifacts (yet)
-			// Document.getProjectDocuments(newValue._id,false).then( function(res) {
-			// 	_.each(res, function (doc) {
-			// 		if (doc.internalExt === 'kml' || doc.internalExt === 'kmz') {
-			// 			console.log("Adding layer:", doc._id);
-			// 			var kmlURL = window.location.protocol + "//" + window.location.host + "/api/document/" + doc._id + "/fetch";
-			// 			mpl.KMLLayers.push({
-			// 				url: kmlURL,
-			// 				label: doc.internalOriginalName,
-			// 				show: true,
-			// 				_id: doc._id
-			// 			});
-			// 		}
-			// 	});
-			// });
-			$scope.showPoint = true;
-		}
-	});
+      mpl.markers.push({
+        id: newValue._id,
+        latitude: newValue.lat,
+        longitude: newValue.lon
+      });
+      $scope.showPoint = true;
+    }
+  });
 }

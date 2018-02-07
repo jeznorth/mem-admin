@@ -85,119 +85,119 @@
 var path = require('path');
 var genSchema = require (path.resolve('./modules/core/server/controllers/core.schema.controller'));
 var config 	= require(path.resolve('./config/config'));
-var _  = require ('lodash');
+var _ = require ('lodash');
 
 genSchema ('TypesSchema', {
-	projectFolderType           : { type:String, default:'' },
-	projectFolderSubTypeObjects : []
+  projectFolderType           : { type:String, default:'' },
+  projectFolderSubTypeObjects : []
 });
 
 genSchema ('SubTypesSchema', {
-	projectFolderSubType : { type:String, default:'' },
-	projectFolderNames   : []
+  projectFolderSubType : { type:String, default:'' },
+  projectFolderNames   : []
 });
 
 module.exports = genSchema ('Document', {
-	__audit                 : true,  // who what when
-	__access                : ['publish', 'unPublish'],
-	project                 : { type:'ObjectId', ref:'Project', default:null },
-	directoryID             : { type:Number, default: 0 },
+  __audit                 : true, // who what when
+  __access                : ['publish', 'unPublish'],
+  project                 : { type:'ObjectId', ref:'Project', default:null },
+  directoryID             : { type:Number, default: 0 },
 
-	displayName             : { type: String, default: ''},
-	description             : { type:String, default:'' },
+  displayName             : { type: String, default: ''},
+  description             : { type:String, default:'' },
 
-	// For MEM documentDate is the date the document was produced.
-	// For MEM inspection category the document date is labelled "Inspection Date"
-	documentDate            : { type: Date, default: null },
-	documentDateDisplayMnYr : { type:Boolean, default:false },
+  // For MEM documentDate is the date the document was produced.
+  // For MEM inspection category the document date is labelled "Inspection Date"
+  documentDate            : { type: Date, default: null },
+  documentDateDisplayMnYr : { type:Boolean, default:false },
 
-	dateAdded               : { type: Date, default: Date.now },
-	dateUpdated             : { type: Date, default: Date.now },
-	dateUploaded            : { type: Date, default: null },
-	datePosted 				: { type: Date, default: Date.now },
-	dateReceived			: { type: Date, default: Date.now },
+  dateAdded               : { type: Date, default: Date.now },
+  dateUpdated             : { type: Date, default: Date.now },
+  dateUploaded            : { type: Date, default: null },
+  datePosted 				: { type: Date, default: Date.now },
+  dateReceived			: { type: Date, default: Date.now },
 
-	updatedBy               : { type:'ObjectId', ref:'User', default:null },
-	projectFolderURL        : { type:String, default:'' }, // The specific DirectoryID instance of a collection of documents
-	projectFolderAuthor     : { type:String, default:'' },
-	documentEPICId          : { type:Number, default:0, index:true },
-	documentEPICProjectId   : { type:Number, default:0, index:true },
-	documentFileName        : { type:String, default:'' }, // the name of the file when downloaded
-	documentFileURL         : { type:String, default:'' },
-	documentFileSize        : { type:String, default:'' }, // Looks like everything is in KB
-	documentFileFormat      : { type:String, default:'' },
-	documentVersion         : { type:Number, default:0 }, // Used for keeping track of this documents version.
-	documentIsLatestVersion : { type:Boolean, default:true }, // We assume we are the latest. Default will be false
-	//TODO for MEM all doc source are empty
-	documentSource 			: { type:String, default:'' }, // Source = comments or generic or signature file
-	// when we hook in the reviewable interface which will
-	// decide what is the latest based on approval of such
-	// TODO for MEM documentIsInReview can this be removed?
-	documentIsInReview      : { type:Boolean, default:false }, // Used to flag if this entry is a reviewable entry.
-	documentAuthor          : { type:String, default:'' },  // NB: We should add a document author in addition to the folderAuthor.
-	// discontinue use of documentType and change to use documentCategories
-	// documentType            : { type:String, default: null },
-	documentCategories      : [ { type:String, default: null } ],
-	internalURL             : { type:String, default:'' },
-	internalOriginalName    : { type:String, default:'' },
-	internalName            : { type:String, default:'' },
-	internalMime            : { type:String, default:'' },
-	internalExt             : { type:String, default:'' },
-	internalSize            : { type:Number, default:0 },
-	internalEncoding        : { type:String, default:'' },
-	//TODO for MEM all old data is empty
-	oldData                 : { type:String, default:'' },
+  updatedBy               : { type:'ObjectId', ref:'User', default:null },
+  projectFolderURL        : { type:String, default:'' }, // The specific DirectoryID instance of a collection of documents
+  projectFolderAuthor     : { type:String, default:'' },
+  documentEPICId          : { type:Number, default:0, index:true },
+  documentEPICProjectId   : { type:Number, default:0, index:true },
+  documentFileName        : { type:String, default:'' }, // the name of the file when downloaded
+  documentFileURL         : { type:String, default:'' },
+  documentFileSize        : { type:String, default:'' }, // Looks like everything is in KB
+  documentFileFormat      : { type:String, default:'' },
+  documentVersion         : { type:Number, default:0 }, // Used for keeping track of this documents version.
+  documentIsLatestVersion : { type:Boolean, default:true }, // We assume we are the latest. Default will be false
+  //TODO for MEM all doc source are empty
+  documentSource 			: { type:String, default:'' }, // Source = comments or generic or signature file
+  // when we hook in the reviewable interface which will
+  // decide what is the latest based on approval of such
+  // TODO for MEM documentIsInReview can this be removed?
+  documentIsInReview      : { type:Boolean, default:false }, // Used to flag if this entry is a reviewable entry.
+  documentAuthor          : { type:String, default:'' }, // NB: We should add a document author in addition to the folderAuthor.
+  // discontinue use of documentType and change to use documentCategories
+  // documentType            : { type:String, default: null },
+  documentCategories      : [ { type:String, default: null } ],
+  internalURL             : { type:String, default:'' },
+  internalOriginalName    : { type:String, default:'' },
+  internalName            : { type:String, default:'' },
+  internalMime            : { type:String, default:'' },
+  internalExt             : { type:String, default:'' },
+  internalSize            : { type:Number, default:0 },
+  internalEncoding        : { type:String, default:'' },
+  //TODO for MEM all old data is empty
+  oldData                 : { type:String, default:'' },
 
-	order                   : { type: Number, default: Date.now},
-	// TODO for MEM all eaoStatus are empty
-	eaoStatus               : { type:String, default:'', enum:['', 'Unvetted', 'Rejected', 'Deferred', 'Accepted', 'Published', 'Spam'] },// for use with Public Comment Attachments...
+  order                   : { type: Number, default: Date.now},
+  // TODO for MEM all eaoStatus are empty
+  eaoStatus               : { type:String, default:'', enum:['', 'Unvetted', 'Rejected', 'Deferred', 'Accepted', 'Published', 'Spam'] },// for use with Public Comment Attachments...
 
-	// TODO for MEM related docs are empty
-	relatedDocuments        : [ { type: 'ObjectId', ref: 'Document' } ],
+  // TODO for MEM related docs are empty
+  relatedDocuments        : [ { type: 'ObjectId', ref: 'Document' } ],
 
-	collections             : [ { type: 'ObjectId', ref: 'Collection' } ],
+  collections             : [ { type: 'ObjectId', ref: 'Collection' } ],
 
-	keywords                : [ { type:'String'} ],
-	documentId              : { type:'String', default: null }, // will be used as an id into other systems (ex MEM, MMTI, to be entered manually)
+  keywords                : [ { type:'String'} ],
+  documentId              : { type:'String', default: null }, // will be used as an id into other systems (ex MEM, MMTI, to be entered manually)
 
-	// supporting data for inspection document Types
-	// replacing { type: { inspectorInitials: { type:'String', default: null}, followup: { type:'String', default: null} }
-	inspectionReport        : {
-		type: {
-			accompanyingInspectors	: { type:'String', default: null},
-			associatedAuthorization	: { type:'String', default: null}, // free text
-			inspectionNumber	: { type:'String', default: null}, // mandatory
-			inspectorName		: { type:'String', default: null}, // mandatory
-			mineManager		: { type:'String', default: null}, // free text
-			dateReportIssued	: { type: Date, default: null }, // Inspection Date
-			dateResponse	: { type: Date, default: null }, // Inspection Report Response Date
-			dateFollowUp	: { type: Date, default: null }, // Follow Up Date
-			personsContacted	: { type:'String', default: null} // free text multi line
-		},
-		default: null
-	},
+  // supporting data for inspection document Types
+  // replacing { type: { inspectorInitials: { type:'String', default: null}, followup: { type:'String', default: null} }
+  inspectionReport        : {
+    type: {
+      accompanyingInspectors	: { type:'String', default: null},
+      associatedAuthorization	: { type:'String', default: null}, // free text
+      inspectionNumber	: { type:'String', default: null}, // mandatory
+      inspectorName		: { type:'String', default: null}, // mandatory
+      mineManager		: { type:'String', default: null}, // free text
+      dateReportIssued	: { type: Date, default: null }, // Inspection Date
+      dateResponse	: { type: Date, default: null }, // Inspection Report Response Date
+      dateFollowUp	: { type: Date, default: null }, // Follow Up Date
+      personsContacted	: { type:'String', default: null} // free text multi line
+    },
+    default: null
+  },
 
-	virtuals__ : [
-		{name:'inspectionType', get: inspectionType}
-	]
+  virtuals__ : [
+    {name:'inspectionType', get: inspectionType}
+  ]
 });
 
 function inspectionType() {
-	var categories = this.documentCategories || [];
-	// types with shortest length last
-	var inspectionReportTypes = config.inspectionReportTypes;// ['Inspection Report Response', 'Inspection Report Follow Up', 'Inspection Report'];
-	// see copy of this same code on client: doc-categories.js
-	var iType = null;
-	for(var i = 0; i < categories.length && !iType; i++) {
-		var cat = categories[i];
-		for (var k=0; k < inspectionReportTypes.length && !iType; k++) {
-			var type = inspectionReportTypes[k];
-			if (_.startsWith(cat,type)) {
-				iType = type;
-			}
-		}
-	}
-	return iType;
+  var categories = this.documentCategories || [];
+  // types with shortest length last
+  var inspectionReportTypes = config.inspectionReportTypes;// ['Inspection Report Response', 'Inspection Report Follow Up', 'Inspection Report'];
+  // see copy of this same code on client: doc-categories.js
+  var iType = null;
+  for(var i = 0; i < categories.length && !iType; i++) {
+    var cat = categories[i];
+    for (var k=0; k < inspectionReportTypes.length && !iType; k++) {
+      var type = inspectionReportTypes[k];
+      if (_.startsWith(cat,type)) {
+        iType = type;
+      }
+    }
+  }
+  return iType;
 }
 
 

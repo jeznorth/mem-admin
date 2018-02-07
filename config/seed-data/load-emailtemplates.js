@@ -28,22 +28,22 @@ module.exports = function () {
   console.log('Email template seeding starting...');
   return promise.all(data.map(function (d) {
     return new promise(function (resolve, reject) {
-        // need to tweak the data for upserting...
-        var upsertData = d.toObject();
-        delete upsertData._id;
-        // use case insensitive searches... more reliable.
-        EmailTemplate.findOneAndUpdate({name: { $regex : new RegExp(d.name, "i") }, code: { $regex : new RegExp(d.code, "i") }, group: { $regex : new RegExp(d.group, "i") }}, upsertData, {upsert : true, 'new' : true}, function(err, doc){
-            if (err) {
-              console.log('Email Template upsert failed: ' + err.toString() + ': ' + JSON.stringify(d));
-              reject(new Error(err));
-            } else {
-              //console.log('Email Template upsert completed');
-              resolve(doc);
-            }
-        });
+      // need to tweak the data for upserting...
+      var upsertData = d.toObject();
+      delete upsertData._id;
+      // use case insensitive searches... more reliable.
+      EmailTemplate.findOneAndUpdate({name: { $regex : new RegExp(d.name, "i") }, code: { $regex : new RegExp(d.code, "i") }, group: { $regex : new RegExp(d.group, "i") }}, upsertData, {upsert : true, 'new' : true}, function(err, doc){
+        if (err) {
+          console.log('Email Template upsert failed: ' + err.toString() + ': ' + JSON.stringify(d));
+          reject(new Error(err));
+        } else {
+          //console.log('Email Template upsert completed');
+          resolve(doc);
+        }
       });
-    }))
-  .then(function () {
-    console.log('Email template seeding done.');
-  });
+    });
+  }))
+    .then(function () {
+      console.log('Email template seeding done.');
+    });
 };

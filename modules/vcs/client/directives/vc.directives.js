@@ -7,45 +7,44 @@ angular.module ('vcs')
 // directive for listing vcs
 //
 // -------------------------------------------------------------------------
-.directive ('tmplVcList', function () {
-	return {
-		restrict: 'E',
-		templateUrl: 'modules/vcs/client/views/vc-list.html',
-		controller: 'controllerVcList',
-		controllerAs: 'data'
-	};
-})
+  .directive ('tmplVcList', function () {
+    return {
+      restrict: 'E',
+      templateUrl: 'modules/vcs/client/views/vc-list.html',
+      controller: 'controllerVcList',
+      controllerAs: 'data'
+    };
+  })
 // -------------------------------------------------------------------------
 //
 // directive for adding or editing a vc
 //
 // -------------------------------------------------------------------------
-.directive ('editVcModal', ['$uibModal','$rootScope', function ($uibModal, $rootScope) {
-	return {
-		restrict: 'A',
-		scope: {
-			collection: '=',
-			vc: '=',
-			mode: '='
-		},
-		link : function (scope, element, attrs) {
-			// console.log('editVcModal is running');
-			element.on ('click', function () {
-				var modalView = $uibModal.open ({
-					animation    : true,
-					templateUrl  : 'modules/vcs/client/views/vc-edit.html',
-					controller   : 'controllerEditVcModal',
-					controllerAs : 'd',
-					scope        : scope,
-					size         : 'lg'
-				});
-				modalView.result.then (function (model) {
-					$rootScope.$broadcast('refreshVcList');
-				}, function () {});
-			});
-		}
-	};
-}])
+  .directive ('editVcModal', ['$uibModal','$rootScope', function ($uibModal, $rootScope) {
+    return {
+      restrict: 'A',
+      scope: {
+        collection: '=',
+        vc: '=',
+        mode: '='
+      },
+      link : function (scope, element/* , attrs */) {
+        element.on ('click', function () {
+          var modalView = $uibModal.open ({
+            animation    : true,
+            templateUrl  : 'modules/vcs/client/views/vc-edit.html',
+            controller   : 'controllerEditVcModal',
+            controllerAs : 'd',
+            scope        : scope,
+            size         : 'lg'
+          });
+          modalView.result.then (function (/* model */) {
+            $rootScope.$broadcast('refreshVcList');
+          }, function () {});
+        });
+      }
+    };
+  }])
 
 // -------------------------------------------------------------------------
 //
@@ -54,128 +53,123 @@ angular.module ('vcs')
 // so, essentially an artifact chooser
 //
 // -------------------------------------------------------------------------
-.directive ('vcLinker', function ($uibModal, VcModel, _) {
-	return {
-		restrict: 'A',
-		scope: {
-			project: '=',
-			vc: '=',
-			vcs: '=',
-			vclist: '='
-		},
-		link : function(scope, element, attrs) {
-			element.on('click', function () {
-				$uibModal.open ({
-					animation: true,
-					templateUrl: 'modules/vcs/client/views/vc-picker.html',
-					controllerAs: 's',
-					size: 'md',
-					windowClass: 'vc-chooser-view',
-					controller: function ($scope, $uibModalInstance) {
-						var s = this;
-						s.selected = scope.vclist;
-						s.vcs = scope.vcs; // The list of all current vcs on the project
-						s.cancel = function () { $uibModalInstance.dismiss ('cancel'); };
-						s.findById = function (id) {
-							for (var i = 0; i < s.selected.length; i++) {
-						        if (s.selected[i]._id === id) {
-						            return i;
-						        }
-						    }
-						    return -1;
-						};
-						s.ok = function () {
-							// finish up and test.. maybe remove/create new directive
-							scope.vc.subComponents = s.selected;
-							$uibModalInstance.close (s.selected);
-						};
-						s.dealwith = function (vc) {
-							var i = s.findById (vc._id);
-							if (i !== -1) {
-								s.selected.splice (i, 1);
-							}
-							else {
-								s.selected.push (vc);
-							}
-						};
-					}
-				})
-				.result.then (function (data) {
-					// console.log ('selected = ', data);
-				})
-				.catch (function (err) {});
-			});
-		}
-	};
-})
-.directive ('vcChooser', function ($uibModal, VcModel, _) {
-	return {
-		restrict: 'A',
-		scope: {
-			project: '=',
-			current: '=',
-			pillars: '=',
-			topics: '='
-		},
-		link : function(scope, element, attrs) {
-			element.on('click', function () {
-				$uibModal.open ({
-					animation: true,
-					templateUrl: 'modules/vcs/client/views/vc-chooser.html',
-					controllerAs: 's',
-					size: 'md',
-					windowClass: 'vc-chooser-view',
-					resolve: {
-						vcs: function (VcModel) {
-							return VcModel.forProject (scope.project._id);
-						}
-					},
-					controller: function ($scope, $uibModalInstance, vcs) {
-						var s = this;
-						s.selected = scope.current;
-						s.vcs = vcs;
-						var index = vcs.reduce (function (prev, next) {
-							prev[next._id] = next;
-							return prev;
-						}, {});
-						s.cancel = function () { $uibModalInstance.dismiss ('cancel'); };
-						s.ok = function () {
-							var pills = {};
-							var tops = [];
-							scope.pillars.splice (0);
-							scope.topics.splice (0);
-							tops = s.selected.map (function (e) {
-								pills[index[e].pillar] = 1;
-								// jsherman - 20160804: chooser displays the title, so let's return title to the caller, not name.
-								return index[e].title;
-							});
-							scope.pillars = _.keys (pills);
-							scope.topics = tops;
+  .directive ('vcLinker', function ($uibModal) {
+    return {
+      restrict: 'A',
+      scope: {
+        project: '=',
+        vc: '=',
+        vcs: '=',
+        vclist: '='
+      },
+      link : function(scope, element/* , attrs */) {
+        element.on('click', function () {
+          $uibModal.open ({
+            animation: true,
+            templateUrl: 'modules/vcs/client/views/vc-picker.html',
+            controllerAs: 's',
+            size: 'md',
+            windowClass: 'vc-chooser-view',
+            controller: function ($scope, $uibModalInstance) {
+              var s = this;
+              s.selected = scope.vclist;
+              s.vcs = scope.vcs; // The list of all current vcs on the project
+              s.cancel = function () { $uibModalInstance.dismiss ('cancel'); };
+              s.findById = function (id) {
+                for (var i = 0; i < s.selected.length; i++) {
+                  if (s.selected[i]._id === id) {
+                    return i;
+                  }
+                }
+                return -1;
+              };
+              s.ok = function () {
+                // finish up and test.. maybe remove/create new directive
+                scope.vc.subComponents = s.selected;
+                $uibModalInstance.close (s.selected);
+              };
+              s.dealwith = function (vc) {
+                var i = s.findById (vc._id);
+                if (i !== -1) {
+                  s.selected.splice (i, 1);
+                }
+                else {
+                  s.selected.push (vc);
+                }
+              };
+            }
+          })
+            .result.then (function (/* data */) {
+              // do nothing, but why?
+            })
+            .catch (function (/* err */) {});
+        });
+      }
+    };
+  })
+  .directive ('vcChooser', function ($uibModal, VcModel, _) {
+    return {
+      restrict: 'A',
+      scope: {
+        project: '=',
+        current: '=',
+        pillars: '=',
+        topics: '='
+      },
+      link : function(scope, element/* , attrs */) {
+        element.on('click', function () {
+          $uibModal.open ({
+            animation: true,
+            templateUrl: 'modules/vcs/client/views/vc-chooser.html',
+            controllerAs: 's',
+            size: 'md',
+            windowClass: 'vc-chooser-view',
+            resolve: {
+              vcs: function (VcModel) {
+                return VcModel.forProject (scope.project._id);
+              }
+            },
+            controller: function ($scope, $uibModalInstance, vcs) {
+              var s = this;
+              s.selected = scope.current;
+              s.vcs = vcs;
+              var index = vcs.reduce (function (prev, next) {
+                prev[next._id] = next;
+                return prev;
+              }, {});
+              s.cancel = function () { $uibModalInstance.dismiss ('cancel'); };
+              s.ok = function () {
+                var pills = {};
+                var tops = [];
+                scope.pillars.splice (0);
+                scope.topics.splice (0);
+                tops = s.selected.map (function (e) {
+                  pills[index[e].pillar] = 1;
+                  // jsherman - 20160804: chooser displays the title, so let's return title to the caller, not name.
+                  return index[e].title;
+                });
+                scope.pillars = _.keys (pills);
+                scope.topics = tops;
 
-							//console.log ('tops = ', JSON.stringify(tops));
-							//console.log ('pills = ', JSON.stringify(pills));
-							//console.log ('scope.pillars = ', JSON.stringify(scope.pillars));
-							//console.log ('scope.topics = ', JSON.stringify(scope.topics));
-							$uibModalInstance.close (s.selected);
-						};
-						s.dealwith = function (id) {
-							var i = s.selected.indexOf (id);
-							if (i !== -1) {
-								s.selected.splice (i, 1);
-							}
-							else {
-								s.selected.push (id);
-							}
-						};
-					}
-				})
-				.result.then (function (data) {
-					// console.log ('selected = ', data);
-				})
-				.catch (function (err) {});
-			});
-		}
-	};
-})
+                $uibModalInstance.close (s.selected);
+              };
+              s.dealwith = function (id) {
+                var i = s.selected.indexOf (id);
+                if (i !== -1) {
+                  s.selected.splice (i, 1);
+                }
+                else {
+                  s.selected.push (id);
+                }
+              };
+            }
+          })
+            .result.then (function (/* data */) {
+              // do nothing, but why?
+            })
+            .catch (function (/* err */) {});
+        });
+      }
+    };
+  });
 
-;

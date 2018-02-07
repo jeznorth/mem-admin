@@ -30,8 +30,8 @@ angular.module('utils')
         var forceDirty = false;
 
         var expression, options = {
-          debounce: true
-        }, tinyInstance,
+            debounce: true
+          }, tinyInstance,
           updateView = function(editor) {
             var content = editor.getContent({format: options.format}).trim();
             content = $sce.trustAsHtml(content);
@@ -70,8 +70,8 @@ angular.module('utils')
         var debouncedUpdate = (function(debouncedUpdateDelay) {
           var debouncedUpdateTimer;
           return function(ed) {
-          $timeout.cancel(debouncedUpdateTimer);
-           debouncedUpdateTimer = $timeout(function() {
+            $timeout.cancel(debouncedUpdateTimer);
+            debouncedUpdateTimer = $timeout(function() {
               return (function(ed) {
                 if (ed.isDirty() || forceDirty) {
                   ed.save();
@@ -89,7 +89,7 @@ angular.module('utils')
             ed.on('init', function() {
               ngModel.$render();
               ngModel.$setPristine();
-                ngModel.$setUntouched();
+              ngModel.$setUntouched();
               if (form) {
                 form.$setPristine();
               }
@@ -233,10 +233,10 @@ angular.module('utils')
     function() {
       var UITinymceService = function() {
         var ID_ATTR = 'ui-tinymce';
-      // uniqueId keeps track of the latest assigned ID
-      var uniqueId = 0;
+        // uniqueId keeps track of the latest assigned ID
+        var uniqueId = 0;
         // getUniqueId returns a unique ID
-      var getUniqueId = function() {
+        var getUniqueId = function() {
           uniqueId ++;
           return ID_ATTR + '-' + uniqueId;
         };

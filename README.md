@@ -26,9 +26,10 @@ mem-admin has been built using MongoDB, Express, AngularJS and NodeJS.  See http
 * yarn >= 1.3.2
 
 ## Installation
-Development mode: 
  yarn install
- grunt build && node server.js
+
+## Start in development mode
+ *npm start*
  
 ## Project Status
 

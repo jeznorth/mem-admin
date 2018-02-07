@@ -29,91 +29,80 @@ angular.module(ApplicationConfiguration.applicationModuleName).run(function ($wi
 
 
   // Check authentication before changing state
-  $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-    //console.log('> $stateChangeStart(to = ' +  toState.name + ', from = ' + fromState.name + ')');
-    //console.log('> $stateChangeStart');
-    //console.log('  toState = ', JSON.stringify(toState));
-    //console.log('  toParams = ', JSON.stringify(toParams));
-    //console.log('  fromState = ', JSON.stringify(fromState));
-    //console.log('  fromParams = ', JSON.stringify(fromParams));
+  $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState) {
     //
     // for some states just go, no pre-processing
     //
-    //console.log('ContextService.synced = ', ContextService.isSynced(toState, toParams));
-    if (!!~['authentication.signin', 'forbidden', 'not-found'].indexOf (toState.name)) {
+    if (~['authentication.signin', 'forbidden', 'not-found'].indexOf (toState.name)) {
       return true;
     }
     else {
       var isRouteEnabled = function() {
-        //console.log('isRouteEnabled: ', toState.name);
-        //console.log('ADMIN_FEATURES: ', JSON.stringify(ADMIN_FEATURES));
-        //console.log('FEATURES: ', JSON.stringify(FEATURES));
         var enabled = false;
         var str = toState.name;
         switch(str) {
-          // core.client.menus -> systemMenu
-          case String(str.match(/^admin.emailtemplate.*/)):
-            enabled = 'true' === ADMIN_FEATURES.enableEmailTemplates;
-            break;
-          case String(str.match(/^admin.organization.*/)):
-            enabled = 'true' === ADMIN_FEATURES.enableOrganizations;
-            break;
-          case String(str.match(/^admin.recentactivity.*/)):
-            enabled = 'true' === ADMIN_FEATURES.enableNews;
-            break;
-          case String(str.match(/^admin.template.*/)):
-            enabled = 'true' === ADMIN_FEATURES.enableTemplates;
-            break;
-          case String(str.match(/^admin.topic.*/)):
-            enabled = 'true' === ADMIN_FEATURES.topic;
-            break;
-          case String(str.match(/^admin.user.*/)):
-            enabled = 'true' === ADMIN_FEATURES.enableContacts;
-            break;
+        case String(str.match(/^admin.emailtemplate.*/)):
+          enabled = 'true' === ADMIN_FEATURES.enableEmailTemplates;
+          break;
+        case String(str.match(/^admin.organization.*/)):
+          enabled = 'true' === ADMIN_FEATURES.enableOrganizations;
+          break;
+        case String(str.match(/^admin.recentactivity.*/)):
+          enabled = 'true' === ADMIN_FEATURES.enableNews;
+          break;
+        case String(str.match(/^admin.template.*/)):
+          enabled = 'true' === ADMIN_FEATURES.enableTemplates;
+          break;
+        case String(str.match(/^admin.topic.*/)):
+          enabled = 'true' === ADMIN_FEATURES.topic;
+          break;
+        case String(str.match(/^admin.user.*/)):
+          enabled = 'true' === ADMIN_FEATURES.enableContacts;
+          break;
 
           // core.client.menus -> projectTopMenu
-          case String(str.match(/^p.schedule/)):
-            enabled = 'true' === FEATURES.enableSchedule;
-            break;
-          case String(str.match(/^p.commentperiod.*/)):
-            enabled = 'true' === FEATURES.enablePcp;
-            break;
+        case String(str.match(/^p.schedule/)):
+          enabled = 'true' === FEATURES.enableSchedule;
+          break;
+        case String(str.match(/^p.commentperiod.*/)):
+          enabled = 'true' === FEATURES.enablePcp;
+          break;
 
           // core.client.menus -> projectMenu
-          case String(str.match(/^p.documents$/)):
-            enabled = 'true' === FEATURES.enableDocuments;
-            break;
-          case String(str.match(/^p.collection$/)):
-            enabled = 'true' === FEATURES.enableCollections;
-            break;
-          case String(str.match(/^p.invitation.*/)):
-            enabled = 'true' === FEATURES.enableInvitations;
-            break;
-          case String(str.match(/^p.group.*/)):
-            enabled = 'true' === FEATURES.enableGroups;
-            break;
-          case String(str.match(/^p.communication.*/)):
-            enabled = 'true' === FEATURES.enableUpdates;
-            break;
-          case String(str.match(/^p.complaint.*/)):
-            enabled = 'true' === FEATURES.enableComplaints;
-            break;
-          case String(str.match(/^p.projectcondition.*/)):
-            enabled = 'true' === FEATURES.enableConditions;
-            break;
-          case String(str.match(/^p.ir.*/)):
-            enabled = 'true' === FEATURES.enableCompliance;
-            break;
-          case String(str.match(/^p.vc.*/)):
-            enabled = 'true' === FEATURES.enableVcs;
-            break;
-          case String(str.match(/^p.publiccontent$/)):
-            enabled = 'true' === FEATURES.enablePublicContent;
-            break;
+        case String(str.match(/^p.documents$/)):
+          enabled = 'true' === FEATURES.enableDocuments;
+          break;
+        case String(str.match(/^p.collection$/)):
+          enabled = 'true' === FEATURES.enableCollections;
+          break;
+        case String(str.match(/^p.invitation.*/)):
+          enabled = 'true' === FEATURES.enableInvitations;
+          break;
+        case String(str.match(/^p.group.*/)):
+          enabled = 'true' === FEATURES.enableGroups;
+          break;
+        case String(str.match(/^p.communication.*/)):
+          enabled = 'true' === FEATURES.enableUpdates;
+          break;
+        case String(str.match(/^p.complaint.*/)):
+          enabled = 'true' === FEATURES.enableComplaints;
+          break;
+        case String(str.match(/^p.projectcondition.*/)):
+          enabled = 'true' === FEATURES.enableConditions;
+          break;
+        case String(str.match(/^p.ir.*/)):
+          enabled = 'true' === FEATURES.enableCompliance;
+          break;
+        case String(str.match(/^p.vc.*/)):
+          enabled = 'true' === FEATURES.enableVcs;
+          break;
+        case String(str.match(/^p.publiccontent$/)):
+          enabled = 'true' === FEATURES.enablePublicContent;
+          break;
 
-          default:
-            enabled = true;
-            break;
+        default:
+          enabled = true;
+          break;
         }
         return enabled;
       };
@@ -154,10 +143,8 @@ angular.module(ApplicationConfiguration.applicationModuleName).run(function ($wi
 
       if (isRouteEnabled()) {
         if (!ContextService.isSynced(toState, toParams)) {
-          //console.log('halt!');
           event.preventDefault();
-          ContextService.sync(toState, toParams).then(function(ok) {
-            //console.log('sync good, go!');
+          ContextService.sync(toState, toParams).then(function() {
             if (ContextService.isAllowed(toState.data)) {
               if (prototypeEnabled) {
                 if (!handleCssLoad()) {
@@ -169,13 +156,11 @@ angular.module(ApplicationConfiguration.applicationModuleName).run(function ($wi
             } else {
               $state.go('forbidden');
             }
-          }, function(bad) {
-            //console.log('sync bad...:| ', JSON.stringify(bad));
+          }, function() {
             return false;
           });
         } else {
           // proceed...
-          //console.log('synced... proceed if allowed!');
           if (ContextService.isAllowed(toState.data)) {
             if (prototypeEnabled) {
               return handleCssLoad();
@@ -207,13 +192,11 @@ angular.module(ApplicationConfiguration.applicationModuleName).run(function ($wi
     }
   });
 
-  $rootScope.$on( "$stateChangeError", function( event, toState, toParams, fromState, fromParams, rejection){
-    console.log('$stateChangeError(to = ' +  toState.name + ', from = ' + fromState.name + ')');
+  $rootScope.$on( "$stateChangeError", function( event, toState){
     if (_.startsWith(toState.name, 'admin.prototype.')) {
-      console.log('  error loading prototype, go to prototype data error page.');
       $state.go('prototype-load-error');
     } else {
-      console.log('  other state change error, just log it.');
+      // swallow error
     }
   });
 
@@ -262,29 +245,29 @@ angular.element(document).ready(function () {
 
   // make sure we don't have any issues in ie getting the location.origin...
   if (!window.location.origin) {
-  window.location.origin = window.location.protocol + "//" +
+    window.location.origin = window.location.protocol + "//" +
     window.location.hostname +
     (window.location.port ? ':' + window.location.port : '');
   }
 
   (function (i, s, o, g, r, a, m) {
-		i.GoogleAnalyticsObject = r;
-		i[r] = i[r] || function () {
-				(i[r].q = i[r].q || []).push(arguments);
-			};
-		i[r].l = 1 * new Date();
-		a = s.createElement(o);
-		m = s.getElementsByTagName(o)[0];
-		a.async = 1;
-		a.src = g;
-		m.parentNode.insertBefore(a, m);
-	})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+    i.GoogleAnalyticsObject = r;
+    i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments);
+    };
+    i[r].l = 1 * new Date();
+    a = s.createElement(o);
+    m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m);
+  })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-	// Key for MEM UA-111256359-1
-	window.ga('create', 'UA-111256359-1', 'auto');
-	window.ga('set', 'anonymizeIp', true);
-	window.ga('set', 'hostname', window.location.hostname);
-	window.ga('send', 'pageview');
+  // Key for MEM UA-111256359-1
+  window.ga('create', 'UA-111256359-1', 'auto');
+  window.ga('set', 'anonymizeIp', true);
+  window.ga('set', 'hostname', window.location.hostname);
+  window.ga('send', 'pageview');
 
   function fetchInitData() {
     var initInjector = angular.injector(["ng"]);
@@ -294,8 +277,8 @@ angular.element(document).ready(function () {
     // make them available to the CodeList service (which can parse / refresh as necessary)
     return $http.get('api/codelists?date=' + new Date().getTime()).then(function(response) {
       angular.module(ApplicationConfiguration.applicationModuleName).constant("INIT_DATA.CODE_LISTS", response.data);
-    }, function(errorResponse) {
-      console.log('Error ', errorResponse);
+    }, function(/* errorResponse */) {
+      // swallow rejected promise error
     });
   }
 
@@ -303,7 +286,6 @@ angular.element(document).ready(function () {
     angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
   }
 
-  fetchInitData()
-  .then(bootstrapApplication);
+  fetchInitData().then(bootstrapApplication);
 
 });

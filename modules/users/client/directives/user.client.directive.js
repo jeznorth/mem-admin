@@ -7,10 +7,9 @@ angular
   .directive('tmplUserEntryForm', directiveUserEntryForm)
   .directive('modalSetSignature', directiveSetSignature)
   .directive('modalEditMyProfile', directiveEditMyProfile)
-    .directive('userEntry', directiveUserEntry);
+  .directive('userEntry', directiveUserEntry);
 
-directiveUserEntry.$inject = ['_'];
-function directiveUserEntry(_) {
+function directiveUserEntry() {
   var directive = {
     restrict: 'E',
     templateUrl: 'modules/users/client/views/user-entry.html',
@@ -45,12 +44,11 @@ function directiveUserEntry(_) {
       }
 
       $scope.validate = function () {
+        // eslint-disable-next-line no-useless-escape
         var phonregexp = /^[(]{0,1}[0-9]{3}[)\.\- ]{0,1}[0-9]{3}[\.\- ]{0,1}[0-9]{4}$/;
         if (phonregexp.test($scope.user.phoneNumber)) {
-          // console.log("valid phone number");
           $scope.userForm.phoneNumber.$setValidity('required', true);
         } else {
-          // console.log("invalid phone number");
           $scope.userForm.phoneNumber.$setValidity('required', false);
         }
       };
@@ -72,7 +70,7 @@ function directiveUserEntry(_) {
         var modalDocView = $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-success.html',
-          controller: function ($scope, $state, $uibModalInstance, _) {
+          controller: function ($scope, $state, $uibModalInstance) {
             var self = this;
             self.title = title || 'Success';
             self.msg = msg;
@@ -90,9 +88,9 @@ function directiveUserEntry(_) {
           backdropClass: 'modal-alert-backdrop'
         });
         // do not care how this modal is closed, just go to the desired location...
-        modalDocView.result.then(function (res) {
+        modalDocView.result.then(function (/* res */) {
           transitionCallback();
-        }, function (err) {
+        }, function (/* err */) {
           transitionCallback();
         });
       };
@@ -101,7 +99,7 @@ function directiveUserEntry(_) {
         var modalDocView = $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-error.html',
-          controller: function ($scope, $state, $uibModalInstance, _) {
+          controller: function ($scope, $state, $uibModalInstance) {
             var self = this;
             self.title = title || 'An error has occurred';
             self.msg = msg;
@@ -119,9 +117,9 @@ function directiveUserEntry(_) {
           backdropClass: 'modal-alert-backdrop'
         });
         // do not care how this modal is closed, just go to the desired location...
-        modalDocView.result.then(function (res) {
+        modalDocView.result.then(function (/* res */) {
           transitionCallback();
-        }, function (err) {
+        }, function (/* err */) {
           transitionCallback();
         });
       };
@@ -150,7 +148,7 @@ function directiveUserEntry(_) {
         var modalDocView = $uibModal.open({
           animation: true,
           templateUrl: 'modules/utils/client/views/partials/modal-confirm-delete.html',
-          controller: function ($scope, $state, $uibModalInstance, _) {
+          controller: function ($scope, $state, $uibModalInstance) {
             var self = this;
             self.dialogTitle = "Delete Contact";
             self.name = $scope.user.displayName;
@@ -165,19 +163,18 @@ function directiveUserEntry(_) {
           scope: $scope,
           size: 'md'
         });
-        modalDocView.result.then(function (res) {
+        modalDocView.result.then(function (/* res */) {
           UserModel.deleteId($scope.user._id)
-            .then(function (res) {
+            .then(function (/* res */) {
               // deleted show the message, and go to list...
               $scope.showSuccess('"' + $scope.user.displayName + '"' + ' was deleted successfully.', $scope.internalControl.onDelete, 'Delete Success');
             })
-            .catch(function (res) {
+            .catch(function (/* res */) {
               // could have errors from a delete check...
-              var failure = _.has(res, 'message') ? res.message : undefined;
               $scope.showError('"' + $scope.user.displayName + '"' + ' was not deleted.', [], reloadEdit, 'Delete Error');
             });
         }, function () {
-          //console.log('delete modalDocView error');
+          // swallow rejected promise error
         });
       };
 
@@ -192,12 +189,11 @@ function directiveUserEntry(_) {
           return false;
         }
         var p = (which === 'add') ? UserModel.add($scope.user) : UserModel.save($scope.user);
-        p.then(function (model) {
-            $scope.showSuccess('"' + $scope.user.displayName + '"' + ' was saved successfully.', $scope.internalControl.onSave, 'Save Success');
-          })
-          .catch(function (err) {
-            console.error(err);
-            // alert (err.message);
+        p.then(function (/* model */) {
+          $scope.showSuccess('"' + $scope.user.displayName + '"' + ' was saved successfully.', $scope.internalControl.onSave, 'Save Success');
+        })
+          .catch(function (/* err */) {
+            // swallow rejected promise error
           });
       };
 
@@ -222,15 +218,15 @@ function directiveUserEntry(_) {
 // DIRECTIVE: User Entry Form
 //
 // -----------------------------------------------------------------------------------
-directiveEditMyProfile.$inject = ['$uibModal', '_'];
+directiveEditMyProfile.$inject = ['$uibModal'];
 /* @ngInject */
-function directiveEditMyProfile($uibModal, _) {
+function directiveEditMyProfile($uibModal) {
   var directive = {
     restrict:'A',
     scope : {
       project: '='
     },
-    link : function(scope, element, attrs) {
+    link : function(scope, element/* , attrs */) {
       element.on('click', function() {
         var modalDocView = $uibModal.open({
           animation: true,
@@ -249,7 +245,6 @@ function directiveEditMyProfile($uibModal, _) {
             $scope.enableSave = true;
             $scope.enableEdit = false;
             $scope.enableSignature = true;
-            //$scope.srefReturn = undefined;
 
             var userEditControl = this;
             userEditControl.title = 'Edit Profile';
@@ -274,14 +269,14 @@ function directiveEditMyProfile($uibModal, _) {
   };
   return directive;
 }
-directiveSetSignature.$inject = ['$uibModal', '$rootScope', 'ENV'];
+directiveSetSignature.$inject = ['$uibModal'];
 /* @ngInject */
-function directiveSetSignature($uibModal, $rootScope, ENV) {
+function directiveSetSignature($uibModal) {
   var directive = {
     restrict:'A',
-    link : function(scope, element, attrs) {
+    link : function(scope, element/* , attrs */) {
       element.on('click', function() {
-        var modalDocUpload = $uibModal.open({
+        $uibModal.open({
           animation: true,
           templateUrl: 'modules/documents/client/views/partials/document-upload-signature.html',
           controllerAs: 'sigUp',
@@ -297,8 +292,6 @@ function directiveSetSignature($uibModal, $rootScope, ENV) {
 // DIRECTIVE: Modal Project Schedule
 //
 // -----------------------------------------------------------------------------------
-directiveQuicklinksThumbnails.$inject = [];
-/* @ngInject */
 function directiveQuicklinksThumbnails() {
 
   var directive = {
@@ -314,8 +307,6 @@ function directiveQuicklinksThumbnails() {
 // DIRECTIVE: Company Entry Form
 //
 // -----------------------------------------------------------------------------------
-directiveCompanyEntryForm.$inject = [];
-/* @ngInject */
 function directiveCompanyEntryForm() {
 
   var directive = {
@@ -347,27 +338,6 @@ function directiveUserEntryForm() {
       project: '=',
       company: '=',
       user: '='
-    }
-  };
-  return directive;
-}
-
-// -----------------------------------------------------------------------------------
-//
-// DIRECTIVE: List Users by Organization
-//
-// -----------------------------------------------------------------------------------
-//directiveUsersByOrg.$inject = [];
-function directiveUsersByOrg() {
-  var directive = {
-    restrict: 'E',
-    replace: true,
-    templateUrl: 'modules/users/client/views/users-partials/users-by-org-list.html',
-    controller: 'controllerUsersByOrg',
-    controllerAs: 'usersByOrg',
-    scope: {
-      organizationId: '@',
-      mode: '@'
     }
   };
   return directive;
