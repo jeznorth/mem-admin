@@ -179,5 +179,3 @@ angular.module('comment').factory ('CommentModel', function (ModelBase, _) {
   });
   return new Class ();
 });
-
-
