@@ -5,11 +5,15 @@ plugins {
   id "org.sonarqube" version "2.6.1"
 }
 
+
+println "project_name_extension: $System.env.SONAR_PROJECT_NAME_EXTENSION"
+println "cli project_name_extension: $project_name_extension"
+
 sonarqube {
     properties {
         property "sonar.host.url", "https://sonarqube-mem-mmt-tools.pathfinder.gov.bc.ca"        
-        property "sonar.projectName", "MEM-ADMIN"
-        property "sonar.projectKey", "org.sonarqube:bcgov-mem-admin"
+        property "sonar.projectName", "MEM-ADMIN-$System.env.SONAR_PROJECT_NAME_EXTENSION"
+        property "sonar.projectKey", "org.sonarqube:bcgov-mem-admin-$System.env.SONAR_PROJECT_KEY_EXTENSION"
         property "sonar.projectBaseDir", "../"
         property "sonar.sources", "./modules"
         //property "sonar.tests", "test"
