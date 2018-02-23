@@ -1,45 +1,25 @@
-.edit-project-activity {
-    margin: 0;
-    padding: 0;
-    max-width: 80rem;
-    list-style-type: none;
+// Site Activity Module
+.site-activity {
+  position: relative;
 
-    &__item {
-        &-details {
-            @include flexbox();
-            margin-bottom: 1rem;
+  &__description {
+      display: block;
+      margin-bottom: 3rem;
+  }
 
-            label {
-                @include flex(1 1 auto);
-                font-size: 1.6rem;
-            }
-        }
+  select {
+      width: 15rem;
+  }
 
-        &-description {
-            display: block;
-        }
+  .btn-group {
+      .btn {
+      min-width: 8rem;
 
-        + .edit-project-activity__item {
-            margin-top: 2.5rem;
-            padding-top: 1.5rem;
-            border-top: $hr-rule-border;
-        }
-    }
-
-}
-
-@media (min-width: 768px) {
-    .edit-project-activity {
-        &__item {
-            //@include flexflow(row nowrap);
-
-            label {
-                margin-top: 0.8rem;
-            }
-
-            select {
-                width: 30rem;
-            }
-        }
-    }
+      &.active {
+          color: #fff;
+          background-color: #5cb85c;
+          border-color: #4cae4c;
+      }
+      }
+  }
 }

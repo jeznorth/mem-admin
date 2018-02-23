@@ -61,9 +61,9 @@ angular.module('core')
       require: '^form',
       compile: function (elem, attrs) {
         if (attrs.showErrors.indexOf('skipFormGroupCheck') === -1) {
-          if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
-            throw 'show-errors element does not have the \'form-group\' or \'input-group\' class';
-          }
+          //if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
+          //  throw 'show-errors element does not have the \'form-group\' or \'input-group\' class';
+          //}
         }
         return linkFn;
       }

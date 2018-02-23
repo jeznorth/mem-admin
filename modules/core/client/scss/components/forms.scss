@@ -1,3 +1,5 @@
+$form-control-border-radius: 4px;
+
 form {
 	section {
 		margin-bottom: 2rem;
@@ -13,22 +15,16 @@ form {
 }
 
 fieldset {
-	margin-bottom: 1rem;
-	&:last-child { margin-bottom: 0; }
-}
-
-legend {
-	margin-bottom: 1.5rem;
-	border-bottom: none;
-	font-size: 1.8rem;
-	font-weight: bold;
-
-	em {
-		@extend .form-validation-msg;
+	legend {
+		margin-bottom: 3rem;
+		padding-bottom: 0.75rem;
+		font-size: 1.8rem;
+		font-weight: bold;
+		border-bottom: 3px solid #000;
 	}
 
-	&.no-margin {
-		margin-bottom: 0.5rem;
+	+ fieldset {
+		margin-top: 5rem;
 	}
 }
 
@@ -36,15 +32,51 @@ textarea {
 	resize: vertical;
 }
 
+// Form Layout Items
+.form-footer {
+	@include flexbox();
+	padding-top: 3rem;
+	justify-content: flex-end;
+	&__buttons {
+		@include flex(0 0 auto);
+		.btn {
+			min-width: 8rem;
+		}
+	}
+}
+
 .form-container {
 	padding: 0 2rem;
 }
 
-.form-group {
-	margin-bottom: 2rem;
+.form-control {
+	padding: 1rem;
+	height: auto;
 
-	&.no-margin {
-		margin-bottom: 0;
+	&:active,
+	&:focus {
+		border-color: #ccc;
+		box-shadow: none;
+		outline: none;
+	}
+
+	&[readonly] {
+		box-shadow: none;
+	}
+
+	&-static {
+		padding: 6px 12px;
+		background: #EEE;
+		border: 1px solid #DDD;
+		border-radius: 4px;
+	}
+}
+
+.form-group {
+	margin-bottom: 0;
+
+	+ .form-group {
+		margin-top: 3rem;
 	}
 }
 
@@ -54,41 +86,6 @@ textarea {
 			padding-right: 10px;
 			display: inline-block;
 		}
-	}
-}
-
-.form-control[readonly] {
-	box-shadow: none;
-
-	&:active,
-	&:focus {
-		border-color: #ccc;
-		box-shadow: none;
-		outline: none;
-	}
-}
-
-.form-control-static {
-	padding: 6px 12px;
-	background: #EEE;
-	border: 1px solid #DDD;
-	border-radius: 4px;
-}
-
-.form-validation-msg {
-	margin-left: 0.25rem;
-	font-size: 1.2rem;
-	font-weight: normal;
-	color: #999;
-}
-
-.control-label {
-	em {
-		@extend .form-validation-msg;
-	}
-
-	em.required {
-		display: none;
 	}
 }
 
@@ -193,8 +190,8 @@ $date-time-picker-btn-hover-bg: #ddd;
 
     span.calendar-btn {
       position: absolute;
-      top: 0.3rem;
-      right: 0;
+      top: 0.8rem;
+      right: 0.25rem;
       width: 3.4rem;
       text-align: center;
       pointer-events: none;
@@ -206,7 +203,7 @@ $date-time-picker-btn-hover-bg: #ddd;
       padding: 0;
       padding-right: 0.75rem;
       width: 100%;
-      height: 3.4rem;
+      height: 100%;
       background: transparent;
       text-align: right;
     }
@@ -227,13 +224,23 @@ $date-time-picker-btn-hover-bg: #ddd;
 
 			table {
 				width: 100%;
-				height: 26rem;
+				height: 28rem;
 			}
 		}
 	}
 
 	.dropdown-menu {
 		padding: 0;
+
+		.uib-datepicker {
+      border-radius: 0.5rem;
+			padding: 0.4rem;
+
+			table {
+				width: 100%;
+				height: 25rem;
+			}
+		}
 
 		li {
 			padding: 0.5rem;
@@ -310,12 +317,14 @@ $date-time-picker-btn-hover-bg: #ddd;
 
 // TINY MCE OVERRIDES
 .mce-tinymce {
+	border-radius: 4px;
 	border: 1px solid #ddd;
 }
 
 .mce-content-body {
 	height: auto;
 	min-height: auto;
+	margin: 0 0.5rem;
 	background-color: transparent;
 	font-family: $font-family-sans-serif;
 	font-size: 14px;
@@ -323,6 +332,16 @@ $date-time-picker-btn-hover-bg: #ddd;
 	p { 
 		line-height: 20px;
 	}
+}
+
+.mce-toolbar-grp {
+	border-top-right-radius: $form-control-border-radius;
+	border-top-left-radius: $form-control-border-radius;
+}
+
+.mce-edit-area {
+	border-bottom-right-radius: $form-control-border-radius;
+	border-bottom-left-radius: $form-control-border-radius;
 }
 
 // UI SELECT MODULE
@@ -337,17 +356,17 @@ $date-time-picker-btn-hover-bg: #ddd;
 				margin-bottom: 0;
 				padding: 6px 12px;
 				width: auto !important;
-				height: 34px;
+				height: 41px;
 			}
 		}
 
 		.ui-select-match {
 			&-item {
-				margin-top: 2px;
+				margin-top: 4px;
 				margin-right: 0;
 				margin-bottom: 0;
-				margin-left: 2px;
-				padding: 0.35rem 1rem;
+				margin-left: 4px;
+				padding: 0.5rem 1rem;
 				color: $select-tag-color;
 				border-color: $select-tag-bg;
 				background-color: $select-tag-bg;
@@ -380,7 +399,29 @@ $date-time-picker-btn-hover-bg: #ddd;
 	}
 }
 
+.ui-select-no-choice {
+	padding: 1rem;
+}
+
 // VALIDATION
+.form-validation-msg {
+	margin-left: 0.25rem;
+	font-weight: normal;
+	color: #999;
+}
+
+.control-label {
+	margin-bottom: 0.75rem;
+	
+	em {
+		@extend .form-validation-msg;
+	}
+
+	em.required {
+		display: none;
+	}
+}
+
 .has-error {
 	.control-label {
 		em.required {
@@ -389,7 +430,15 @@ $date-time-picker-btn-hover-bg: #ddd;
 		}
 	}
 
+	.form-control {
+		background: $form-control-error-bg;
+	}
+
 	.mce-tinymce {
 		border-color: $danger-text;
+	}
+
+	.mce-edit-area {
+		background: $form-control-error-bg;
 	}
 }

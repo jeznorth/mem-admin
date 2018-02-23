@@ -1,4 +1,14 @@
+// Tables
 .table {
+  thead {
+    background: #eee;
+      font-size: 1.2rem;
+    }
+
+  th, td {
+    padding: 1rem;
+  }
+
 	.action-x1 {
 		width: 4.5rem;
 	}
@@ -28,7 +38,29 @@
 		padding-right: 0.5rem;
 		text-align: right;
 		vertical-align: middle;
-	}
+  }
+  
+  &.table-hover {
+    tr {
+      &.active {
+        background: $table-row-active-bg;
+
+        td {
+          color: $table-row-active-color;
+          background: transparent;
+        }
+
+        &:hover {
+          background: $table-row-active-hover-bg;
+
+          td {
+            color: $table-row-active-color;
+            background: transparent;
+          }
+        }
+      }
+    }
+  }
 }
 
 .ng-table-page-btn {
@@ -190,18 +222,7 @@
             }
         }
 
-        th, td {
-            &:first-child {
-                padding-left: 1rem;
-            }
-
-            &:last-child {
-                padding-right: 1rem;
-            }
-        }
-
         th {
-            padding: 1rem 0.5rem;
             background-color: $table-header-bg;
             font-size: 1.2rem;
             font-weight: bold;
