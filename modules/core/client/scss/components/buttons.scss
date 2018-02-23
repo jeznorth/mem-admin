@@ -8,9 +8,6 @@ button {
 }
 
 .btn {
-	font-size: $btn-font-size;
-    font-weight: bold;
-    
     .glyphicon {
 		top: 1px;
 		font-size: 1.2rem;
@@ -134,12 +131,15 @@ button {
     }
 }
 
-// BUTTON BAR
+// Button Bar
 .button-bar {
     padding-bottom: 1.5rem;
 }
 
-.button-bar.bottom {
-	padding-top: 1.5rem;
-	padding-bottom: 0;
-}
+// Button Toolbar
+.btn-toolbar {
+    + .form-group {
+      margin-top: 1.5rem;
+    }
+  }
+  

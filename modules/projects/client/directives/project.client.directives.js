@@ -78,14 +78,9 @@ function directiveProjectTombstone() {
     scope: {
       project: '='
     },
-    controller: function($scope, ENV, Authentication) {
-      var c = this;
-      $scope.environment = ENV;
-      c.isEao = (Authentication.user && Authentication.user.roles && Authentication.user.roles.indexOf('eao') > -1);
-      c.isUser = (Authentication.user);
-    },
-
-    controllerAs: 'c'
+    controller: function($scope) {
+      $scope.tailingsImpoundments = parseInt($scope.project.tailingsImpoundments, 10) || 0;
+    }
   };
   return directive;
 }

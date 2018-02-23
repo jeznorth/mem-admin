@@ -136,11 +136,5 @@ angular.module('core').run(['Menus', 'ENV', 'ADMIN_FEATURES', 'FEATURES', functi
     permissions: ['context.listValuedComponents'],
     enable: 'true' === FEATURES.enableVcs
   });
-  Menus.addMenuItem('projectMenu', {
-    title: 'Public Content',
-    state: 'p.publiccontent',
-    permissions: ['context.editProjectPublicContent'],
-    enable: 'true' === FEATURES.enablePublicContent
-  });
 }]);
 

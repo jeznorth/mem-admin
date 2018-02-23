@@ -1,34 +1,32 @@
-.edit-project-form {
-  .view-title-container {
-    .btn {
-      min-width: 8rem;
-    }
-  }
-
-  .form-footer {
-    @include flexbox();
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid #ccc;
-    justify-content: flex-end;
-
-    &__buttons {
-      @include flex(0 0 auto);
-
-      .btn {
-        min-width: 8rem;
-      }
-    }
-  }
-
+.edit-project-info {
   .tab-pane {
-    max-width: 1280px;
+    padding: 4rem;
+  }
+}
+
+.project-operator-table,
+.project-ownership-table {
+  .actions {
+    width: 6rem;
+  }
+  
+  .alias {
+    width: 33.3333%
   }
 
-  .checkbox {
-    label {
-      padding-left: 2rem;
-      font-weight: bold;
-    }
+  .name {
+    width: 33.3333%
+  }
+};
+
+.external-links-table {
+  .actions {
+    width: 10rem;
+  }
+}
+
+.mines-checkbox {
+  label {
+    font-weight: bold;
   }
 }

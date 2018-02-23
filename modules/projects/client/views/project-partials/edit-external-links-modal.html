@@ -12,18 +12,12 @@
   <!-- Required <em> elements should show ONLY when the form has been validated -->
   <form name="linkForm" novalidate>
     <div class="form-group" x-show-errors>
-      <label class="control-label" for="title">Link Title <em>(Required)</em></label>
+      <label class="control-label" for="title">Link Title <em class="required">(Required)</em></label>
       <input class="form-control" id="title" name="title" type="text" placeholder="eg: A website name, document title, etc." ng-model='self.link.title' required />
-      <div ng-messages="linkForm.title.$error" role="alert">
-        <p class="help-block error-text" ng-message="required">Title is required.</p>
-      </div>
     </div>
     <div class="form-group m-b-0" x-show-errors>
-      <label class="control-label" for="url">Link Address (URL) <em>(Required)</em></label>
+      <label class="control-label" for="url">Link Address (URL) <em class="required">(Required)</em></label>
       <input class="form-control" id="url" name="url" type="url" placeholder="eg: http://www.example-website.com" ng-model='self.link.link' required />
-      <div ng-messages="linkForm.url.$error" role="alert">
-        <p class="help-block error-text" ng-message="required">URL is required.</p>
-      </div>
     </div>
   </form>
 
