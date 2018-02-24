@@ -48,6 +48,10 @@
             <label>Tailings Impoundments</label>
             <span class="value">{{ tailingsImpoundments }}</span>
           </div>
+          <div class="detail-row" ng-if="project.intake.operatingjobs">
+            <label>Employment</label>
+            <span class="value">{{ ::project.intake.operatingjobs }}</span>
+          </div>
         </div>
       </div>
     </div>
