@@ -70,6 +70,11 @@ textarea {
 		border: 1px solid #DDD;
 		border-radius: 4px;
 	}
+
+	&.input-sm {
+		padding: 0.5rem;
+		height: 30px;
+	}
 }
 
 .form-group {

@@ -4,44 +4,32 @@
     <div class="view-title__container">
       <div class="view-title__info">
         <h1 class="view-title__info--title">Edit Project &nbsp;&rsaquo;&nbsp; {{project.name ? project.name : "Untitled Project"}}</h1>
-        <span class="view-title__info--last-modified"
-          ng-if="project.dateUpdated">
-          Last Modified {{project.dateUpdated | date : "yyyy-MM-dd"}}
+        <span class="view-title__info--last-modified" ng-if="project.dateUpdated">
+          Last Modified {{project.dateUpdated | date : "yyyy-MM-dd"}} by {{project.updatedBy.displayName}}
         </span>
       </div>
       <div class="view-title__actions">
-        <button class="btn btn-success"
-          ng-click="publishProject(detailsForm.$valid, publicContentForm.$valid)"
-          ng-if="!project.isPublished">
-            Publish Project
+        <button class="btn btn-default" ng-if="!isNew" ng-click="cancelChanges('Cancel Changes', 'Are you sure you would like to exit and discard all changes?', 'Yes', 'No')">
+          Cancel
         </button>
-        <button class="btn btn-warning"
-          ng-click="unpublishProject()"
-          ng-if="project.isPublished">
-            Unpublish Project
+        <button class="btn btn-default" ng-if="isNew" ui-sref="projects">
+          Cancel
         </button>
-        <button class="btn btn-default"
-        ng-if="!isNew"
-          ng-click="cancelChanges('Cancel Changes', 'Are you sure you would like to exit and discard all changes?', 'Yes', 'No')">
-        Cancel
-      </button>
-        <button class="btn btn-default"
-        ng-if="isNew"
-        ui-sref="projects">
-        Cancel
-      </button>
-        <button class="btn btn-primary" type="submit"
-          ng-click="saveProject(detailsForm.$valid, publicContentForm.$valid, form.curTab)">
-        Save
-      </button>
-        <button class="btn btn-danger"
-        ng-click="deleteProject()"
-        ng-if="!isNew && !project.isPublished && project.userCan.delete">
-        <span class="glyphicon glyphicon-trash"></span>
-        <span>Delete Project</span>
-      </button>
+        <button class="btn btn-primary" type="submit" ng-click="saveProject(detailsForm.$valid, publicContentForm.$valid, form.curTab)">
+          Save
+        </button>
+        <button class="btn btn-primary" ng-click="publishProject(detailsForm.$valid, publicContentForm.$valid)" ng-if="!project.isPublished">
+          Publish Project
+        </button>
+        <button class="btn btn-danger" ng-click="unpublishProject()" ng-if="project.isPublished">
+          Unpublish Project
+        </button>
+        <button class="btn btn-danger" ng-click="deleteProject()" ng-if="!isNew && !project.isPublished && project.userCan.delete">
+          <span class="glyphicon glyphicon-trash"></span>
+          <span>Delete Project</span>
+        </button>
+      </div>
     </div>
-  </div>
   </div>
 
   <div class="view-body">
@@ -49,33 +37,26 @@
 
       <!-- TAB NAVIGATION -->
       <ul class="nav nav-tabs" ng-init="form.curTab = currTab || 'Project Details'">
-        <li role="presentation" x-show-errors
-          ng-class="{'active':form.curTab === 'Project Details'}">
-        <a title="Edit Project Details" name="detailsForm"
-          ng-click="form.curTab = 'Project Details'">
-          <span class="glyphicon glyphicon-exclamation-sign"></span>
-          Project Details
-        </a>
-      </li>
-        <li role="presentation" x-show-errors
-          ng-class="{'active':form.curTab === 'Proponent Info'}">
-        <a ng-click="form.curTab = 'Proponent Info'" title="Edit Project Operator" name="proponentForm">
-          <span class="glyphicon glyphicon-exclamation-sign"></span>
-            Operator/Owner
-        </a>
-      </li>
-        <li role="presentation" x-show-errors
-        ng-class="{'active':form.curTab === 'Site Activities'}">
-          <a title="Site Activities" name="activitiesForm"
-          ng-click="form.curTab = 'Site Activities'">
+        <li role="presentation" ng-class="{'active':form.curTab === 'Project Details'}">
+          <a title="Edit Project Details" ng-click="form.curTab = 'Project Details'" name="detailsForm">
             <span class="glyphicon glyphicon-exclamation-sign"></span>
-          Site Activities
-        </a>
-      </li>
-        <li role="presentation" x-show-errors
-          ng-class="{'active':form.curTab === 'Public Content'}">
-          <a title="Public Content" name="publicContentForm"
-            ng-click="form.curTab = 'Public Content'">
+            Project Details
+          </a>
+        </li>
+        <li role="presentation" ng-class="{'active':form.curTab === 'Proponent Info'}">
+          <a ng-click="form.curTab = 'Proponent Info'" title="Edit Project Operator" name="proponentForm">
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            Operator/Owner
+          </a>
+        </li>
+        <li role="presentation" ng-class="{'active':form.curTab === 'Site Activities'}">
+          <a title="Site Activities" name="activitiesForm" ng-click="form.curTab = 'Site Activities'">
+            <span class="glyphicon glyphicon-exclamation-sign"></span>
+            Site Activities
+          </a>
+        </li>
+        <li role="presentation" ng-class="{'active':form.curTab === 'Public Content'}">
+          <a title="Public Content" name="publicContentForm" ng-click="form.curTab = 'Public Content'">
             <span class="glyphicon glyphicon-exclamation-sign"></span>
             mines.nrs.gov.bc.ca
           </a>
@@ -85,65 +66,63 @@
       <!-- PROJECT DETAILS TAB -->
       <div class="tab-pane active" ng-show="form.curTab === 'Project Details'" ng-form="detailsForm">
         <!-- General Information -->
-      <fieldset>
+        <fieldset>
           <legend>General Information</legend>
-        <div class="form-group" x-show-errors>
-          <label class="control-label" for="name">Project Name<em class="required">(Required)</em></label>
-          <input class="form-control" title="Project Name" id="name" name="projectname"
-            ng-model="project.name"
-            ng-change="onChangeProjectName()"
-            required />
-        </div>
-        <div class="form-group" x-show-errors>
-            <label class="control-label" for="shortDesc">Description<em class="required">(Required)</em></label>
-            <textarea title="Project Description" id="shortDesc" name="projectdesc" rows="8"
-            ng-model="project.description"
-              ng-change="onChangeProjectDesc()"
-            ui-tinymce="tinymceOptions"
-            required>
+          <div class="form-group" x-show-errors>
+            <label class="control-label" for="name">Project Name
+              <em class="required">(Required)</em>
+            </label>
+            <input class="form-control" title="Project Name" id="name" name="projectname" ng-model="project.name" ng-change="onChangeProjectName()"
+              required />
+          </div>
+          <div class="form-group" x-show-errors>
+            <label class="control-label" for="shortDesc">Description
+              <em class="required">(Required)</em>
+            </label>
+            <textarea title="Project Description" id="shortDesc" name="projectdesc" rows="8" ng-model="project.description" ng-change="onChangeProjectDesc()"
+              ui-tinymce="tinymceOptions" required>
           </textarea>
-        </div>
+          </div>
           <div class="form-group row">
             <div class="col-md-6" x-show-errors>
               <label class="control-label" for="permitid">Mines Act Permit Number</label>
               <input class="form-control" id="permitid" name="permitid" type="text" ng-model="project.memPermitID">
               <div ng-messages="projectForm.permitid.$error" role="alert">
                 <p class="help-block error-text" ng-message="required">Permit Number is required.</p>
+              </div>
+            </div>
+            <div class="col-md-6" x-show-errors>
+              <label class="control-label" for="phase">Status
+                <em class="required">(Required)</em>
+              </label>
+              <select class="form-control" if="phase" id="phase" name="phase" ng-model='project.currentPhaseCode' ng-change='onChangePhase()'
+                ng-options="key as value for (key, value) in allPhases" required></select>
             </div>
           </div>
-            <div class="col-md-6" x-show-errors>
-            <label class="control-label" for="phase">Status<em class="required">(Required)</em></label>
-            <select class="form-control" if="phase" id="phase" name="phase"
-              ng-model='project.currentPhaseCode'
-              ng-change='onChangePhase()'
-              ng-options="key as value for (key, value) in allPhases"
-              required></select>
-          </div>
-              </div>
           <div class="form-group row">
             <div class="col-sm-6">
               <label class="control-label" for="tailingsImpoundments">Number of Tailings Impoundments</label>
-              <input class="form-control width-auto" id="tailingsImpoundments" name="tailingsImpoundments" type="number" ng-model="tailingsImpoundments" step="any" min="0">
+              <input class="form-control width-auto" id="tailingsImpoundments" name="tailingsImpoundments" type="number" ng-model="tailingsImpoundments"
+                step="any" min="0">
               <div ng-messages="projectForm.tailingsImpoundments.$error" role="alert">
                 <p class="help-block error-text" ng-message="required">Tailings Impoundments is required.</p>
+              </div>
             </div>
           </div>
-        </div>
         </fieldset>
         <!-- Project Type and Commodities -->
         <fieldset>
           <legend>Project Type and Commodities</legend>
           <div class="form-group" x-show-errors>
-            <label class="control-label" for="type">Type<em class="required">(Required)</em></label>
-            <select class="form-control width-auto" title="Project Type" id="type" name="type"
-              ng-model="project.type"
-              ng-change="project.sector = undefined"
-              ng-options="type for type in types"
-              required></select>
+            <label class="control-label" for="type">Type
+              <em class="required">(Required)</em>
+            </label>
+            <select class="form-control width-auto" title="Project Type" id="type" name="type" ng-model="project.type" ng-change="project.sector = undefined"
+              ng-options="type for type in types" required></select>
           </div>
           <div class="form-group" x-show-errors>
-            <ui-select class="form-control" multiple id="commodities" name="commodities"
-              ng-model="project.commodities" ng-required="true"
+            <label for="commodities">Commodities</label>
+            <ui-select class="form-control" multiple id="commodities" name="commodities" ng-model="project.commodities" ng-required="true"
               close-on-select="false">
               <ui-select-match placeholder="Enter a commodity">{{$item}}</ui-select-match>
               <ui-select-choices repeat="c in commoditiesList | filter: $select.search">
@@ -160,37 +139,44 @@
         <fieldset>
           <legend>Location</legend>
           <div class="form-group" x-show-errors>
-            <label class="control-label" for="region">Region<em class="required">(Required)</em></label>
-            <select class="form-control" if="region" id="region" name="region"
-              ng-model='project.region'
-              ng-options="key as value for (key, value) in regions" required></select>
+            <label class="control-label" for="region">Region
+              <em class="required">(Required)</em>
+            </label>
+            <select class="form-control" if="region" id="region" name="region" ng-model='project.region' ng-options="key as value for (key, value) in regions"
+              required></select>
           </div>
           <div class="form-group" x-show-errors>
-            <label class="control-label" for="region">Latitude / Longitude<em class="required">(Required)</em></label>
+            <label class="control-label" for="region">Latitude / Longitude
+              <em class="required">(Required)</em>
+            </label>
             <div class="form-inline">
-              <label class="sr-only">Latitude<em class="required">(Required)</em></label>
-              <input class="form-control" placeholder="Latitude" id="latitude" name="latitude" type="number" step="any"
-              ng-model="project.lat" required />
-              <label class="sr-only">Longitude<em class="required">(Required)</em></label>
-              <input class="form-control" placeholder="Longitude" id="longitude" name="longitude" type="number" step="any"
-              ng-model="project.lon" required />
+              <label class="sr-only">Latitude
+                <em class="required">(Required)</em>
+              </label>
+              <input class="form-control" placeholder="Latitude" id="latitude" name="latitude" type="number" step="any" ng-model="project.lat"
+                required />
+              <label class="sr-only">Longitude
+                <em class="required">(Required)</em>
+              </label>
+              <input class="form-control" placeholder="Longitude" id="longitude" name="longitude" type="number" step="any" ng-model="project.lon"
+                required />
+            </div>
           </div>
-        </div>
         </fieldset>
         <fieldset>
           <legend>External Resources</legend>
-        <div class="row">
-          <div class="col-md-12 form-group" x-show-errors>
-            <label class="control-label" for="epicProjects">Related EPIC Projects</label>
+          <div class="row">
+            <div class="col-md-12 form-group" x-show-errors>
+              <label class="control-label" for="epicProjects">Related EPIC Projects</label>
               <ui-select class="form-control" multiple id="epicProjects" name="epicProjects" ng-model="project.epicProjectCodes" close-on-select="false">
-              <ui-select-match placeholder="Enter a project name">{{$item.name}}</ui-select-match>
-              <ui-select-choices repeat="p.code as p in epicProjectsList | filter: {name: $select.search}">
-                <div ng-bind-html="p.name | highlight: $select.search"></div>
-              </ui-select-choices>
-              <ui-select-no-choice>EPIC projects are currently unavailable.</ui-select-no-choice>
-            </ui-select>
+                <ui-select-match placeholder="Enter a project name">{{$item.name}}</ui-select-match>
+                <ui-select-choices repeat="p.code as p in epicProjectsList | filter: {name: $select.search}">
+                  <div ng-bind-html="p.name | highlight: $select.search"></div>
+                </ui-select-choices>
+                <ui-select-no-choice>EPIC projects are currently unavailable.</ui-select-no-choice>
+              </ui-select>
+            </div>
           </div>
-        </div>
         </fieldset>
 
         <!-- ADDITIONAL INFO -->
@@ -200,72 +186,56 @@
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label" for="capitalinvestment">Capital Investment</label>
-                <input class="form-control" step="any"
-                  name="capitalinvestment"
-                  id="capitalinvestment"
-                  ng-model="project.intake.investment" />
+                <input class="form-control" step="any" name="capitalinvestment" id="capitalinvestment" ng-model="project.intake.investment"
+                />
               </div>
               <div class="form-group">
-                <label class="control-label" for="capitalinvestmentnotes">Investment Notes<em>(Optional)</em></label>
-                <textarea class="form-control" rows="3"
-                  name="capitalinvestmentnotes"
-                  id="capitalinvestmentnotes"
-                  ng-model="project.intake.investmentNotes"></textarea>
+                <label class="control-label" for="capitalinvestmentnotes">Investment Notes
+                  <em>(Optional)</em>
+                </label>
+                <textarea class="form-control" rows="3" name="capitalinvestmentnotes" id="capitalinvestmentnotes" ng-model="project.intake.investmentNotes"></textarea>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label" form="constructionjobs">Construction Jobs</label>
-                <input class="form-control"
-                  name="constructionjobs"
-                  ng-model="project.intake.constructionjobs" />
+                <input class="form-control" name="constructionjobs" ng-model="project.intake.constructionjobs" />
               </div>
               <div class="form-group">
-                <label class="control-label" for="constructionjobsnotes">Construction Jobs Notes<em>(Optional)</em></label>
-                <textarea class="form-control" rows="3"
-                  name="constructionjobsnotes"
-                  id="constructionjobsnotes"
-                  ng-model="project.intake.constructionjobsNotes"></textarea>
+                <label class="control-label" for="constructionjobsnotes">Construction Jobs Notes
+                  <em>(Optional)</em>
+                </label>
+                <textarea class="form-control" rows="3" name="constructionjobsnotes" id="constructionjobsnotes" ng-model="project.intake.constructionjobsNotes"></textarea>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group">
                 <label class="control-label" for="operatingjobs">Operating Jobs</label>
-                <input class="form-control"
-                  name="operatingjobs"
-                  id="operatingjobs"
-                  ng-model="project.intake.operatingjobs" />
+                <input class="form-control" name="operatingjobs" id="operatingjobs" ng-model="project.intake.operatingjobs" />
               </div>
               <div class="form-group">
-                <label class="control-label" for="operatingjobsnotes">Operating Jobs Notes<em>(Optional)</em></label>
-                <textarea class="form-control" rows="3"
-                  name="operatingjobsnotes"
-                  id="operatingjobsnotes"
-                  ng-model="project.intake.operatingjobsNotes"></textarea>
+                <label class="control-label" for="operatingjobsnotes">Operating Jobs Notes
+                  <em>(Optional)</em>
+                </label>
+                <textarea class="form-control" rows="3" name="operatingjobsnotes" id="operatingjobsnotes" ng-model="project.intake.operatingjobsNotes"></textarea>
               </div>
             </div>
           </div>
         </fieldset>
         <!-- / ADDITIONAL INFO -->
-    </div>
+      </div>
 
       <!-- OPERATOR / OWNER TAB -->
       <div class="tab-pane" ng-show="form.curTab === 'Proponent Info'">
         <!-- Operator -->
-      <fieldset>
+        <fieldset>
           <legend>Operator Details</legend>
           <div class="btn-toolbar">
-            <button class="btn btn-info"
-              x-org-search-chooser
-              x-title="'Add Project Operator'"
-              x-project="project"
-              x-destination="project.proponent">
-              <span class="glyphicon"
-                ng-class="project.proponent ? 'glyphicon-pencil' : 'glyphicon-plus'">
-              </span>&nbsp;
-              {{project.proponent ? 'Change' : 'Add'}} Project Operator
+            <button class="btn btn-info" x-org-search-chooser x-title="'Add Project Operator'" x-project="project" x-destination="project.proponent">
+              <span class="glyphicon" ng-class="project.proponent ? 'glyphicon-pencil' : 'glyphicon-plus'">
+              </span>&nbsp; {{project.proponent ? 'Change' : 'Add'}} Project Operator
             </button>
-            </div>
+          </div>
           <table class="table project-operator-table m-t-1">
             <thead>
               <tr>
@@ -280,8 +250,7 @@
               <td>{{project.proponent.company}}</td>
               <td>{{project.proponent.website}}</td>
               <td>
-                <button class="btn icon-btn"
-                  ng-click="clearOrganization()">
+                <button class="btn icon-btn" ng-click="clearOrganization()">
                   <span class="glyphicon glyphicon-trash"></span>
                 </button>
               </td>
@@ -295,14 +264,9 @@
         <fieldset>
           <legend>Ownership Details</legend>
           <div class="btn-toolbar" role="toolbar">
-            <button class="btn btn-info"
-              x-org-search-chooser=""
-              x-title="'Add Project Owner'"
-              x-project="project"
-              x-callback="addOwnershipOrganization(org)"
+            <button class="btn btn-info" x-org-search-chooser="" x-title="'Add Project Owner'" x-project="project" x-callback="addOwnershipOrganization(org)"
               x-destination="project.ownershipAdded">
-              <span class="glyphicon glyphicon-plus"></span>&nbsp;
-              Add Project Owner
+              <span class="glyphicon glyphicon-plus"></span>&nbsp; Add Project Owner
             </button>
           </div>
           <table class="table project-ownership-table m-t-1">
@@ -319,16 +283,13 @@
               <td>{{org.organization.company}}</td>
               <td>
                 <span class="input-group">
-                  <input class="form-control" type="number" step="0.001" min="0.001" max="100.000"
-                    title="Enter an Ownership Percentage"
-                    aria-label="Ownership Percentage (Maximum of 100 Percent)"
-                    ng-model="org.sharePercent"/>
+                  <input class="form-control" type="number" step="0.001" min="0.001" max="100.000" title="Enter an Ownership Percentage" aria-label="Ownership Percentage (Maximum of 100 Percent)"
+                    ng-model="org.sharePercent" />
                   <span class="input-group-addon">%</span>
                 </span>
               </td>
               <td>
-                <button class="btn icon-btn"
-                  ng-click="deleteOwnership(org)">
+                <button class="btn icon-btn" ng-click="deleteOwnership(org)">
                   <span class="glyphicon glyphicon-trash"></span>
                 </button>
               </td>
@@ -346,12 +307,11 @@
         <fieldset class="site-activity">
           <legend>{{project.activities[0].name}}</legend>
           <label class="sr-only" for="siteActivity{{project.activities[0].name}}">{{project.activities[0].name}}</label>
-          <span class="site-activity__description">Design encompasses the planning stage of mine development and the environmental assessment and permitting processes. During this stage, which often overlaps with the completion of feasibility studies and ongoing advanced exploration, all aspects of mine construction, operation, closure and reclamation are planned in detail.</span>
+          <span class="site-activity__description">Design encompasses the planning stage of mine development and the environmental assessment and permitting processes.
+            During this stage, which often overlaps with the completion of feasibility studies and ongoing advanced exploration,
+            all aspects of mine construction, operation, closure and reclamation are planned in detail.</span>
           <div class="btn-group">
-            <label class="btn btn-default"
-              ng-repeat="statusItem in activityStatusItems"
-              ng-model="project.activities[0].status"
-              uib-btn-radio="'{{statusItem}}'">{{statusItem}}
+            <label class="btn btn-default" ng-repeat="statusItem in activityStatusItems" ng-model="project.activities[0].status" uib-btn-radio="'{{statusItem}}'">{{statusItem}}
             </label>
           </div>
         </fieldset>
@@ -359,12 +319,11 @@
         <fieldset class="site-activity">
           <legend>{{project.activities[1].name}}</legend>
           <label class="sr-only" for="siteActivity{{project.activities[1].name}}">{{project.activities[1].name}}</label>
-          <span class="site-activity__description">Construction, which can begin once a mine project receives the necessary authorizations, includes site preparation activities, such as cutting trees and clearing and stripping overburden, as well as constructing associated buildings and structures, and infrastructure such as roads and bridges.</span>
+          <span class="site-activity__description">Construction, which can begin once a mine project receives the necessary authorizations, includes site preparation
+            activities, such as cutting trees and clearing and stripping overburden, as well as constructing associated buildings
+            and structures, and infrastructure such as roads and bridges.</span>
           <div class="btn-group">
-            <label class="btn btn-default"
-              ng-repeat="statusItem in activityStatusItems"
-              ng-model="project.activities[1].status"
-              uib-btn-radio="'{{statusItem}}'">{{statusItem}}
+            <label class="btn btn-default" ng-repeat="statusItem in activityStatusItems" ng-model="project.activities[1].status" uib-btn-radio="'{{statusItem}}'">{{statusItem}}
             </label>
           </div>
         </fieldset>
@@ -372,12 +331,10 @@
         <fieldset class="site-activity">
           <legend>{{project.activities[2].name}}</legend>
           <label class="sr-only" for="siteActivity{{project.activities[2].name}}">{{project.activities[2].name}}</label>
-          <span class="site-activity__description">The operation phase begins once a mine is constructed and starts producing. Mining operations include extraction and processing of ore as well as waste disposal and ore transport.</span>
+          <span class="site-activity__description">The operation phase begins once a mine is constructed and starts producing. Mining operations include extraction
+            and processing of ore as well as waste disposal and ore transport.</span>
           <div class="btn-group">
-            <label class="btn btn-default"
-              ng-repeat="statusItem in activityStatusItems"
-              ng-model="project.activities[2].status"
-              uib-btn-radio="'{{statusItem}}'">{{statusItem}}
+            <label class="btn btn-default" ng-repeat="statusItem in activityStatusItems" ng-model="project.activities[2].status" uib-btn-radio="'{{statusItem}}'">{{statusItem}}
             </label>
           </div>
         </fieldset>
@@ -385,12 +342,12 @@
         <fieldset class="site-activity">
           <legend>{{project.activities[3].name}}</legend>
           <label class="sr-only" for="siteActivity{{project.activities[3].name}}">{{project.activities[3].name}}</label>
-          <span class="site-activity__description">Mine closure is the final phase of the mining lifecycle. A mine’s life comes to an end once production reserves are exhausted or it is no longer economically viable to continue extracting resources from the site. Shutdown and decommissioning of a mine involves removing equipment (e.g., vehicles, processing equipment), dismantling facilities (e.g., mills, workers’ quarters) and safely closing all mine workings.</span>
+          <span class="site-activity__description">Mine closure is the final phase of the mining lifecycle. A mine’s life comes to an end once production reserves
+            are exhausted or it is no longer economically viable to continue extracting resources from the site. Shutdown
+            and decommissioning of a mine involves removing equipment (e.g., vehicles, processing equipment), dismantling
+            facilities (e.g., mills, workers’ quarters) and safely closing all mine workings.</span>
           <div class="btn-group">
-            <label class="btn btn-default"
-              ng-repeat="statusItem in activityStatusItems"
-              ng-model="project.activities[3].status"
-              uib-btn-radio="'{{statusItem}}'">{{statusItem}}
+            <label class="btn btn-default" ng-repeat="statusItem in activityStatusItems" ng-model="project.activities[3].status" uib-btn-radio="'{{statusItem}}'">{{statusItem}}
             </label>
           </div>
         </fieldset>
@@ -398,12 +355,10 @@
         <fieldset class="site-activity">
           <legend>{{project.activities[4].name}}</legend>
           <label class="sr-only" for="siteActivity{{project.activities[4].name}}">{{project.activities[4].name}}</label>
-          <span class="site-activity__description">Progressive reclamation begins during the mine construction phase and continues until a site is fully reclaimed after mine closure.</span>
+          <span class="site-activity__description">Progressive reclamation begins during the mine construction phase and continues until a site is fully reclaimed
+            after mine closure.</span>
           <div class="btn-group">
-            <label class="btn btn-default"
-              ng-repeat="statusItem in activityStatusItems"
-              ng-model="project.activities[4].status"
-              uib-btn-radio="'{{statusItem}}'">{{statusItem}}
+            <label class="btn btn-default" ng-repeat="statusItem in activityStatusItems" ng-model="project.activities[4].status" uib-btn-radio="'{{statusItem}}'">{{statusItem}}
             </label>
           </div>
         </fieldset>
@@ -411,12 +366,11 @@
         <fieldset class="site-activity">
           <legend>{{project.activities[5].name}}</legend>
           <label class="sr-only" for="siteActivity{{project.activities[5].name}}">{{project.activities[5].name}}</label>
-          <span class="site-activity__description">Monitoring includes environmental (e.g., water quality) testing and assessments of structures (e.g., tailings management facilities). Monitoring activities begin long before a mine is constructed in order to gather baseline information on the site.</span>
+          <span class="site-activity__description">Monitoring includes environmental (e.g., water quality) testing and assessments of structures (e.g., tailings management
+            facilities). Monitoring activities begin long before a mine is constructed in order to gather baseline information
+            on the site.</span>
           <div class="btn-group">
-            <label class="btn btn-default"
-              ng-repeat="statusItem in activityStatusItems"
-              ng-model="project.activities[5].status"
-              uib-btn-radio="'{{statusItem}}'">{{statusItem}}
+            <label class="btn btn-default" ng-repeat="statusItem in activityStatusItems" ng-model="project.activities[5].status" uib-btn-radio="'{{statusItem}}'">{{statusItem}}
             </label>
           </div>
         </fieldset>
@@ -425,12 +379,13 @@
       <!-- MINES.NRS FIELDS -->
       <div class="tab-pane" ng-show="form.curTab === 'Public Content'" ng-form="publicContentForm">
         <fieldset>
-            <div class="form-group">
+          <div class="form-group">
             <div class="checkbox mines-checkbox">
               <label>
-                <input type="checkbox" ng-model="project.isMajorMine"/>Show this Project on the Public BC Mine Information Website
+                <input type="checkbox" ng-model="project.isMajorMine" />Show this Project on the Public BC Mine Information Website
               </label>
-              <div class="help-block">Selecting this option will show PUBLISHED projects on the BC Mine Information Website. If your project IS NOT published it will not be available to view.</div>
+              <div class="help-block">Selecting this option will show PUBLISHED projects on the BC Mine Information Website. If your project IS NOT
+                published it will not be available to view.</div>
             </div>
           </div>
         </fieldset>
@@ -438,31 +393,28 @@
         <fieldset>
           <legend>Mine Summary</legend>
           <div class="form-group" x-show-errors>
-            <label class="control-label" for="mineIntro">Enter the full summary of the project<em class="required">(Required)</em></label>
-            <textarea class="form-control" title="Mine Introduction" id="mineIntro" name="mineIntro"
-              ng-model="mineIntro"
-              ui-tinymce="tinymceOptions"
+            <label class="control-label" for="mineIntro">Enter the full summary of the project
+              <em class="required">(Required)</em>
+            </label>
+            <textarea class="form-control" title="Mine Introduction" id="mineIntro" name="mineIntro" ng-model="mineIntro" ui-tinymce="tinymceOptions"
               required>
             </textarea>
-        </div>
+          </div>
         </fieldset>
         <!-- External Links -->
         <fieldset>
           <legend>External Links</legend>
           <div class="btn-toolbar">
-            <button class="btn btn-info" title="Add an external link to this project"
-              ng-click="addLink()">
+            <button class="btn btn-info" title="Add an external link to this project" ng-click="addLink()">
               <span class="glyphicon glyphicon-plus"></span>
               <span>Add Link</span>
             </button>
-            <button class="btn btn-info" title="Set the default order links will be displayed"
-              x-reorder-external-links-modal
-              x-list="project.externalLinks"
+            <button class="btn btn-info" title="Set the default order links will be displayed" x-reorder-external-links-modal x-list="project.externalLinks"
               x-on-save="onLinksReordered">
               <span class="glyphicon glyphicon-sort"></span>
               <span>Reorder Links</span>
             </button>
-        </div>
+          </div>
           <table class="table external-links-table m-t-1">
             <thead>
               <tr>
@@ -474,7 +426,9 @@
             <tbody>
               <tr ng-repeat="link in project.externalLinks">
                 <td>{{link.title}}</td>
-                <td><a href="{{link.link}}" target="_blank" title="Open this link in a new browser window">{{link.link}}</a></td>
+                <td>
+                  <a href="{{link.link}}" target="_blank" title="Open this link in a new browser window">{{link.link}}</a>
+                </td>
                 <td>
                   <button class="btn icon-btn" title="Edit Link" ng-click="editLink(link)">
                     <span class="glyphicon glyphicon-pencil"></span>
@@ -489,103 +443,94 @@
               </tr>
             </tbody>
           </table>
-      </fieldset>
+        </fieldset>
         <!-- Authorizations -->
-      <fieldset>
+        <fieldset>
           <legend>Authorizations</legend>
           <div class="form-group" x-show-errors>
-            <label class="control-label" for="authIntro">Authorizations Summary<em class="required">(Required)</em></label>
+            <label class="control-label" for="authIntro">Authorizations Summary
+              <em class="required">(Required)</em>
+            </label>
             <textarea title="Enter a summary describing content that appears in the Authorizations section" id="authIntro" name="authIntro"
-              ng-model="authIntro"
-              ui-tinymce="tinymceOptions"
-              required>
+              ng-model="authIntro" ui-tinymce="tinymceOptions" required>
             </textarea>
           </div>
-            <div class="form-group">
+          <div class="form-group">
             <label class="control-label" for="morePermitsLink">Additional Authorizations</label>
-            <input class="form-control" title="The full URL or link to additional authorizations"
-              placeholder="eg: http://www.somewebsite.com" id="morePermitsLink" name="morePermitsLink" ng-model="project.morePermitsLink" />
-            </div>
+            <input class="form-control" title="The full URL or link to additional authorizations" placeholder="eg: http://www.somewebsite.com"
+              id="morePermitsLink" name="morePermitsLink" ng-model="project.morePermitsLink" />
+          </div>
           <div class="form-group row">
             <div class="col-md-3 col-lg-2">
               <label class="control-label" for="morePermitsYear">Prior To Year</label>
-              <input class="form-control" title="More Permits Year" type="number" min="1900" id="morePermitsYear" name="morePermitsYear" ng-model="morePermitsLinkYear" />
-          </div>
+              <input class="form-control" title="More Permits Year" type="number" min="1900" id="morePermitsYear" name="morePermitsYear"
+                ng-model="morePermitsLinkYear" />
+            </div>
           </div>
         </fieldset>
         <!-- Compliance Oversight -->
         <fieldset>
           <legend>Compliance Oversight</legend>
           <div class="form-group" x-show-errors>
-            <label class="control-label" for="compIntro">Compliance Oversight Summary<em class="required">(Required)</em></label>
+            <label class="control-label" for="compIntro">Compliance Oversight Summary
+              <em class="required">(Required)</em>
+            </label>
             <textarea title="Enter a summary describing content that appears in the Compliance Oversight section" id="compIntro" name="compIntro"
-              ng-model="compIntro"
-              ui-tinymce="tinymceOptions"
-              required>
+              ng-model="compIntro" ui-tinymce="tinymceOptions" required>
             </textarea>
           </div>
-            <div class="form-group">
+          <div class="form-group">
             <label class="control-label" for="moreInspectionsLink">Additional Inspections &amp; Orders</label>
-            <input class="form-control" title="The full URL or link to additional Compliance Oversight documents"
-              placeholder="eg: http://www.somewebsite.com" id="moreInspectionsLink" name="moreInspectionsLink" ng-model="project.moreInspectionsLink" />
-            </div>
+            <input class="form-control" title="The full URL or link to additional Compliance Oversight documents" placeholder="eg: http://www.somewebsite.com"
+              id="moreInspectionsLink" name="moreInspectionsLink" ng-model="project.moreInspectionsLink" />
+          </div>
           <div class="form-group row">
             <div class="col-sm-6 col-md-3 col-lg-2">
               <label class="control-label" for="moreInspectionsYear">Prior To Year</label>
-              <input class="form-control" title="More Inspections Year" type="number" min="1900" id="moreInspectionsYear" name="moreInspectionsYear" ng-model="moreInspectionsLinkYear" />
+              <input class="form-control" title="More Inspections Year" type="number" min="1900" id="moreInspectionsYear" name="moreInspectionsYear"
+                ng-model="moreInspectionsLinkYear" />
+            </div>
           </div>
-        </div>
         </fieldset>
         <fieldset>
           <legend>Other Documents</legend>
           <div class="form-group" x-show-errors>
-            <label class="control-label" for="otherIntro">Other Documents Summary<em class="required">(Required)</em></label>
+            <label class="control-label" for="otherIntro">Other Documents Summary
+              <em class="required">(Required)</em>
+            </label>
             <textarea title="Enter a summary describing content that appears in the Other Documents section" id="otherIntro" name="otherIntro"
-              ng-model="otherIntro"
-              ui-tinymce="tinymceOptions"
-              required>
+              ng-model="otherIntro" ui-tinymce="tinymceOptions" required>
             </textarea>
-        </div>
-      </fieldset>
-    </div>
+          </div>
+        </fieldset>
+      </div>
 
       <!-- FOOTER BUTTONS -->
-    <div class="form-footer clearfix">
-      <div class="form-footer__buttons">
-          <button class="btn btn-success"
-            ng-click="publishProject(detailsForm.$valid, publicContentForm.$valid)"
-            ng-if="!project.isPublished">
-              Publish Project
+      <div class="form-footer clearfix">
+        <div class="form-footer__buttons">
+          <button class="btn btn-default" ng-if="!isNew" ng-click="cancelChanges('Cancel Changes', 'Are you sure you would like to exit and discard all changes?', 'Yes', 'No')">
+            Cancel
           </button>
-          <button class="btn btn-warning"
-            ng-click="unpublishProject()"
-            ng-if="project.isPublished">
-              Unpublish Project
+          <button class="btn btn-default" ng-if="isNew" ui-sref="projects">
+            Cancel
           </button>
-          <button class="btn btn-danger"
-            ng-click="deleteProject()"
-            ng-if="!isNew && !project.isPublished && project.userCan.delete">
+          <button class="btn btn-primary" type="submit" ng-click="saveProject(detailsForm.$valid, publicContentForm.$valid, form.curTab)">
+            Save
+          </button>
+          <button class="btn btn-primary" ng-click="publishProject(detailsForm.$valid, publicContentForm.$valid)" ng-if="!project.isPublished">
+            Publish Project
+          </button>
+          <button class="btn btn-danger" ng-click="unpublishProject()" ng-if="project.isPublished">
+            Unpublish Project
+          </button>
+          <button class="btn btn-danger" ng-click="deleteProject()" ng-if="!isNew && !project.isPublished && project.userCan.delete">
             <span class="glyphicon glyphicon-trash"></span>
             <span>Delete Project</span>
           </button>
-          <button class="btn btn-default"
-          ng-if="!isNew"
-            ng-click="cancelChanges('Cancel Changes', 'Are you sure you would like to exit and discard all changes?', 'Yes', 'No')">
-          Cancel
-        </button>
-          <button class="btn btn-default"
-            ng-if="isNew"
-            ui-sref="projects">
-          Cancel
-        </button>
-          <button class="btn btn-primary" type="submit"
-            ng-click="saveProject(detailsForm.$valid, publicContentForm.$valid, form.curTab)">
-          Save
-        </button>
+        </div>
       </div>
-    </div>
 
-  </div>
+    </div>
   </div>
 
 </form>

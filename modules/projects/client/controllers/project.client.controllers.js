@@ -315,7 +315,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
       controller: function($scope, $state, $uibModalInstance) {
         var self = this;
         self.title = 'Unpublish Project';
-        self.question = 'Are you sure? Unpublishing this project will make its content no longer available to the public.';
+        self.question = 'All published content and information associated with this project will no longer be visible to the public. Are you sure you want to unpublish this project?';
         self.actionOK = 'Unpublish Project';
         self.actionCancel = 'Cancel';
         self.ok = function() {
