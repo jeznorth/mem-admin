@@ -208,8 +208,8 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     }
   };
 
-  $scope.validateProject = function(isValidDetails, isValidPublicContent, isPublishing) {
-    if (($scope.project.isPublished || isPublishing) && !isValidDetails) {
+  $scope.validateProject = function(isValidDetails, isValidPublicContent) {
+    if (!isValidDetails) {
       $scope.$broadcast('show-errors-check-validity', 'detailsForm');
       return false;
     }
@@ -233,8 +233,8 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     return true;
   };
 
-  $scope.saveProject = function(isValidDetails, isValidPublicContent, currTab, suppressAlert) {
-    if ($scope.validateProject(isValidDetails, isValidPublicContent)) {
+  $scope.saveProject = function(isValidDetails, isValidPublicContent, currTab) {
+    if (!$scope.project.isPublished || $scope.validateProject(isValidDetails, isValidPublicContent)) {
       setContentHtml($scope.project.content, 'Mines', 'Intro', $scope.mineIntro);
       setContentHtml($scope.project.content, 'Auth', 'Intro', $scope.authIntro);
       setContentHtml($scope.project.content, 'Comp', 'Intro', $scope.compIntro);
@@ -250,10 +250,8 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
             return ProjectModel.submit(data);
           })
           .then(function() {
-            if (!suppressAlert) {
-              AlertService.success('Project was added.', 4000);
-              $scope.goToEdit(currTab);
-            }
+            AlertService.success('Project was added.', 4000);
+            $scope.goToEdit(currTab);
           })
           .catch(function(/* err */) {
             AlertService.error('Project could not be added.', 4000);
@@ -261,10 +259,8 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
       } else {
         ProjectModel.saveModel($scope.project)
           .then(function() {
-            if (!suppressAlert) {
-              AlertService.success('Project was saved.', 4000);
-              $scope.goToEdit(currTab);
-            }
+            AlertService.success('Project was saved.', 4000);
+            $scope.goToEdit(currTab);
           })
           .catch(function(/* err */) {
             AlertService.error('Project could not be saved.', 4000);
@@ -274,7 +270,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
   };
 
   $scope.publishProject = function(isValidDetails, isValidPublicContent) {
-    if ($scope.validateProject(isValidDetails, isValidPublicContent, true)) {
+    if ($scope.validateProject(isValidDetails, isValidPublicContent)) {
       // Pop confirmation dialog, after OK, publish immediately.
       var modalDocView = $uibModal.open({
         animation: true,
