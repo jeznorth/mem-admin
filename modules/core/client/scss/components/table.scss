@@ -61,6 +61,16 @@
       }
     }
   }
+
+  &.has-error {
+    border: 1px solid $form-control-error-border-color;
+    border-collapse: separate;
+
+    tbody {
+        color: $form-control-error-color;
+        background: $form-control-error-bg;
+    }
+  }
 }
 
 .ng-table-page-btn {

@@ -83,7 +83,6 @@ $alert-width: 64rem;
 }
 
 .alert-warning {
-	color: #FFF;
 	background: $warning-bg;
 	border: 1px solid $warning-border;
 }
@@ -101,16 +100,17 @@ $alert-width: 64rem;
 }
 
 .alert {
+	@include flexbox();
 	position: relative;
 
-	.glyphicon {
-		position: absolute;
-		top: 1.5rem;
-		left: 1.5rem;
+	&__icon {
+		@include flex(0 0 auto);
 		font-size: 1.8rem;
+		vertical-align: top;
+		margin-right: 1rem;
+	}
 
-		+ .alert-msg {
-			padding-left: 3rem;
-		}
+	&__msg {
+		@include flex(1 1 auto);
 	}
 }

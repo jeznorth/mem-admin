@@ -31,63 +31,6 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
       }
     })
 
-    .state('p.collection.create', {
-      url: '/create',
-      templateUrl: 'modules/collections/client/views/collection-edit.html',
-      data: { permissions: ['createCollection'] },
-      resolve: {
-        collection: function(CollectionModel) {
-          return CollectionModel.getNew();
-        }
-      },
-      controller: function($scope, $state, project, NgTableParams, collection, types, CollectionModel) {
-        $scope.collection = collection;
-        $scope.collection.project = project._id;
-        $scope.project = project;
-        $scope.types = types;
-
-        $scope.save = function(isValid) {
-          if (!isValid) {
-            $scope.$broadcast('show-errors-check-validity', 'collectionForm');
-            return false;
-          }
-          // Update parent and status
-          $scope.collection.status = 'Issued';
-          switch($scope.collection.type) {
-          case 'Permit Amendment':
-            $scope.collection.parentType = 'Authorizations';
-            $scope.collection.status = 'Amended';
-            break;
-
-          case 'Permit':
-            $scope.collection.parentType = 'Authorizations';
-            break;
-
-          case 'Inspection Report':
-          case 'Order':
-            $scope.collection.parentType = 'Compliance and Enforcement';
-            break;
-
-          case 'Annual Report':
-          case 'Management Plan':
-          case 'Dam Safety Inspection':
-          case 'Letter of Assurance':
-            $scope.collection.parentType = 'Other';
-            break;
-          }
-          CollectionModel.add($scope.collection)
-            .then(function(/* model */) {
-              $state.transitionTo('p.collection.detail', { projectid: project.code, collectionId: collection._id }, {
-                reload: true, inherit: false, notify: true
-              });
-            })
-            .catch(function(/* err */) {
-              // swallow error
-            });
-        };
-      }
-    })
-
     .state('p.collection.detail', {
       url: '/:collectionId',
       templateUrl: 'modules/collections/client/views/collection-view.html',
@@ -392,6 +335,66 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
       }
     })
 
+    // Create New Collection
+    .state('p.collection.create', {
+      url: '/create',
+      templateUrl: 'modules/collections/client/views/collection-edit.html',
+      data: { permissions: ['createCollection'] },
+      resolve: {
+        collection: function(CollectionModel) {
+          return CollectionModel.getNew();
+        }
+      },
+      controller: function($scope, $state, project, NgTableParams, collection, types, CollectionModel) {
+        $scope.collection = collection;
+        $scope.collection.project = project._id;
+        $scope.project = project;
+        $scope.types = types;
+
+        $scope.save = function(isValid) {
+          if (!isValid) {
+            $scope.$broadcast('show-errors-check-validity', 'collectionForm');
+            $scope.$broadcast('show-errors-check-validity', 'collectionDetailsForm');
+            return false;
+          }
+          // Update parent and status
+          $scope.collection.status = 'Issued';
+          switch($scope.collection.type) {
+          case 'Permit Amendment':
+            $scope.collection.parentType = 'Authorizations';
+            $scope.collection.status = 'Amended';
+            break;
+
+          case 'Permit':
+            $scope.collection.parentType = 'Authorizations';
+            break;
+
+          case 'Inspection Report':
+          case 'Order':
+            $scope.collection.parentType = 'Compliance and Enforcement';
+            break;
+
+          case 'Annual Report':
+          case 'Management Plan':
+          case 'Dam Safety Inspection':
+          case 'Letter of Assurance':
+            $scope.collection.parentType = 'Other';
+            break;
+          }
+          CollectionModel.add($scope.collection)
+            .then(function(/* model */) {
+              $state.transitionTo('p.collection.detail', { projectid: project.code, collectionId: collection._id }, {
+                reload: true, inherit: false, notify: true
+              });
+            })
+            .catch(function(/* err */) {
+              // swallow error
+            });
+        };
+      }
+    })
+
+    // Edit Existing Collection
     .state('p.collection.edit', {
       url: '/:collectionId/edit',
       templateUrl: 'modules/collections/client/views/collection-edit.html',
@@ -705,6 +708,7 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
         $scope.save = function(isValid) {
           if (!isValid) {
             $scope.$broadcast('show-errors-check-validity', 'collectionForm');
+            $scope.$broadcast('show-errors-check-validity', 'collectionDetailsForm');
             return false;
           }
           // Update parent and status

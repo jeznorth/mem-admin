@@ -56,8 +56,10 @@ $font-family-sans-serif:   Myriad-Pro, Calibri, Arial, sans serif;
 
 
 // FORM CONTROLS
-$form-control-bg:          #fff;
-$form-control-error-bg:    #ffffd8;
+$form-control-bg:                  #fff;
+$form-control-error-color:         #d9534f;
+$form-control-error-border-color:  #d9534f;
+$form-control-error-bg:            #ffffd8;
 
 
 // FOOTER
@@ -147,7 +149,7 @@ $info-border:               #5bc0de;
 $placeholder-value-color:   #777777;
 $success-bg:                #5cb85c;
 $success-border:            #4cae4c;
-$warning-bg:                #f0ad4e;
+$warning-bg:                #ffffd8;
 $warning-border:            #eea236;
 
 // TYPEAHEAD SELECT (UI-SELECT)
