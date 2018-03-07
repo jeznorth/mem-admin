@@ -278,9 +278,11 @@
 								</span>
 								<span hidden class="col author-col" title="{{ doc.documentAuthor }}">
 									{{ doc.documentAuthor }}
-								</span>
-								<span class="col date-added-col">{{ doc.documentDate | documentDateFilter: doc.documentDateDisplayMnYr }}</span>
-								<span class="col status-col last-col" ng-if="authentication.user">
+                </span>
+                <span class="col date-added-col">
+                  {{ doc.inspectionReport.dateResponse ? doc.inspectionReport.dateResponse :  doc.documentDate | documentDateFilter: doc.documentDateDisplayMnYr }}
+                </span>
+                <span class="col status-col last-col" ng-if="authentication.user">
 									<span class="label label-success" ng-if="doc.isPublished && documentMgr.currentPathIsPublished" title="Published">Published</span>
 									<span class="label label-unpublished" ng-if="doc.isPublished && !documentMgr.currentPathIsPublished" title="Published">Published</span>
 									<span class="label label-unpublished" ng-if="!doc.isPublished">Unpublished</span>
