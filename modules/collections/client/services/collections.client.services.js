@@ -12,19 +12,17 @@ angular.module('collections').factory('CollectionModel', function (ModelBase) {
       return this.put('/api/collections/' + collectionId + '/remove', {});
     },
 
-    addMainDocument: function(collectionId, documentId) {
-      return this.put('/api/collections/' + collectionId + '/document/' + documentId + '/main/add', {});
-    },
-
-    removeMainDocument: function(collectionId, documentId) {
-      return this.put('/api/collections/' + collectionId + '/document/' + documentId + '/main/remove', {});
-    },
-
-    addOtherDocument: function(collectionId, documentId) {
+    addDocument: function(collectionId, documentId, docType) {
+      if ( docType === "main") {
+        return this.put('/api/collections/' + collectionId + '/document/' + documentId + '/main/add', {});
+      }
       return this.put('/api/collections/' + collectionId + '/document/' + documentId + '/add', {});
     },
 
-    removeOtherDocument: function(collectionId, documentId) {
+    removeDocument: function(collectionId, documentId, docType) {
+      if ( docType === "main") {
+        return this.put('/api/collections/' + collectionId + '/document/' + documentId + '/main/remove', {});
+      }
       return this.put('/api/collections/' + collectionId + '/document/' + documentId + '/remove', {});
     },
 

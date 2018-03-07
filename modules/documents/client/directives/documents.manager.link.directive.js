@@ -209,7 +209,8 @@ angular.module('documents')
       scope: {
         project: '=',
         target: '=',
-        targetName: '=',
+        collection: '=',
+        docType: '@',
         publishedOnly: '=',
         onOk: '='
       },
@@ -229,12 +230,17 @@ angular.module('documents')
               $scope.authentication = Authentication;
 
               self.title = "Link Documents to '" + $scope.project.name + "'";
-              if (!_.isEmpty(scope.targetName)) {
-                self.title = "Link Documents to '" + scope.targetName + "'";
+              if (!_.isEmpty(scope.collection.displayName)) {
+                self.title = "Link Documents to '" + scope.collection.displayName + "'";
               }
 
               self.linkedFiles = angular.copy(scope.target || []);
               self.publishedOnly = scope.publishedOnly;
+              self.docType = scope.docType;
+              self.sourceDocs = {
+                main : scope.collection.mainDocuments,
+                other : scope.collection.otherDocuments
+              };
 
               self.cancel = function () {
                 $uibModalInstance.dismiss('cancel');
@@ -242,12 +248,11 @@ angular.module('documents')
 
               self.ok = function () {
                 // return the data in the selected list...
-                $uibModalInstance.close(self.linkedFiles);
+                $uibModalInstance.close({linked: self.linkedFiles, source : self.sourceDocs[self.docType], docType : self.docType});
               };
 
             }
           }).result.then(function (data) {
-            $log.debug(data);
             // ok, pass data back to the caller....
             if (scope.target) {
               // if they set the target collection... update it.
@@ -255,7 +260,7 @@ angular.module('documents')
             }
             if (scope.onOk) {
               //if they set an OK handler, call it.
-              scope.onOk(data);
+              scope.onOk(data.linked, data.source, data.docType);
             }
           })
             .catch(function (/* err */) {

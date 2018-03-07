@@ -21,7 +21,7 @@ module.exports = DBModel.extend({
     path     : 'updatedBy',
     select   : '_id displayName username email orgName'
   }, {
-    path     : 'mainDocument',
+    path     : 'mainDocuments',
     populate : [{
       path   : 'addedBy',
       select : '_id displayName username email orgName'
@@ -137,44 +137,7 @@ module.exports = DBModel.extend({
   },
 
   addOtherDocument: function(collectionId, documentId) {
-    var self = this;
-
-    return this.findById(collectionId).then(function(collection) {
-      if (!collection) {return;}
-
-      // Is the document already in there?
-      if (!_.find(collection.otherDocuments, function(cd) { return cd.document._id.equals(documentId); })) {
-        // Is it the main document?
-        if (collection.mainDocument && collection.mainDocument.document._id.equals(documentId)) {
-          // Add it to other documents and remove it as the main document
-          var collectionDocument = collection.mainDocument;
-          collection.otherDocuments.push(collectionDocument);
-          collection.mainDocument = null;
-          collection.save();
-          return collectionDocument;
-        } else {
-          // Add it
-          var Document = new DocumentClass(self.opts);
-          return Document.findById(documentId).then(function(document) {
-            if (document) {
-              // Add to document collection
-              document.collections.push(collection);
-              document.save();
-
-              // Add to collection
-              var CollectionDocument = new CollectionDocClass(self.opts);
-              return CollectionDocument.create({
-                document: document,
-              }).then(function(collectionDocument) {
-                collection.otherDocuments.push(collectionDocument);
-                collection.save();
-                return collectionDocument;
-              });
-            }
-          });
-        }
-      }
-    });
+    return this.addDocument(collectionId, documentId, "other");
   },
 
   sortOtherDocuments: function (collectionId, idList) {
@@ -216,35 +179,7 @@ module.exports = DBModel.extend({
   },
 
   removeOtherDocument: function(collectionId, documentId) {
-    var self = this;
-
-    return this.findById(collectionId).then(function(collection) {
-      if (!collection) {return;}
-
-      // Is the document in the collection?
-      var collectionDocument = _.find(collection.otherDocuments, function(cd) {
-        return cd.document._id.equals(documentId);
-      });
-
-      if (collectionDocument) {
-        // Remove from document
-        var Document = new DocumentClass(self.opts);
-        Document.findById(documentId).then(function(document) {
-          document.collections = _.reject(document.collections, function(c) {
-            return c.equals(collectionId);
-          });
-          document.save();
-
-          // Remove from Collection
-          collection.otherDocuments = _.without(collection.otherDocuments, collectionDocument);
-          collection.save();
-
-          // Remove from CollectionDocument
-          var CollectionDocument = new CollectionDocClass(self.opts);
-          CollectionDocument.delete(collectionDocument);
-        });
-      }
-    });
+    return this.removeDocument(collectionId, documentId, "other");
   },
 
   updateOtherDocumentSortOrder: function(collectionId, documentId, sortOrder) {
@@ -264,34 +199,41 @@ module.exports = DBModel.extend({
   },
 
   addMainDocument: function(collectionId, documentId) {
+    return this.addDocument(collectionId, documentId, "main");
+  },
+
+  removeMainDocument: function(collectionId, documentId) {
+    return this.removeDocument(collectionId, documentId, "main");
+  },
+
+  addDocument: function(collectionId, documentId, targetDocType) {
     var self = this;
 
     return this.findById(collectionId).then(function(collection) {
-      if (!collection) {return;}
+      if (!collection) {
+        return;
+      }
 
-      // Is this already the main document?
-      if (!collection.mainDocument || !collection.mainDocument.document._id.equals(documentId)) {
-        // It the document in the other documents?
-        var collectionDocument = _.find(collection.otherDocuments, function(cd) {
-          return cd.document._id.equals(documentId);
-        });
+      // hold a reference to the doc lists, so we can flex the function based on the type of document being processed
+      var docLists = {
+        main : collection.mainDocuments,
+        other : collection.otherDocuments
+      };
+      var watchDocListType = targetDocType === "main" ? "other" : "main";
 
-        if (collectionDocument) {
-          if (collection.mainDocument) {
-            // Remove current main document
-            self.removeCollectionDocument(collectionId, documentId, collection.mainDocument);
-          }
+      // do not re-add the same document
+      if (!_.find(docLists[targetDocType], function(cd) { return cd.document._id.equals(documentId); })) {
 
-          // Remove it from other documents and add it as the main document
-          collection.otherDocuments = _.without(collection.otherDocuments, collectionDocument);
-          collection.mainDocument = collectionDocument;
-          collection.date = collectionDocument.document.documentDate;
-          collection.save();
-          return collectionDocument.document;
-        } else {
-          // Add it
-          var Document = new DocumentClass(self.opts);
-          return Document.findById(documentId).then(function(document) {
+        // remove from the other document list, if it is there
+        var inWatchDocList = _.filter(docLists[watchDocListType], function(cd) { return cd.document._id.equals(documentId); });
+        _.each(inWatchDocList, function(otherDoc){
+          self.removeDocument(collectionId, otherDoc.document._id, watchDocListType);
+        })
+
+        // add to the target document list
+        var Document = new DocumentClass(self.opts);
+        return Document.findById(documentId).then(function(document) {
+          if (document) {
             // Add to document collection
             document.collections.push(collection);
             document.save();
@@ -301,51 +243,48 @@ module.exports = DBModel.extend({
             return CollectionDocument.create({
               document: document,
             }).then(function(collectionDocument) {
-              if (collection.mainDocument) {
-                // Remove current main document
-                self.removeCollectionDocument(collectionId, documentId, collection.mainDocument);
-              }
-              collection.mainDocument = collectionDocument;
+              docLists[targetDocType].push(collectionDocument);
               collection.save();
               return collectionDocument;
             });
-          });
-        }
+          }
+        });
       }
     });
   },
 
-  removeMainDocument: function(collectionId, documentId) {
+  removeDocument: function(collectionId, documentId, docType) {
     var self = this;
 
     return this.findById(collectionId).then(function(collection) {
-      if (!collection) {return;}
-
-      // Is this the main document?
-      if (collection.mainDocument && collection.mainDocument.document._id.equals(documentId)) {
-        // Remove from document
-        self.removeCollectionDocument(collectionId, documentId, collection.mainDocument);
-
-        // Remove from Collection
-        collection.mainDocument = null;
-        collection.save();
+      if (!collection) {
+        return;
       }
-    });
-  },
 
-  removeCollectionDocument: function(collectionId, documentId, collectionDocument) {
-    var Document = new DocumentClass(this.opts);
-    var CollectionDocument = new CollectionDocClass(this.opts);
-
-    // Remove from document
-    Document.findById(documentId).then(function(document) {
-      document.collections = _.reject(document.collections, function(c) {
-        return c.equals(collectionId);
+      var docList = docType === "main" ? collection.mainDocuments : collection.otherDocuments;
+      // Is the document in the collection?
+      var collectionDocument = _.find(docList, function(cd) {
+        return cd.document._id.equals(documentId);
       });
-      document.save();
 
-      // Remove from CollectionDocument
-      CollectionDocument.delete(collectionDocument);
+      if (collectionDocument) {
+        // Remove from document
+        var Document = new DocumentClass(self.opts);
+        Document.findById(documentId).then(function(document) {
+          document.collections = _.reject(document.collections, function(c) {
+            return c.equals(collectionId);
+          });
+          document.save();
+
+          // Remove from Collection
+          docList = _.without(docList, collectionDocument);
+          collection.save();
+
+          // Remove from CollectionDocument
+          var CollectionDocument = new CollectionDocClass(self.opts);
+          CollectionDocument.delete(collectionDocument);
+        });
+      }
     });
   },
 });
