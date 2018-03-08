@@ -10,7 +10,7 @@
     </div>
     <div class="table-container">
         <table class="table table-hover" ng-table="tableParams" show-filter="true">
-            <tr ng-repeat="c in $data" ui-sref="p.collection.detail({ collectionId: c._id })">
+            <tr ng-repeat="c in $data" ui-sref="p.collection.edit({ collectionId: c._id })">
                 <td data-title="'Name'" title: 'Name' filter="{'displayName':'text'}" sortable="'displayName'">{{ c.displayName }}</td>
                 <td data-title="'Type'" title: 'Type' filter="{'type':'select'}" sortable="'type'" filter-data="types">{{ c.type }}</td>
                 <td data-title="'Date'" title: 'Date' filter="{'date':'text'}" sortable="'date'">{{ c.date | amDateFormat:'YYYY-MM-DD' }}</td>

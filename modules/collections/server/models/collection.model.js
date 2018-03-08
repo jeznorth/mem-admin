@@ -22,7 +22,7 @@ module.exports = require(path.resolve('./modules/core/server/controllers/core.sc
   status         : { type: String, default: '' },
   date           : { type: Date, default: Date.now },
 
-  mainDocument   : { type: 'ObjectId', ref: 'Collectiondocument', default: null },
+  mainDocuments   : [{ type: 'ObjectId', ref: 'Collectiondocument', default: null }],
   otherDocuments : [{ type: 'ObjectId', ref: 'Collectiondocument', default: null }],
 
   isForENV       : { type: Boolean, default: false },
