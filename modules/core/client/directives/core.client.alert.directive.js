@@ -18,7 +18,7 @@ angular.module('core')
       }
     };
   }])
-  .service('AlertService', [function () {
+  .service('AlertService', ['$state', function ($state) {
     var service = this;
     service.alerts = [];
 
@@ -31,6 +31,9 @@ angular.module('core')
         message: message,
         fadeTimeout: fadeTimeout
       });
+
+      // reload the current state, to ensure alerts are displayed immediately
+      $state.reload();
     };
 
     service.info = function(message, fadeTimeout) {

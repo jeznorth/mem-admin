@@ -1,91 +1,89 @@
-$alert-width: 64rem;
+.alert {
+	@include flexbox();
+	position: relative;
+
+	&__icon {
+		@include flex(0 0 auto);
+		font-size: 1.8rem;
+		vertical-align: top;
+		margin-right: 1rem;
+	}
+
+	&__msg {
+		@include flex(1 1 auto);
+	}
+}
+
+.alert-dismissible {
+	.close {
+		@include flex(0 0 auto);
+		position: absolute;
+		top: 0.65rem;
+		right: 0.5rem;
+		margin: 0;
+
+		span:first-child {
+			display: inline-block;
+			margin-top: -0.25rem;
+			vertical-align: top;
+		}
+
+		&:hover,
+		&:focus {
+			color: inherit;
+			opacity: 1;
+		}
+
+		+ div {
+			margin-right: 3.4rem;
+		}
+	}
+}
 
 .alert-container-fixed {
 	position: fixed;
-	top: 4rem;
-	left: 50%;
-	margin-left: calc(#{$alert-width} / -2);
+	top: 3rem;
+	right: 2rem;
+	left: 2rem;
 	z-index: 999;
 	width: $alert-width;
 
 	.alert {
+		@include flexbox();
 		box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
 	}
 }
 
-.alert {
-	h2 {
-		font-size: 2.2rem;
-		margin: 0;
+@media (min-width: 768px) {
+	.alert-container-fixed {
+		right: auto;
+		left: 50%;
+		margin-left: calc(#{$alert-width} / -2);
 	}
-	
-	.close {
-		margin-top: -0.9rem;
-		color: #FFF;
-		opacity: 0.5;
-
-		&:hover,
-		&:focus {
-			color: #FFF;
-			opacity: 1;
-		}
-	}
-
-	&.flex-row {
-		.alert-icon {
-			padding-right: 1rem;
-			font-size: 1.6rem;
-			-webkit-flex: 0 0 auto;
-			flex: 0 0 auto;
-
-			.glyphicon {
-				margin-top: 2px;
-			}
-		}
-
-		.alert-msg {
-			-webkit-flex: 0 0 auto;
-			flex: 1 1 auto;
-
-			.alert-msg-title,
-			.alert-msg-details {
-				display: block;
-			}
-
-			.alert-msg-title {
-				font-size: 1.6rem;
-				font-weight: bold;
-			}
-
-			.alert-msg-details {
-				margin-top: 0.25rem;
-			}
-		}
-	}
-}
-
-.alert-info {
-	color: #FFF;
-	background: $info-bg;
-	border: 1px solid $info-border;
 }
 
 .alert-danger {
-	color: #FFF;
-	background: $danger-bg;
-	border: 1px solid $danger-border;
+	color: $alert-danger-color;
+	background: $alert-danger-bg;
+	border: 1px solid $alert-danger-border;
+}
+
+.alert-info {
+	color: $alert-info-color;
+	background: $alert-info-bg;
+	border: 1px solid $alert-info-border;
 }
 
 .alert-success {
-	color: #FFF;
-	background: $success-bg;
-	border: 0 solid $success-border;
+	color: $alert-success-color;
+	background: $alert-success-bg;
+	border: 0 solid $alert-success-border;
 }
 
 .alert-warning {
-	color: #FFF;
-	background: $warning-bg;
-	border: 1px solid $warning-border;
+	color: $alert-warning-color;
+	background: $alert-warning-bg;
+	border: 1px solid $alert-warning-border;
 }
 
 .error-text {
@@ -98,19 +96,4 @@ $alert-width: 64rem;
 
 .text-danger {
 	color: $danger-text !important;
-}
-
-.alert {
-	position: relative;
-
-	.glyphicon {
-		position: absolute;
-		top: 1.5rem;
-		left: 1.5rem;
-		font-size: 1.8rem;
-
-		+ .alert-msg {
-			padding-left: 3rem;
-		}
-	}
 }

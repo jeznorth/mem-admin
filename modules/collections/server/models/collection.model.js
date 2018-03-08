@@ -25,6 +25,8 @@ module.exports = require(path.resolve('./modules/core/server/controllers/core.sc
   mainDocuments   : [{ type: 'ObjectId', ref: 'Collectiondocument', default: null }],
   otherDocuments : [{ type: 'ObjectId', ref: 'Collectiondocument', default: null }],
 
+  hasPublished   : { type: Boolean, default: false },
+
   isForENV       : { type: Boolean, default: false },
   isForMEM       : { type: Boolean, default: true },
 });

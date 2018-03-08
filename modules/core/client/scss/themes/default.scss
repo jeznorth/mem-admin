@@ -28,6 +28,21 @@ $off-white:                #f4f4f4;
 $danger-text:              #a94442;
 
 
+// ALERTS
+$alert-width:              60rem;
+$alert-danger-color:       #fff;
+$alert-danger-border:      #d43f3a;
+$alert-danger-bg:          #d9534f;
+$alert-info-color:         #fff;
+$alert-info-border:        #5bc0de;
+$alert-info-bg:            #5bc0de;
+$alert-success-color:      #fff;
+$alert-success-border:     #4cae4c;
+$alert-success-bg:         #5cb85c;
+$alert-warning-color:      #fff;
+$alert-warning-border:     #eea236;
+$alert-warning-bg:         #ffffd8;
+
 // APPLICATION
 $app-bg:                   #f1f1f1;
 $app-base-color:           #494949;
@@ -56,8 +71,10 @@ $font-family-sans-serif:   Myriad-Pro, Calibri, Arial, sans serif;
 
 
 // FORM CONTROLS
-$form-control-bg:          #fff;
-$form-control-error-bg:    #ffffd8;
+$form-control-bg:                  #fff;
+$form-control-error-color:         #d9534f;
+$form-control-error-border-color:  #d9534f;
+$form-control-error-bg:            #ffffd8;
 
 
 // FOOTER
@@ -92,7 +109,7 @@ $panel-heading-bg:          #f7f8fa;
 $panel-heading-color:       #494949;
 $panel-footer-bg:           #ffffff;
 $view-panel-bg:             #ffffff;
-$view-panel-border:         1px solid #EEE;
+$view-panel-border:         1px solid #eee;
 
 
 // SIDE NAVIGATION
@@ -112,7 +129,7 @@ $table-row-hover-bg:        #f7f8fa;
 $table-row-active-bg:       #5091cd;
 $table-row-active-hover-bg: #4187c9;
 $table-row-active-color:    #fff;
-$table-row-border:          1px solid #EEE;
+$table-row-border:          1px solid #eee;
 $table-head-bg:             #f7f8fa;
 $table-filter-bg:           #ffffff;
 $table-footer-bg:           #f7f8fa;
@@ -147,8 +164,9 @@ $info-border:               #5bc0de;
 $placeholder-value-color:   #777777;
 $success-bg:                #5cb85c;
 $success-border:            #4cae4c;
-$warning-bg:                #f0ad4e;
+$warning-bg:                #ffffd8;
 $warning-border:            #eea236;
+
 
 // TYPEAHEAD SELECT (UI-SELECT)
 $select-tag-bg:             #5091cd;
