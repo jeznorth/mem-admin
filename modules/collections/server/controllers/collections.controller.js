@@ -281,9 +281,11 @@ module.exports = DBModel.extend({
 
           // Remove from Collection
           docList = _.without(docList, collectionDocument);
-          collection.hasPublished = _.find(docList, function(o) {
-            return o.document.isPublished
-          });
+          if (docType == 'main') {
+            collection.hasPublished = _.find(docList, function(o) {
+              return o.document.isPublished
+            });
+          }
           collection.save();
 
           // Remove from CollectionDocument
