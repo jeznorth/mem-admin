@@ -40,7 +40,7 @@ textarea {
 	&__buttons {
 		@include flex(0 0 auto);
 		.btn {
-			min-width: 8rem;
+			min-width: 6rem;
 		}
 	}
 }

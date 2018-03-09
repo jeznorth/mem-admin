@@ -65,3 +65,9 @@
 		margin-left: auto;
 	}
 }
+
+@media (min-width: 992px) {
+	.tab-pane {
+		padding: 4rem;
+	}
+}

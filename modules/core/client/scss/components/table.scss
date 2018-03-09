@@ -1,346 +1,356 @@
 // Tables
 .table {
-  thead {
-    background: #eee;
-      font-size: 1.2rem;
-    }
-
-  th, td {
-    padding: 1rem;
-  }
-
-	.action-x1 {
-		width: 4.5rem;
-	}
-	
-	.action-x2 {
-		width: 8.5rem;
-	}
-
-	.action-x3 {
-		width: 11.5rem;
-	}
-
-	.select-col {
-		position: relative;
-		padding-left: 3.5rem;
-
-		input[type="checkbox"] {
-			position: absolute;
-			top: 1rem;
-			left: 1rem;
-		}	
-	}
-
-	.checkbox-col {
-		width: 3.25rem;
-		padding: 0;
-		padding-right: 0.5rem;
-		text-align: right;
-		vertical-align: middle;
-  }
+    thead {
+      background: #eee;
+        font-size: 1.2rem;
+      }
   
-  &.table-hover {
-    tr {
-      &.active {
-        background: $table-row-active-bg;
-
-        td {
-          color: $table-row-active-color;
-          background: transparent;
-        }
-
-        &:hover {
-          background: $table-row-active-hover-bg;
-
+    th, td {
+      padding: 1rem;
+    }
+  
+      .action-x1 {
+          width: 4.5rem;
+      }
+      
+      .action-x2 {
+          width: 8.5rem;
+      }
+  
+      .action-x3 {
+          width: 11.5rem;
+      }
+  
+      .select-col {
+          position: relative;
+          padding-left: 3.5rem;
+  
+          input[type="checkbox"] {
+              position: absolute;
+              top: 1rem;
+              left: 1rem;
+          }	
+      }
+  
+      .checkbox-col {
+          width: 3.25rem;
+          padding: 0;
+          padding-right: 0.5rem;
+          text-align: right;
+          vertical-align: middle;
+    }
+    
+    &.table-hover {
+      tr {
+        &.active {
+          background: $table-row-active-bg;
+  
           td {
             color: $table-row-active-color;
             background: transparent;
           }
+  
+          &:hover {
+            background: $table-row-active-hover-bg;
+  
+            td {
+              color: $table-row-active-color;
+              background: transparent;
+            }
+          }
         }
       }
     }
+  
+    &.has-error {
+      border: 1px solid $form-control-error-border-color;
+      border-collapse: separate;
+  
+      tbody {
+          color: $form-control-error-color;
+          background: $form-control-error-bg;
+      }
+    }
   }
-}
-
-.ng-table-page-btn {
-	font-size: $ng-table-page-btn-font-size;
-	font-weight: $ng-table-page-btn-font-weight;
-	color: $app-base-color;
-	border: 1px solid $ng-table-page-btn-border-color;
-}
-
-.ng-table-page-btn-active {
-	color: $ng-table-page-btn-active-color;
-	background: $btn-primary-bg;
-	border-color: $btn-primary-bg;
-}
-
-.ng-table-pager {
-	padding-top: 1rem;
-	padding-right: 1.5rem;
-	padding-bottom: 0;
-	padding-left: 1.5rem;
-	border-top: 1px solid #DDD;
-	overflow: auto;
-}
-
-.ng-table-pagination,
-.ng-table-counts {
-	margin-bottom: 1rem;
-}
-
-.ng-table-pagination {
-	display: block;
-	float: left;
-}
-
-.ng-table-counts {
-	.btn-default {
-		&.active,
-		&.active:hover {
-			@extend .ng-table-page-btn-active;
-		}
-	}
-}
-
-.pagination {
-	> li > a {
-		@extend .ng-table-page-btn;
-	}
-
-	> li > a:hover {
-		color: $app-base-color;
-		border: 1px solid $ng-table-page-btn-hover-border-color;
-	}
-
-	> .active > a,
-	> .active > a:hover {
-		@extend .ng-table-page-btn-active;
-	}
-}
-
-.table-scroll {
-	table-layout: fixed;
-
-	tr {
-		display: table;
-		table-layout: fixed;
-	}
-
-	thead {
-		tr {
-			width: 100%;
-		}
-	}
-
-	tbody {
-		width: 100%;
-		display: block;
-		overflow-y: scroll;
-		overflow-x: hidden;
-
-		tr {
-			width: calc(100% + 17px)
-		}
-	}
-}
-
-.flex-table-container {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-}
-
-.flex-table {
-	display: -webkit-flex;
-	display: flex;
-	height: calc(100% - 52px);
-	flex-flow: column nowrap;
-	table-layout: fixed;
-
-	tr {
-		display: table;
-		table-layout: fixed;
-	}
-
-	thead {
-		tr {
-			width: 100%;
-		}
-	}
-
-	tbody {
-		width: 100%;
-		display: block;
-		overflow-y: scroll;
-		overflow-x: hidden;
-		flex: 1 1 auto;
-
-		tr {
-			width: 100%;
-		}
-	}
-}
-
-@media (min-width: 1200px) {
-	.flex-table {
-		tbody {
-			tr {
-				width: calc(100% + 17px);
-			}
-		}
-	}
-}
-
-.table-container {
-    position: relative;
-
-    table {
-        width: 100%;
-        table-layout: fixed;
-        background: $table-bg;
-
-        thead {
-            font-size: 1.2rem;
-            font-weight: bold;
-            background: $table-header-bg;
-            z-index: 3;
-
-            tr.sort-row {
-                th {
-                    &:hover {
-                        background-color: #EEE
-                    }
-                }
-            }
-
-            tr.filter-row {
-                border-top: $table-row-border;
-            }
-        }
-
-        th {
-            background-color: $table-header-bg;
-            font-size: 1.2rem;
-            font-weight: bold;
-
-            .sort-icon {
-                display: none;
-                margin-top: -2px;
-                margin-left: 0.25rem;
-                width: 0;
-                height: 0;
-                border-style: solid;
-                vertical-align: middle;
-            }
-
-            &.st-sort-ascent {
-                .sort-icon {
-                    display: inline-block;
-                    border-width: 0 5px 5px 5px;
-                    border-color: transparent transparent #494949 transparent;
-                }
-            }
-
-            &.st-sort-descent {
-                .sort-icon {
-                    display: inline-block;
-                    border-width: 5px 5px 0 5px;
-                    border-color: #494949 transparent transparent transparent;
-                }
-            }
-        }
-
-        tbody {
-            tr {
-                border-bottom: $table-row-border;
-            }
-        }
-
-        td {
-            padding: 1.5rem 0.5rem;
-            vertical-align: top;
-
-            &.table-row-actions {
-                padding-top: 0;
-                padding-bottom: 0;
-            }
-
-            &.pagination-container {
-                padding: 1.5rem;
-
-                ul {
-                    margin: 0;
-                    vertical-align: bottom;
-                }
-            }
-        }
-    }
-
-    table.table-hover {
-        tr {
-            cursor: pointer;
-
-            &:hover {
-                background-color: $table-row-hover-bg;
-            }
-
-            &.no-records:hover {
-                cursor: default;
-                background-color: $table-bg;   
-            }
-        }
-    }
-
-    .no-records {
-        padding: 1.5rem;
-        border-bottom: $table-row-border;
-        background-color: $table-bg;
-
-        td {
-            border: none;
-        }
-    }
-}
-
-.table-row-actions {
-    width: 5rem;
-    text-align: right;
-
-    .btn-group {
-        margin-top: 0.8rem;
-    }
-
-    .btn {
-        padding: 0;
-        width: 3.4rem;
-        height: 3.4rem;
-        text-align: center;
-        color: inherit;
-    }
-}
-
-@media (min-width: 1200px) {
-    .table-container {
-        tbody {
-            tr {
-                .table-row-actions {
-                    .btn-group {
-                        display: none;
-                    }
-                }
-
-                &:hover {
-                    .table-row-actions {
-                        .btn-group {
-                            display: block;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+  
+  .ng-table-page-btn {
+      font-size: $ng-table-page-btn-font-size;
+      font-weight: $ng-table-page-btn-font-weight;
+      color: $app-base-color;
+      border: 1px solid $ng-table-page-btn-border-color;
+  }
+  
+  .ng-table-page-btn-active {
+      color: $ng-table-page-btn-active-color;
+      background: $btn-primary-bg;
+      border-color: $btn-primary-bg;
+  }
+  
+  .ng-table-pager {
+      padding-top: 1rem;
+      padding-right: 1.5rem;
+      padding-bottom: 0;
+      padding-left: 1.5rem;
+      border-top: 1px solid #DDD;
+      overflow: auto;
+  }
+  
+  .ng-table-pagination,
+  .ng-table-counts {
+      margin-bottom: 1rem;
+  }
+  
+  .ng-table-pagination {
+      display: block;
+      float: left;
+  }
+  
+  .ng-table-counts {
+      .btn-default {
+          &.active,
+          &.active:hover {
+              @extend .ng-table-page-btn-active;
+          }
+      }
+  }
+  
+  .pagination {
+      > li > a {
+          @extend .ng-table-page-btn;
+      }
+  
+      > li > a:hover {
+          color: $app-base-color;
+          border: 1px solid $ng-table-page-btn-hover-border-color;
+      }
+  
+      > .active > a,
+      > .active > a:hover {
+          @extend .ng-table-page-btn-active;
+      }
+  }
+  
+  .table-scroll {
+      table-layout: fixed;
+  
+      tr {
+          display: table;
+          table-layout: fixed;
+      }
+  
+      thead {
+          tr {
+              width: 100%;
+          }
+      }
+  
+      tbody {
+          width: 100%;
+          display: block;
+          overflow-y: scroll;
+          overflow-x: hidden;
+  
+          tr {
+              width: calc(100% + 17px)
+          }
+      }
+  }
+  
+  .flex-table-container {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+  }
+  
+  .flex-table {
+      display: -webkit-flex;
+      display: flex;
+      height: calc(100% - 52px);
+      flex-flow: column nowrap;
+      table-layout: fixed;
+  
+      tr {
+          display: table;
+          table-layout: fixed;
+      }
+  
+      thead {
+          tr {
+              width: 100%;
+          }
+      }
+  
+      tbody {
+          width: 100%;
+          display: block;
+          overflow-y: scroll;
+          overflow-x: hidden;
+          flex: 1 1 auto;
+  
+          tr {
+              width: 100%;
+          }
+      }
+  }
+  
+  @media (min-width: 1200px) {
+      .flex-table {
+          tbody {
+              tr {
+                  width: calc(100% + 17px);
+              }
+          }
+      }
+  }
+  
+  .table-container {
+      position: relative;
+  
+      table {
+          width: 100%;
+          table-layout: fixed;
+          background: $table-bg;
+  
+          thead {
+              font-size: 1.2rem;
+              font-weight: bold;
+              background: $table-header-bg;
+              z-index: 3;
+  
+              tr.sort-row {
+                  th {
+                      &:hover {
+                          background-color: #EEE
+                      }
+                  }
+              }
+  
+              tr.filter-row {
+                  border-top: $table-row-border;
+              }
+          }
+  
+          th {
+              background-color: $table-header-bg;
+              font-size: 1.2rem;
+              font-weight: bold;
+  
+              .sort-icon {
+                  display: none;
+                  margin-top: -2px;
+                  margin-left: 0.25rem;
+                  width: 0;
+                  height: 0;
+                  border-style: solid;
+                  vertical-align: middle;
+              }
+  
+              &.st-sort-ascent {
+                  .sort-icon {
+                      display: inline-block;
+                      border-width: 0 5px 5px 5px;
+                      border-color: transparent transparent #494949 transparent;
+                  }
+              }
+  
+              &.st-sort-descent {
+                  .sort-icon {
+                      display: inline-block;
+                      border-width: 5px 5px 0 5px;
+                      border-color: #494949 transparent transparent transparent;
+                  }
+              }
+          }
+  
+          tbody {
+              tr {
+                  border-bottom: $table-row-border;
+              }
+          }
+  
+          td {
+              padding: 1.5rem 0.5rem;
+              vertical-align: top;
+  
+              &.table-row-actions {
+                  padding-top: 0;
+                  padding-bottom: 0;
+              }
+  
+              &.pagination-container {
+                  padding: 1.5rem;
+  
+                  ul {
+                      margin: 0;
+                      vertical-align: bottom;
+                  }
+              }
+          }
+      }
+  
+      table.table-hover {
+          tr {
+              cursor: pointer;
+  
+              &:hover {
+                  background-color: $table-row-hover-bg;
+              }
+  
+              &.no-records:hover {
+                  cursor: default;
+                  background-color: $table-bg;   
+              }
+          }
+      }
+  
+      .no-records {
+          padding: 1.5rem;
+          border-bottom: $table-row-border;
+          background-color: $table-bg;
+  
+          td {
+              border: none;
+          }
+      }
+  }
+  
+  .table-row-actions {
+      width: 5rem;
+      text-align: right;
+  
+      .btn-group {
+          margin-top: 0.8rem;
+      }
+  
+      .btn {
+          padding: 0;
+          width: 3.4rem;
+          height: 3.4rem;
+          text-align: center;
+          color: inherit;
+      }
+  }
+  
+  @media (min-width: 1200px) {
+      .table-container {
+          tbody {
+              tr {
+                  .table-row-actions {
+                      .btn-group {
+                          display: none;
+                      }
+                  }
+  
+                  &:hover {
+                      .table-row-actions {
+                          .btn-group {
+                              display: block;
+                          }
+                      }
+                  }
+              }
+          }
+      }
+  }

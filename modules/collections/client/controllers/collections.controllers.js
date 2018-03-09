@@ -13,56 +13,6 @@ collectionModules.controller('CollectionEditCtrl',
       $scope.linkedMainDocuments = _.map(collection.mainDocuments, function(cd) { return cd.document; });
       $scope.linkedOtherDocuments = _.map(collection.otherDocuments, function(cd) { return cd.document; });
 
-      $scope.showSuccess = function(msg, transitionCallback, title) {
-        var modalDocView = $uibModal.open({
-          animation: true,
-          templateUrl: 'modules/utils/client/views/partials/modal-success.html',
-          controller: function($scope, $state, $uibModalInstance) {
-            var self = this;
-            self.title = title || 'Success';
-            self.msg = msg;
-            self.ok = function() {
-              $uibModalInstance.close($scope.org);
-            };
-            self.cancel = function() {
-              $uibModalInstance.dismiss('cancel');
-            };
-          },
-          controllerAs: 'self',
-          scope: $scope,
-          size: 'md',
-          windowClass: 'modal-alert',
-          backdropClass: 'modal-alert-backdrop'
-        });
-        // do not care how this modal is closed, just go to the desired location...
-        modalDocView.result.then(function (/* res */) {transitionCallback(); }, function (/* err */) { transitionCallback(); });
-      };
-
-      $scope.showError = function(msg, errorList, transitionCallback, title) {
-        var modalDocView = $uibModal.open({
-          animation: true,
-          templateUrl: 'modules/utils/client/views/partials/modal-error.html',
-          controller: function($scope, $state, $uibModalInstance) {
-            var self = this;
-            self.title = title || 'An error has occurred';
-            self.msg = msg;
-            self.ok = function() {
-              $uibModalInstance.close($scope.org);
-            };
-            self.cancel = function() {
-              $uibModalInstance.dismiss('cancel');
-            };
-          },
-          controllerAs: 'self',
-          scope: $scope,
-          size: 'md',
-          windowClass: 'modal-alert',
-          backdropClass: 'modal-alert-backdrop'
-        });
-        // do not care how this modal is closed, just go to the desired location...
-        modalDocView.result.then(function (/* res */) {transitionCallback(); }, function (/* err */) { transitionCallback(); });
-      };
-
       $scope.confirmMove = function(title, msg, moveFunc) {
         var modalDocView = $uibModal.open({
           animation: true,
@@ -93,12 +43,6 @@ collectionModules.controller('CollectionEditCtrl',
 
       var goToList = function() {
         $state.transitionTo('p.collection.list', { projectid: project.code }, {
-          reload: true, inherit: false, notify: true
-        });
-      };
-
-      var goToDetail = function() {
-        $state.transitionTo('p.collection.edit', { projectid: project.code, collectionId: collection._id }, {
           reload: true, inherit: false, notify: true
         });
       };
@@ -142,7 +86,8 @@ collectionModules.controller('CollectionEditCtrl',
         Promise.all(docPromises)
           .then(reloadEdit)
           .catch(function(/* res */) {
-            $scope.showError('Could not update other documents for "'+ $scope.collection.displayName +'".', [], reloadEdit, 'Update Other Documents Error');
+            AlertService.error('Could not update other documents for "'+ $scope.collection.displayName +'".', 4000);
+            reloadEdit();
           });
       };
 
@@ -150,7 +95,8 @@ collectionModules.controller('CollectionEditCtrl',
         CollectionModel.removeDocument($scope.collection._id, document._id, type)
           .then(reloadEdit)
           .catch(function(/* res */) {
-            $scope.showError('Could not remove document from "'+ $scope.collection.displayName +'".', [], reloadEdit, 'Remove Document Error');
+            AlertService.error('Could not remove document from "'+ $scope.collection.displayName +'".', 4000);
+            reloadEdit();
           });
       };
 
@@ -177,11 +123,13 @@ collectionModules.controller('CollectionEditCtrl',
           CollectionModel.deleteId($scope.collection._id)
             .then(function(/* res */) {
               // deleted show the message, and go to list...
-              $scope.showSuccess('"'+ $scope.collection.displayName +'"' + ' was deleted successfully.', goToList, 'Delete Success');
+              AlertService.success('"'+ $scope.collection.displayName +'"' + ' was deleted successfully.', 4000);
+              goToList();
             })
             .catch(function(/* res */) {
               // could have errors from a delete check...
-              $scope.showError('"'+ $scope.collection.displayName +'"' + ' was not deleted.', [], reloadEdit, 'Delete Error');
+              AlertService.error('"'+ $scope.collection.displayName +'"' + ' was not deleted.', 4000);
+              reloadEdit();
             });
         });
       };
@@ -217,7 +165,7 @@ collectionModules.controller('CollectionEditCtrl',
         });
 
         if (publishedMainDocs.length < 1) {
-          AlertService.error("At least one 'PUBLISHED' main document is required to publish the collection.");
+          AlertService.error("At least one 'PUBLISHED' main document is required to publish the collection.", 4000);
           return;
         }
 
@@ -227,10 +175,10 @@ collectionModules.controller('CollectionEditCtrl',
         })
           .then(function() {
             // published, show the message, and go to list...
-            $scope.showSuccess('"'+ $scope.collection.displayName +'"' + ' was published successfully.', goToDetail, 'Publish Success');
+            AlertService.success('"'+ $scope.collection.displayName +'"' + ' was published successfully.', 4000);
           })
           .catch(function(/* res */) {
-            $scope.showError('"'+ $scope.collection.displayName +'"' + ' was not published.', [], reloadEdit, 'Publish Error');
+            AlertService.error('"'+ $scope.collection.displayName +'"' + ' was not published.', 4000);
           });
       };
 
@@ -240,10 +188,10 @@ collectionModules.controller('CollectionEditCtrl',
         })
           .then(function() {
             // unpublished, show the message, and go to list...
-            $scope.showSuccess('"'+ $scope.collection.displayName +'"' + ' was unpublished successfully.', goToDetail, 'Unpublish Success');
+            AlertService.success('"'+ $scope.collection.displayName +'"' + ' was unpublished successfully.', 4000);
           })
           .catch(function(/* res */) {
-            $scope.showError('"'+ $scope.collection.displayName +'"' + ' was not unpublished.', [], reloadEdit, 'Unpublish Error');
+            AlertService.error('"'+ $scope.collection.displayName +'"' + ' was not unpublished.', 4000);
           });
       };
 
@@ -278,7 +226,9 @@ collectionModules.controller('CollectionEditCtrl',
         }
         CollectionModel.save($scope.collection)
           .then(function (/* model */) {
-            goToDetail();
+            AlertService.success('"' + $scope.collection.displayName + '" was saved successfully.', 4000);
+          }, function () {
+            AlertService.error('"' + $scope.collection.displayName + '" was unable to save successfully.', 4000);
           })
           .catch(function(/* err */) {
             // swallow rejected promise error

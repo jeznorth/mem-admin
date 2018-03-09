@@ -244,6 +244,9 @@ module.exports = DBModel.extend({
               document: document,
             }).then(function(collectionDocument) {
               docLists[targetDocType].push(collectionDocument);
+              collection.hasPublished = _.find(collection.mainDocuments, function(o) {
+                return o.document.isPublished
+              });
               collection.save();
               return collectionDocument;
             });
@@ -278,6 +281,9 @@ module.exports = DBModel.extend({
 
           // Remove from Collection
           docList = _.without(docList, collectionDocument);
+          collection.hasPublished = _.find(docList, function(o) {
+            return o.document.isPublished
+          });
           collection.save();
 
           // Remove from CollectionDocument
