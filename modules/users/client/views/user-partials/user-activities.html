@@ -1,5 +1,5 @@
 <div class="main-panel">
-    
+
     <div class="view-title-container flex-row">
         <h1>Dashboard</h1>
         <div class="actions">
@@ -14,7 +14,7 @@
         <!-- Projects -->
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h2>My Projects</h2>
+                <h2>Unpublished Projects</h2>
             </div>
             <div class="table-container">
                 <table class="projects-table table table-hover"
@@ -25,7 +25,7 @@
                             filter="{'name':'text'}"
                             sortable="'name'">{{o.name}}
                         </td>
-                        <td title="'data-Permit'"
+                        <td title="'Permit'"
                             sortable="'memPermitID'">{{o.memPermitID}}
                         </td>
                         <td data-title="'Type'"
@@ -34,11 +34,7 @@
                         <td data-title="'Region'"
                             sortable="'region'">{{o.region | regionName}}
                         </td>
-                        <td data-title="'Phase'"
-                            sortable="'currentPhase.name'" >{{o.currentPhase.name}}
-                        </td>
-                        <td ng-if="environment === 'EAO'"
-                            data-title="'Status'"
+                        <td data-title="'Status'"
                             sortable="'status'">{{o.status}}
                         </td>
                     </tr>
@@ -57,22 +53,22 @@
             <div class="table-container">
                 <table class="table table-hover" ng-table="tableParams" show-filter="true">
                     <tr ng-repeat="o in $data" ui-sref="p.artifact.view({projectid: o.project.code, artifactId:o._id})">
-                    <td class="project-name-col" header-class="'project-name-col'" 
-                        data-title="'Project'" 
-                        filter="{'project.name':'text'}" 
+                    <td class="project-name-col" header-class="'project-name-col'"
+                        data-title="'Project'"
+                        filter="{'project.name':'text'}"
                         sortable="'project.name'">{{o.project.name}}
                     </td>
-                    <td class="artifact-name-col" header-class="'artifact-name-col'" 
-                        data-title="'Name'" 
-                        filter="{'name':'text'}" 
+                    <td class="artifact-name-col" header-class="'artifact-name-col'"
+                        data-title="'Name'"
+                        filter="{'name':'text'}"
                         sortable="'name'">{{o.name}}
                     </td>
-                    <td ng-if="!published" 
-                        data-title="'Stage'" 
-                        filter="{'stage':'select'}" 
+                    <td ng-if="!published"
+                        data-title="'Stage'"
+                        filter="{'stage':'select'}"
                         filter-data="stageArray" sortable="'stage'">{{o.stage}}<br/><span class="placeholder-value" ng-if="o.stageRole">({{o.stageRole}})</span>
                     </td>
-                    <td data-title="'Last Updated'" 
+                    <td data-title="'Last Updated'"
                         filter-data="'dateUpdated'"
                         sortable="'dateUpdated'">{{ o.dateUpdated | amDateFormat:'MMM DD, YYYY' }}
                     </td>

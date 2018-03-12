@@ -117,7 +117,7 @@ angular.module('users').config(['$stateProvider',
             return ActivityModel.userActivities (null, 'write');
           },
           projects: function(ProjectModel) {
-            return ProjectModel.mine ();
+            return ProjectModel.dashboard ();
           },
           artifacts: function(ArtifactModel) {
             return ArtifactModel.mine ();
