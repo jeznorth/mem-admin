@@ -37,6 +37,16 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
   $scope._ = _;
   $scope.CEAA = CEAA_TYPES;
 
+  $scope.resetValidity = function() {
+    $scope.newNameInvalid = false;
+    $scope.detailsTabInvalid = false;
+    $scope.proponentsTabInvalid = false;
+    $scope.activitiesTabInvalid = false;
+    $scope.publicContentTabInvalid = false;
+  };
+
+  $scope.resetValidity();
+
   ProjectModel.setModel($scope.project);
 
   $scope.goToList = function() {
@@ -208,15 +218,42 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     }
   };
 
-  $scope.validateProject = function(isValidDetails, isValidPublicContent) {
+  $scope.validateProject = function(isValidDetails, isValidProponents, isValidActivities, isValidPublicContent) {
+    $scope.resetValidity();
+
+    if (!$scope.project.isPublished) {
+      // Only validate project name for new projects
+      if (!$scope.project.name) {
+        $scope.newNameInvalid = true;
+        return false;
+      }
+      return true;
+    }
+
+    var isValid = true;
+
     if (!isValidDetails) {
       $scope.$broadcast('show-errors-check-validity', 'detailsForm');
-      return false;
+      $scope.detailsTabInvalid = true;
+      isValid = false;
+    }
+
+    if (!isValidProponents) {
+      $scope.$broadcast('show-errors-check-validity', 'proponentsForm');
+      $scope.proponentsTabInvalid = true;
+      isValid = false;
+    }
+
+    if (!isValidActivities) {
+      $scope.$broadcast('show-errors-check-validity', 'activitesForm');
+      $scope.activitiesTabInvalid = true;
+      isValid = false;
     }
 
     if ($scope.project.isMajorMine && !isValidPublicContent) {
       $scope.$broadcast('show-errors-check-validity', 'publicContentForm');
-      return false;
+      $scope.publicContentTabInvalid = true;
+      isValid = false;
     }
 
     // Make sure the math works on ownership properties.
@@ -226,15 +263,15 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     });
 
     if (percentTotal !== 100) {
-      AlertService.error("Can't save project until ownership on project amounts to 100%.", 4000);
-      return false;
+      $scope.proponentsTabInvalid = true;
+      isValid = false;
     }
 
-    return true;
+    return isValid;
   };
 
-  $scope.saveProject = function(isValidDetails, isValidPublicContent, currTab) {
-    if (!$scope.project.isPublished || $scope.validateProject(isValidDetails, isValidPublicContent)) {
+  $scope.saveProject = function(isValidDetails, isValidProponents, isValidActivities, isValidPublicContent, currTab) {
+    if ($scope.validateProject(isValidDetails, isValidProponents, isValidActivities, isValidPublicContent)) {
       setContentHtml($scope.project.content, 'Mines', 'Intro', $scope.mineIntro);
       setContentHtml($scope.project.content, 'Auth', 'Intro', $scope.authIntro);
       setContentHtml($scope.project.content, 'Comp', 'Intro', $scope.compIntro);
@@ -249,7 +286,8 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
           .then(function(data) {
             return ProjectModel.submit(data);
           })
-          .then(function() {
+          .then(function(data) {
+            $scope.project = data;
             AlertService.success('Project was added.', 4000);
             $scope.goToEdit(currTab);
           })
@@ -269,8 +307,8 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     }
   };
 
-  $scope.publishProject = function(isValidDetails, isValidPublicContent) {
-    if ($scope.validateProject(isValidDetails, isValidPublicContent)) {
+  $scope.publishProject = function(isValidDetails, isValidProponents, isValidActivities, isValidPublicContent) {
+    if ($scope.validateProject(isValidDetails, isValidProponents, isValidActivities, isValidPublicContent)) {
       // Pop confirmation dialog, after OK, publish immediately.
       var modalDocView = $uibModal.open({
         animation: true,

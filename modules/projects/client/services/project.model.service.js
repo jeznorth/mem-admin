@@ -47,6 +47,9 @@ angular.module('project').factory ('ProjectModel', function (ModelBase, _) {
     mine: function () {
       return this.get ('/api/projects/mine');
     },
+    dashboard: function () {
+      return this.get ('/api/projects/dashboard');
+    },
     forOrg : function (orgid) {
       return this.get ('/api/projects/for/org/' + orgid);
     },

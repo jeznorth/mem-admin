@@ -112,6 +112,11 @@ module.exports = function (app) {
       return model.published ();
     }));
 
+  app.route ('/api/projects/dashboard')
+    .get (routes.setAndRun (Project, function (model/* , req */) {
+      return model.dashboard ();
+    }));
+
   app.route ('/api/projects/mine')
     .get (routes.setAndRun (Project, function (model/* , req */) {
       return model.mine ();

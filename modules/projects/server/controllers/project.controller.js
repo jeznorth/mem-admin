@@ -471,6 +471,27 @@ module.exports = DBModel.extend ({
   },
   // -------------------------------------------------------------------------
   //
+  // Show all unpublished ...
+  //
+  // -------------------------------------------------------------------------
+  dashboard: function () {
+    var self = this;
+
+    return new Promise(function(resolve, reject) {
+      self.model.find ({ isPublished: false }, { _id: 1, code: 1, name: 1, region: 1, status: 1, type: 1, memPermitID: 1, isMajorMine: 1 })
+        .sort ({ name: 1 })
+        .populate ( 'name' )
+        .exec(function(err, recs) {
+          if (err) {
+            reject(new Error(err));
+          } else {
+            resolve(recs);
+          }
+        });
+    });
+  },
+  // -------------------------------------------------------------------------
+  //
   // just what I can write to
   //
   // -------------------------------------------------------------------------
