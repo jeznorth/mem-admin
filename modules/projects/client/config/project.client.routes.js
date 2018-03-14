@@ -84,14 +84,6 @@ angular.module('project').config (
               $scope.activeperiod = activeperiod;
               $scope.allowCommentSubmit = (activeperiod.userCan.addComment) || activeperiod.userCan.vetComments;
             }
-
-            // complete the current phase.
-            $scope.publishProject = function() {
-              ProjectModel.publishProject( project ).then( function(res) {
-                $scope.project = res;
-                $state.go($state.current, {}, {reload: true});
-              });
-            };
           }
         })
 
