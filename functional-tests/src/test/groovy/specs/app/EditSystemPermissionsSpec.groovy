@@ -1,4 +1,4 @@
-import geb.spock.GebReportingSpec
+package specs.app
 
 import pages.app.modal.EditSystemPermissionsModal
 import pages.app.HomePage
@@ -12,12 +12,7 @@ import spock.lang.Stepwise
 
 @Title("Functional tests for the EditSystemPermissions modal page")
 @Stepwise
-class EditSystemPermissionsSpec extends GebReportingSpec {
-  def setupSpec() {
-    to LoginPage
-    login("admin", System.getenv("ADMINPW"))
-    to HomePage
-  }
+class EditSystemPermissionsSpec extends LoggedInSpec {
 
   @Unroll
   def "Start on Page #InitialPage, open modal: EditSystemPermissionsModal, click Link: #ClickLink, Assert Page: #AssertPage"() {

@@ -3,7 +3,7 @@ package pages.app
 import pages.app.BaseAppPage
 
 class LoginPage extends BaseAppPage {
-  static at = { pageTitle.text().equals("Login") }
+  static at = { $('#login-title').text().startsWith('Login') }
   static url = "/authentication/local/signin"
   static content = {
     pageTitle { $(".panel-title") }

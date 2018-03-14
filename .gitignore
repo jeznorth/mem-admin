@@ -90,3 +90,7 @@ runprod.sh
 # ============
 /sonar-runner/.gradle
 /sonar-runner/build
+
+# Automated Functional Tests
+# ============
+**/.gradle

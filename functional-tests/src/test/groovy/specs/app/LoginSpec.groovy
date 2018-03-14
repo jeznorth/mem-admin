@@ -1,4 +1,4 @@
-import geb.spock.GebReportingSpec
+package specs.app
 
 import pages.app.LoginPage
 import pages.app.HomePage
@@ -10,16 +10,22 @@ import spock.lang.Unroll
 import spock.lang.Title
 
 @Title("Functional tests for the Login page")
-class LoginSpec extends GebReportingSpec {
+class LoginSpec extends FixtureSpec {
+  def _username = "user-name"
+  def _password = "password"
+
   def setupSpec() {
     module(FooterModule).logout()
+
+    FixtureSpec.fixture_files =['admin_user_fixture']
+    setupFixtures()
   }
 
   def "Navigate Page from: LoginPage, log in as Admin, Assert Page: HomePage"() {
     given: "I start on the LoginPage and am not logged in"
       to LoginPage
     when: "I log in as Admin"
-      login("admin", System.getenv("ADMINPW"))
+      login(_username, _password)
     then: "I am logged in and returned to the HomePage"
       at HomePage
   }

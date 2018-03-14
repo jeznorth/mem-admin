@@ -1,4 +1,4 @@
-import geb.spock.GebReportingSpec
+package specs.app
 
 import pages.app.AddEditProjectPage
 import pages.app.HomePage
@@ -13,13 +13,7 @@ import spock.lang.Stepwise
 
 @Title("Functional tests for the AddEditProject page")
 @Stepwise
-class AddEditProjectSpec extends GebReportingSpec {
-  def setupSpec() {
-    to LoginPage
-    login("admin", System.getenv("ADMINPW"))
-    to HomePage
-  }
-
+class AddEditProjectSpec extends LoggedInSpec {
   @Unroll
   def "Navigate Page from: AddEditProjectPage, click Link: #ClickLink, Assert Page: #AssertPage"() {
     given: "I start on the AddEditProjectPage"
