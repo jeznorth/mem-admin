@@ -86,7 +86,7 @@ collectionModules.controller('CollectionEditCtrl',
         Promise.all(docPromises)
           .then(reloadEdit)
           .catch(function(/* res */) {
-            AlertService.error('Could not update other documents for "'+ $scope.collection.displayName +'".', 4000);
+            AlertService.error('Could not update other documents for "'+ $scope.collection.displayName +'".', 4000, true);
             reloadEdit();
           });
       };
@@ -95,7 +95,7 @@ collectionModules.controller('CollectionEditCtrl',
         CollectionModel.removeDocument($scope.collection._id, document._id, type)
           .then(reloadEdit)
           .catch(function(/* res */) {
-            AlertService.error('Could not remove document from "'+ $scope.collection.displayName +'".', 4000);
+            AlertService.error('Could not remove document from "'+ $scope.collection.displayName +'".', 4000, true);
             reloadEdit();
           });
       };
@@ -123,12 +123,12 @@ collectionModules.controller('CollectionEditCtrl',
           CollectionModel.deleteId($scope.collection._id)
             .then(function(/* res */) {
               // deleted show the message, and go to list...
-              AlertService.success('"'+ $scope.collection.displayName +'"' + ' was deleted successfully.', 4000);
+              AlertService.success('"'+ $scope.collection.displayName +'" was deleted successfully.', 4000, true);
               goToList();
             })
             .catch(function(/* res */) {
               // could have errors from a delete check...
-              AlertService.error('"'+ $scope.collection.displayName +'"' + ' was not deleted.', 4000);
+              AlertService.error('"'+ $scope.collection.displayName +'" was not deleted.', 4000, true);
               reloadEdit();
             });
         });
@@ -165,7 +165,7 @@ collectionModules.controller('CollectionEditCtrl',
         });
 
         if (publishedMainDocs.length < 1) {
-          AlertService.error("At least one 'PUBLISHED' main document is required to publish the collection.", 4000);
+          AlertService.error("At least one 'PUBLISHED' main document is required to publish the collection.", 4000, true);
           return;
         }
 
@@ -175,10 +175,12 @@ collectionModules.controller('CollectionEditCtrl',
         })
           .then(function() {
             // published, show the message, and go to list...
-            AlertService.success('"'+ $scope.collection.displayName +'"' + ' was published successfully.', 4000);
+            AlertService.success('"'+ $scope.collection.displayName +'" was published successfully.', 4000, true);
+            $state.reload();
           })
           .catch(function(/* res */) {
-            AlertService.error('"'+ $scope.collection.displayName +'"' + ' was not published.', 4000);
+            AlertService.error('"'+ $scope.collection.displayName +'" was not published.', 4000, true);
+            $state.reload();
           });
       };
 
@@ -188,16 +190,19 @@ collectionModules.controller('CollectionEditCtrl',
         })
           .then(function() {
             // unpublished, show the message, and go to list...
-            AlertService.success('"'+ $scope.collection.displayName +'"' + ' was unpublished successfully.', 4000);
+            AlertService.success('"'+ $scope.collection.displayName +'" was unpublished successfully.', 4000, true);
+            $state.reload();
           })
           .catch(function(/* res */) {
-            AlertService.error('"'+ $scope.collection.displayName +'"' + ' was not unpublished.', 4000);
+            AlertService.error('"'+ $scope.collection.displayName +'" was not unpublished.', 4000, true);
+            $state.reload();
           });
       };
 
       $scope.save = function(isValid) {
         if (!isValid) {
           $scope.$broadcast('show-errors-check-validity', 'collectionForm');
+          AlertService.error('Error: The project could not be saved. Ensure project has a type, unique name, and description.', 4000, true);
           return false;
         }
         // Update parent and status
@@ -226,9 +231,11 @@ collectionModules.controller('CollectionEditCtrl',
         }
         CollectionModel.save($scope.collection)
           .then(function (/* model */) {
-            AlertService.success('"' + $scope.collection.displayName + '" was saved successfully.', 4000);
+            AlertService.success('"' + $scope.collection.displayName + '" was saved successfully.', 4000, true);
+            $state.reload();
           }, function () {
-            AlertService.error('"' + $scope.collection.displayName + '" was unable to save successfully.', 4000);
+            AlertService.error('"' + $scope.collection.displayName + '" was unable to save successfully.', 4000, true);
+            $state.reload();
           })
           .catch(function(/* err */) {
             // swallow rejected promise error
@@ -237,16 +244,16 @@ collectionModules.controller('CollectionEditCtrl',
     }]);
 
 collectionModules.controller('CollectionCreateCtrl',
-  ['$scope', '$log', '$state', '$uibModal', '$location', 'NgTableParams', 'collection', 'project', 'types', 'CollectionModel',
-    function($scope, $log, $state, $uibModal, $location, NgTableParams, collection, project, types, CollectionModel) {
+  ['$scope', '$log', '$state', '$uibModal', '$location', 'NgTableParams', 'collection', 'project', 'types', 'CollectionModel', 'AlertService',
+    function($scope, $log, $state, $uibModal, $location, NgTableParams, collection, project, types, CollectionModel, AlertService) {
       $scope.collection = collection;
       $scope.collection.project = project._id;
       $scope.project = project;
       $scope.types = types;
-
       $scope.save = function(isValid) {
         if (!isValid) {
           $scope.$broadcast('show-errors-check-validity', 'collectionForm');
+          AlertService.error('Error: The project could not be saved. Ensure project has a type, unique name, and description.', 4000, true);
           return false;
         }
         // Update parent and status
@@ -275,6 +282,8 @@ collectionModules.controller('CollectionCreateCtrl',
         }
         CollectionModel.add($scope.collection)
           .then(function(/* model */) {
+            // var newparam = 5003;
+            AlertService.success('"'+ $scope.collection.displayName +'" was successfully created.', 4000, true);
             $state.transitionTo('p.collection.edit', { projectid: project.code, collectionId: collection._id }, {
               reload: true, inherit: false, notify: true
             });
