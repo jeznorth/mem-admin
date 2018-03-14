@@ -200,10 +200,15 @@ angular.module(ApplicationConfiguration.applicationModuleName).run(function ($wi
     }
   });
 
-  // Close modals/alerts when navigating away from the current page (e.g.: browser back)
+  // Close modals/alerts when navigating away from the current page (e.g.: browser back),
+  // unless it was specified to act differently.
   $rootScope.$on('$locationChangeStart', function() {
     $uibModalStack.dismissAll();
-    AlertService.dismissAll();
+    if (!AlertService.persistOnRouteChange) {
+      AlertService.dismissAll();
+    }
+    // ensure next transitions clear the currently displayed alerts
+    AlertService.persistOnRouteChange = false;
   });
 });
 

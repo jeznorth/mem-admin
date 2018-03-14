@@ -16,11 +16,7 @@
       </div>
       <div class="view-title__actions">
         <button class="btn btn-default" title="Cancel and return to the Collections List"
-          ng-if="!collection.addedBy" ui-sref="p.collection.list">
-          Cancel
-        </button>
-        <button class="btn btn-default" title="Cancel and return to the Collections List"
-          ng-if="collection.addedBy" ng-click="goToDetail()">
+          ng-if="collection.addedBy" ui-sref="p.collection.list">
           Cancel
         </button>
         <button class="btn btn-primary" type="submit" title="Save this Collection">
@@ -213,11 +209,7 @@
       <div class="form-footer clearfix">
         <div class="form-footer__buttons">
           <button class="btn btn-default" title="Cancel and return to the Collections List"
-            ng-if="!collection.addedBy" ui-sref="p.collection.list">
-            Cancel
-          </button>
-          <button class="btn btn-default" title="Cancel and return to the Collections List"
-            ng-if="collection.addedBy" ng-click="goToList()">
+            ng-if="collection.addedBy" ui-sref="p.collection.list">
             Cancel
           </button>
           <button class="btn btn-primary" type="submit" title="Save this Collection">
