@@ -5,9 +5,6 @@
     <div class="actions-group" ng-if="authentication.user">
       <a class="btn btn-default btn-sm" ui-sref="p.edit({pId:o._id})" ng-if="project.userCan.write">
         <span class="glyphicon glyphicon-pencil"></span><span>Edit Project</span></a>
-      <a class="btn btn-success btn-sm"
-        ng-click="publishProject()"
-        ng-if="project.userCan.publish && !project.isPublished">Publish Project</a>
     </div>
     <tmpl-permissions-gear class="permission-btn" x-context="project" x-object="project"></tmpl-permissions-gear>
   </div>

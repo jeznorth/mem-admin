@@ -18,10 +18,10 @@
         <button class="btn btn-primary" type="submit" ng-click="saveProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)">
           Save
         </button>
-        <button class="btn btn-primary" ng-click="publishProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid)" ng-if="!project.isPublished">
+        <button class="btn btn-primary" ng-click="publishProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)" ng-if="!project.isPublished">
           Publish Project
         </button>
-        <button class="btn btn-danger" ng-click="unpublishProject()" ng-if="project.isPublished">
+        <button class="btn btn-danger" ng-click="unpublishProject(form.curTab)" ng-if="project.isPublished">
           Unpublish Project
         </button>
         <button class="btn btn-danger" ng-click="deleteProject()" ng-if="!isNew && !project.isPublished && project.userCan.delete">
@@ -525,10 +525,10 @@
           <button class="btn btn-primary" type="submit" ng-click="saveProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)">
             Save
           </button>
-          <button class="btn btn-primary" ng-click="publishProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid)" ng-if="!project.isPublished">
+          <button class="btn btn-primary" ng-click="publishProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)" ng-if="!project.isPublished">
             Publish Project
           </button>
-          <button class="btn btn-danger" ng-click="unpublishProject()" ng-if="project.isPublished">
+          <button class="btn btn-danger" ng-click="unpublishProject(form.curTab)" ng-if="project.isPublished">
             Unpublish Project
           </button>
           <button class="btn btn-danger" ng-click="deleteProject()" ng-if="!isNew && !project.isPublished && project.userCan.delete">

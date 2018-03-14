@@ -289,7 +289,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
           .then(function(data) {
             $scope.project = data;
             AlertService.success('Project was added.', 4000);
-            $scope.goToEdit(currTab);
+            $state.go('p.edit', { projectid:  $scope.project.code, currTab: currTab }, { reload: true });
           })
           .catch(function(/* err */) {
             AlertService.error('Project could not be added.', 4000);
@@ -307,7 +307,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     }
   };
 
-  $scope.publishProject = function(isValidDetails, isValidProponents, isValidActivities, isValidPublicContent) {
+  $scope.publishProject = function(isValidDetails, isValidProponents, isValidActivities, isValidPublicContent, currTab) {
     if ($scope.validateProject(isValidDetails, isValidProponents, isValidActivities, isValidPublicContent)) {
       // Pop confirmation dialog, after OK, publish immediately.
       var modalDocView = $uibModal.open({
@@ -334,14 +334,18 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
       });
       modalDocView.result.then(function() {
         ProjectModel.publishProject($scope.project)
+          .then(function(){
+            AlertService.success('Project was published successfully.', 4000);
+            $scope.goToEdit(currTab);
+          })
           .catch (function (/* err */) {
-            // swallow rejected promise error
+            AlertService.error('Project could not be published.', 4000);
           });
       });
     }
   };
 
-  $scope.unpublishProject = function() {
+  $scope.unpublishProject = function(currTab) {
     // Pop confirmation dialog, after OK, publish immediately.
     var modalDocView = $uibModal.open({
       animation: true,
@@ -367,8 +371,12 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     });
     modalDocView.result.then(function() {
       ProjectModel.unpublishProject($scope.project)
+        .then(function(){
+          AlertService.success('Project was unpublished successfully.', 4000);
+          $scope.goToEdit(currTab);
+        })
         .catch (function (/* err */) {
-          // swallow rejected promise error
+          AlertService.error('Project could not be unpublished.', 4000);
         });
     });
   };
