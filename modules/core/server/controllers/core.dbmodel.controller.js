@@ -315,9 +315,11 @@ _.extend (DBModel.prototype, {
     var self = this;
     return new Promise (function (resolve, reject) {
       if (self.err) {return reject (self.err);}
-      var q = {};
+      // Filter out any "lost" documents that do not show up in the doc manager.
+      var q = { "directoryID": { $exists: true }};
+
       if (keywords) {
-        q = _.extend ({}, self.baseQ, { $text: { $search: keywords }});
+        q = _.extend (q, self.baseQ, { $text: { $search: keywords }});
       }
       if (dateRangeStart && dateRangeEnd) {
         q = _.extend (q, { $and: [{ "documentDate": { $gte : new Date(dateRangeStart) }},{ "documentDate": { $lte : new Date(dateRangeEnd) }}]});
