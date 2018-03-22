@@ -12,7 +12,7 @@ angular.module('core')
       replace: true,
       templateUrl: 'modules/core/client/views/menu.client.view.html',
       controllerAs: 'menu',
-      controller: function ($scope, $state, Authentication, Menus, $rootScope, _, ENV) {
+      controller: function ($scope, $state, Authentication, Menus, $rootScope, _, ENV, $location) {
         var menu = this;
         menu.ENV = ENV;
         menu.systemMenu = Menus.getMenu ('systemMenu');
@@ -29,6 +29,19 @@ angular.module('core')
         }
         menu.isProjectAdmin = false;
         menu.isProponentAdmin = false;
+
+        $scope.isActive = function (viewLocation) {
+          // split item.state based on .
+          var location = viewLocation.split('.');
+          // get project-code from location path
+          var projectCode = $location.path().split('/')[2];
+          // insert project code into array
+          location.splice(1, 0, projectCode);
+          // join the array together using /'s
+          var routeLocation = '/' + location.join('/');
+          var active = (routeLocation === $location.path());
+          return active;
+        };
 
         menu.goToPrevious = function() {
           $state.go($state.previous.state.name, $state.previous.params);
