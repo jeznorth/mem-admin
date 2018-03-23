@@ -36,7 +36,7 @@ angular.module('collections').config(['$stateProvider', function($stateProvider)
           return CollectionModel.getNew();
         }
       },
-      controller: 'CollectionCreateCtrl'
+      controller: 'CollectionEditCtrl'
     })
 
     .state('p.collection.edit', {

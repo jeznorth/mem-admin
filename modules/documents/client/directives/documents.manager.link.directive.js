@@ -248,19 +248,14 @@ angular.module('documents')
 
               self.ok = function () {
                 // return the data in the selected list...
-                $uibModalInstance.close({linked: self.linkedFiles, source : self.sourceDocs[self.docType], docType : self.docType});
+                $uibModalInstance.close({linked: self.linkedFiles, docType : self.docType});
               };
 
             }
           }).result.then(function (data) {
-            // ok, pass data back to the caller....
-            if (scope.target) {
-              // if they set the target collection... update it.
-              scope.target = data;
-            }
             if (scope.onOk) {
               //if they set an OK handler, call it.
-              scope.onOk(data.linked, data.source, data.docType);
+              scope.onOk(data.linked, data.docType);
             }
           })
             .catch(function (/* err */) {
