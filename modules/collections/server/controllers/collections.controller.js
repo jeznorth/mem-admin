@@ -136,10 +136,6 @@ module.exports = DBModel.extend({
     });
   },
 
-  addOtherDocument: function(collectionId, documentId) {
-    return this.addDocument(collectionId, documentId, "other");
-  },
-
   sortOtherDocuments: function (collectionId, idList) {
     return this.findById(collectionId).then(function (collection) {
       if (!collection) { throw new Error('Missing collection'); }
@@ -178,10 +174,6 @@ module.exports = DBModel.extend({
     });
   },
 
-  removeOtherDocument: function(collectionId, documentId) {
-    return this.removeDocument(collectionId, documentId, "other");
-  },
-
   updateOtherDocumentSortOrder: function(collectionId, documentId, sortOrder) {
     return this.findById(collectionId).then(function(collection) {
       if (!collection) {return;}
@@ -202,8 +194,8 @@ module.exports = DBModel.extend({
     return this.addDocument(collectionId, documentId, "main");
   },
 
-  removeMainDocument: function(collectionId, documentId) {
-    return this.removeDocument(collectionId, documentId, "main");
+  addOtherDocument: function(collectionId, documentId) {
+    return this.addDocument(collectionId, documentId, "other");
   },
 
   addDocument: function(collectionId, documentId, targetDocType) {
@@ -213,7 +205,6 @@ module.exports = DBModel.extend({
       if (!collection) {
         return;
       }
-
       // hold a reference to the doc lists, so we can flex the function based on the type of document being processed
       var docLists = {
         main : collection.mainDocuments,
@@ -244,9 +235,6 @@ module.exports = DBModel.extend({
               document: document,
             }).then(function(collectionDocument) {
               docLists[targetDocType].push(collectionDocument);
-              collection.hasPublished = _.find(collection.mainDocuments, function(o) {
-                return o.document.isPublished
-              });
               collection.save();
               return collectionDocument;
             });
@@ -254,6 +242,14 @@ module.exports = DBModel.extend({
         });
       }
     });
+  },
+
+  removeMainDocument: function(collectionId, documentId) {
+    return this.removeDocument(collectionId, documentId, "main");
+  },
+
+  removeOtherDocument: function(collectionId, documentId) {
+    return this.removeDocument(collectionId, documentId, "other");
   },
 
   removeDocument: function(collectionId, documentId, docType) {

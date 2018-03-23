@@ -1,139 +1,154 @@
 var collectionModules = angular.module('collections');
 
-collectionModules.controller('CollectionEditCtrl',
-  ['$scope', '$log', '$state', '$uibModal', '$location', 'NgTableParams', 'collection', 'project', 'types', 'CollectionModel', 'AlertService', '_',
-    function($scope, $log, $state, $uibModal, $location, NgTableParams, collection, project, types, CollectionModel, AlertService, _) {
-      $scope.collection = collection;
+
+//Controller for collections list.
+collectionModules.controller('CollectionListCtrl',
+  ['$scope', '$log', '$state', '$location', 'NgTableParams', 'project', 'collections', 'types',
+    function($scope, $log, $state, $location, NgTableParams, project, collections, types) {
+      $scope.tableParams = new NgTableParams({ count: 10 },{ dataset: collections });
       $scope.project = project;
       $scope.types = types;
+    }]);
 
-      $scope.mainTableParams = new NgTableParams({ sorting: { sortOrder: 'asc' }, count: 5 }, { dataset: collection.mainDocuments });
-      $scope.otherTableParams = new NgTableParams({ sorting: { sortOrder: 'asc' }, count: 10 }, { dataset: collection.otherDocuments });
 
-      $scope.linkedMainDocuments = _.map(collection.mainDocuments, function(cd) { return cd.document; });
-      $scope.linkedOtherDocuments = _.map(collection.otherDocuments, function(cd) { return cd.document; });
+//Controller for creating/editing collections.
+collectionModules.controller('CollectionEditCtrl',
+  ['$scope', '$log', '$state', '$uibModal', '$location', 'NgTableParams', 'collection', 'project', 'types', 'CollectionModel', 'AlertService', 'ConfirmService', '_',
+    function($scope, $log, $state, $uibModal, $location, NgTableParams, collection, project, types, CollectionModel, AlertService, ConfirmService, _) {
+      $scope.collection = collection;
+      $scope.collection.project = project._id;
+      $scope.project = project;
+      $scope.types = types;
+      // Keep a copy of original documents for comparison.
+      $scope.originalDocuments = {
+        main: _.map(collection.mainDocuments, function(cd) { return cd.document; }),
+        other: _.map(collection.otherDocuments, function(cd) { return cd.document; })
+      }
+      // Create a new copy of documents to manipulate before saving.
+      $scope.modifiedDocuments = {
+        main: _.map(collection.mainDocuments, function(cd) { return cd.document; }),
+        other: _.map(collection.otherDocuments, function(cd) { return cd.document; })
+      }
+      // Create an object to keep track of table parameters.
+      $scope.tableParams = {
+        main: new NgTableParams({ sorting: { sortOrder: 'asc' }, count: 5 }, { dataset: $scope.modifiedDocuments.main }),
+        other: new NgTableParams({ sorting: { sortOrder: 'asc' }, count: 10 }, { dataset: $scope.modifiedDocuments.other })
+      }
+      // Validation flags. Used for various purposes including in-line validation (see ng-class in collection-edit.html) or flagging changed documents.
+      $scope.validationFlags = {
+        save: false,
+        name: false,
+        type: false,
+        date: false,
+        authorization: false,
+        detailsTabInvalid: false,
+        documentsTabInvalid: false,
+        docsChanged: false
+      }
+      // Date Picker flag, required for proper functionality.
+      $scope.datePicker = { opened: false };
 
-      $scope.confirmMove = function(title, msg, moveFunc) {
-        var modalDocView = $uibModal.open({
-          animation: true,
-          templateUrl: 'modules/utils/client/views/partials/modal-confirm-generic.html',
-          controller: function($scope, $state, $uibModalInstance) {
-            var self = this;
-            self.title = title || 'Move document?';
-            self.question = msg || 'Are you sure?';
-            self.actionOK = 'Move';
-            self.actionCancel = 'Cancel';
-            self.ok = function() {
-              $uibModalInstance.close($scope.project);
-            };
-            self.cancel = function() {
-              $uibModalInstance.dismiss('cancel');
-            };
-          },
-          controllerAs: 'self',
-          scope: $scope,
-          size: 'md',
-          windowClass: 'modal-alert',
-          backdropClass: 'modal-alert-backdrop'
-        });
-        modalDocView.result.then(function(/* res */) {
-          moveFunc();
-        });
+      // Open document directory in Document Manager.
+      $scope.goToDocument = function(doc) {
+        return '/p/' + $scope.project.code + '/docs?folder=' + doc.directoryID;
       };
 
-      var goToList = function() {
+      // Shorthand for transitioning to Edit. This is interchangeable with $state.reload() *if* we're already in Edit (not in Create).
+      $scope.goToEdit = function() {
+        $state.transitionTo('p.collection.edit', { projectid: project.code, collectionId: collection._id }, {
+          reload: true, inherit: false, notify: true
+        });
+      }
+
+      // Shorthand for transitioning to List.
+      $scope.goToList = function() {
         $state.transitionTo('p.collection.list', { projectid: project.code }, {
           reload: true, inherit: false, notify: true
         });
+      }
+
+      // Called after using the Document Manager modal.
+      $scope.updateDocuments = function(updatedDocuments, docType) {
+        var alternate = docType == 'main' ? 'other' : 'main';
+        var duplicates = $scope.findDuplicates(updatedDocuments, $scope.modifiedDocuments[alternate]);
+        if (duplicates.length) {
+          // If duplicates are found...
+          var errMsg = '';
+          _.forEach(duplicates, function(doc) {
+            errMsg += ('<br/> - ' + doc.displayName);
+            updatedDocuments = _.without(updatedDocuments, doc);
+            // Remove them from the updated documents list, and alert the user.
+          })
+          AlertService.error('The following document(s) already exist in "' + (docType == 'main' ? 'Related' : 'Main') + ' Documents" and have not been added:' + errMsg, 7000);
+        }
+        $scope.modifiedDocuments[docType] = _.map(updatedDocuments)
+        $scope.tableParams[docType] = new NgTableParams({ sorting: { sortOrder: 'asc' }, count: docType == 'main' ? 5 : 10 }, { dataset: $scope.modifiedDocuments[docType] });
+        $scope.validationFlags.docsChanged = true;
+        if ($scope.validationFlags.documentsTabInvalid) {
+          $scope.checkDocumentsField();
+        }
       };
 
-      var reloadEdit = function() {
-      // want to reload this screen, do not catch unsaved changes (we are probably in the middle of saving).
-        $scope.allowTransition = true;
-        $state.reload();
+      // Helper function to check if user has selected a document for both 'main' and 'other'.
+      $scope.findDuplicates = function(docs1, docs2) {
+        var duplicateFiles = [];
+        _.forEach(docs1, function(doc1) {
+          _.find (docs2, function(doc2) {
+            if (doc1.id == doc2.id) {
+              duplicateFiles.push(doc1);
+            }
+          })
+        })
+        return duplicateFiles;
+      }
+
+      // Remove a document from the list via the trash glyphicon.
+      $scope.removeDocument = function(removedDoc, docType) {
+        $scope.modifiedDocuments[docType] = _.without($scope.modifiedDocuments[docType], removedDoc);
+        $scope.tableParams[docType] = new NgTableParams({ sorting: { sortOrder: 'asc' }, count: docType == 'main' ? 5 : 10 }, { dataset: $scope.modifiedDocuments[docType] });
+        $scope.validationFlags.docsChanged = true;
       };
 
-      $scope.otherDocsReordered = function() {
-        reloadEdit();
-      };
+      // Checks the validity of the collection's input fields.
+      $scope.checkValidity = function(publishing) {
+        $scope.validationFlags.detailsTabInvalid = false;
+        $scope.validationFlags.documentsTabInvalid = false;
+        // This resets validity.
+        $scope.validationFlags.save = true;
+        // Only start checking validation if user tries to save or publish.
+        $scope.checkDetailsField();
+        if (publishing) {
+          $scope.checkDocumentsField();
+        }
+      }
 
-      $scope.goToDocument = function(doc) {
-      // Open document in doc manager.
-        $location.url('/p/' + $scope.project.code + '/docs?folder=' + doc.directoryID);
-      };
-
-      $scope.updateDocuments = function(updatedDocuments, sourceDocuments, docType) {
-        var originalDocuments = _.map(sourceDocuments, function(cd) { return cd.document; });
-
-        // Find documents added to the collection
-        var addedDocuments = _.filter(updatedDocuments, function(updatedDoc) {
-          return !_.find(originalDocuments, function(originalDoc) { return originalDoc._id === updatedDoc._id; });
-        });
-
-        // Find documents removed from the collection
-        var removedDocuments = _.filter(originalDocuments, function(originalDoc) {
-          return !_.find(updatedDocuments, function(updatedDoc) { return updatedDoc._id === originalDoc._id; });
-        });
-
-        // Generate promise for document management
-        var docPromises = _.union(_.map(addedDocuments, function(doc) {
-          return CollectionModel.addDocument(collection._id, doc._id, docType);
-        }), _.map(removedDocuments, function(doc) {
-          return CollectionModel.removeDocument(collection._id, doc._id, docType);
-        }));
-
-        // complete the task
-        Promise.all(docPromises)
-          .then(reloadEdit)
-          .catch(function(/* res */) {
-            AlertService.error('Could not update other documents for "'+ $scope.collection.displayName +'".', 4000, true);
-            reloadEdit();
+      // Helper function to check validity of Details tab specifically.
+      $scope.checkDetailsField = function() {
+        if ($scope.validationFlags.save) {
+          $scope.validationFlags.name = $scope.collection.displayName.length < 1;
+          var duplicateName = _.find($scope.$parent.$resolve.collections, function(collection) {
+            return ((collection.displayName == $scope.collection.displayName) && (collection.id != $scope.collection.id));
           });
-      };
+          if (duplicateName) {
+            $scope.validationFlags.name = true;
+            AlertService.error('Project already contains a collection named "'+ $scope.collection.displayName +'".', 4000, true)
+          }
+          $scope.validationFlags.type = $scope.collection.type.length < 1;
+          $scope.validationFlags.date = !$scope.collection.date;
+          $scope.validationFlags.authorization = (!$scope.collection.isForMEM && !$scope.collection.isForENV);
+          $scope.validationFlags.detailsTabInvalid = ($scope.validationFlags.name || $scope.validationFlags.type || $scope.validationFlags.date || $scope.validationFlags.authorization);
+        }
+      }
 
-      $scope.removeDocument = function(document, type) {
-        CollectionModel.removeDocument($scope.collection._id, document._id, type)
-          .then(reloadEdit)
-          .catch(function(/* res */) {
-            AlertService.error('Could not remove document from "'+ $scope.collection.displayName +'".', 4000, true);
-            reloadEdit();
-          });
-      };
-
-      $scope.delete = function() {
-        var modalView = $uibModal.open({
-          animation: true,
-          templateUrl: 'modules/utils/client/views/partials/modal-confirm-delete.html',
-          controller: function($scope, $state, $uibModalInstance) {
-            var self = this;
-            self.dialogTitle = "Delete Collection";
-            self.name = $scope.collection.displayName;
-            self.ok = function() {
-              $uibModalInstance.close($scope.collection);
-            };
-            self.cancel = function() {
-              $uibModalInstance.dismiss('cancel');
-            };
-          },
-          controllerAs: 'self',
-          scope: $scope,
-          size: 'md'
+      // Helper function to check validity of Documents tab specifically.
+      $scope.checkDocumentsField = function() {
+        var publishedMainDocs = _.filter($scope.modifiedDocuments.main, function (item) {
+          return item.isPublished === true;
         });
-        modalView.result.then(function(/* res */) {
-          CollectionModel.deleteId($scope.collection._id)
-            .then(function(/* res */) {
-              // deleted show the message, and go to list...
-              AlertService.success('"'+ $scope.collection.displayName +'" was deleted successfully.', 4000, true);
-              goToList();
-            })
-            .catch(function(/* res */) {
-              // could have errors from a delete check...
-              AlertService.error('"'+ $scope.collection.displayName +'" was not deleted.', 4000, true);
-              reloadEdit();
-            });
-        });
-      };
+        $scope.validationFlags.documentsTabInvalid = publishedMainDocs.length < 1;
+      }
 
+      // Modal confirming whether user wants to publish/unpublish.
       $scope.confirmPublishView = function(isPublishing) {
         return $uibModal.open({
           animation: true,
@@ -159,69 +174,84 @@ collectionModules.controller('CollectionEditCtrl',
         });
       };
 
+      // Publish a collection.
       $scope.publish = function() {
-        var publishedMainDocs = _.filter($scope.collection.mainDocuments, function (item) {
-          return item.document.isPublished === true;
-        });
-
-        if (publishedMainDocs.length < 1) {
-          AlertService.error("At least one 'PUBLISHED' main document is required to publish the collection.", 4000, true);
+        $scope.checkValidity(true);
+        if ($scope.validationFlags.detailsTabInvalid || $scope.validationFlags.documentsTabInvalid) {
           return;
         }
-
-        $scope.confirmPublishView(true).result.then(function() {
-          $scope.collection.isPublished;
-          return CollectionModel.publishCollection($scope.collection._id);
-        })
+        $scope.confirmPublishView(true).result
           .then(function() {
-            // published, show the message, and go to list...
+            return CollectionModel.save($scope.collection);
+          })
+          .then(function() {
+            return $scope.submitDocs(false);
+          })
+          .then(function() {
+            return CollectionModel.publishCollection($scope.collection._id);
+          })
+          .then(function() {
+            // Published and saved. Reload the page.
             AlertService.success('"'+ $scope.collection.displayName +'" was published successfully.', 4000, true);
             $state.reload();
           })
-          .catch(function(/* res */) {
+          .catch(function() {
+            // User cancels publish, or error is thrown.
             AlertService.error('"'+ $scope.collection.displayName +'" was not published.', 4000, true);
-            $state.reload();
           });
       };
 
+      // Unpublish a collection.
       $scope.unpublish = function() {
-        $scope.confirmPublishView(false).result.then(function() {
-          return CollectionModel.unpublishCollection($scope.collection._id);
-        })
+        $scope.checkValidity(false);
+        if ($scope.validationFlags.detailsTabInvalid || $scope.validationFlags.documentsTabInvalid) {
+          return;
+        }
+        $scope.confirmPublishView(false).result
           .then(function() {
-            // unpublished, show the message, and go to list...
+            return CollectionModel.save($scope.collection);
+          })
+          .then(function() {
+            return $scope.submitDocs(false);
+          })
+          .then(function() {
+            return CollectionModel.unpublishCollection($scope.collection._id);
+          })
+          .then(function() {
+            // Unpublished and saved. Reload the page.
             AlertService.success('"'+ $scope.collection.displayName +'" was unpublished successfully.', 4000, true);
             $state.reload();
           })
-          .catch(function(/* res */) {
+          .catch(function() {
+            // User cancels publish, or error is thrown.
             AlertService.error('"'+ $scope.collection.displayName +'" was not unpublished.', 4000, true);
-            $state.reload();
           });
       };
 
-      $scope.save = function(isValid) {
-        if (!isValid) {
-          $scope.$broadcast('show-errors-check-validity', 'collectionForm');
-          AlertService.error('Error: The project could not be saved. Ensure project has a type, unique name, and description.', 4000, true);
-          return false;
+      // Validate, and save the collection.
+      $scope.save = function() {
+        if ($scope.collection.isPublished) {
+          $scope.checkValidity(true);
+        } else {
+          $scope.checkValidity(false);
         }
-        // Update parent and status
+        if ($scope.validationFlags.detailsTabInvalid || $scope.validationFlags.documentsTabInvalid) {
+          return;
+        }
+        // Update parent and status.
         $scope.collection.status = 'Issued';
         switch($scope.collection.type) {
         case 'Permit Amendment':
           $scope.collection.parentType = 'Authorizations';
           $scope.collection.status = 'Amended';
           break;
-
         case 'Permit':
           $scope.collection.parentType = 'Authorizations';
           break;
-
         case 'Inspection Report':
         case 'Order':
           $scope.collection.parentType = 'Compliance and Enforcement';
           break;
-
         case 'Annual Report':
         case 'Management Plan':
         case 'Dam Safety Inspection':
@@ -229,75 +259,124 @@ collectionModules.controller('CollectionEditCtrl',
           $scope.collection.parentType = 'Other';
           break;
         }
-        CollectionModel.save($scope.collection)
-          .then(function (/* model */) {
-            AlertService.success('"' + $scope.collection.displayName + '" was saved successfully.', 4000, true);
-            $state.reload();
-          }, function () {
-            AlertService.error('"' + $scope.collection.displayName + '" was unable to save successfully.', 4000, true);
-            $state.reload();
-          })
-          .catch(function(/* err */) {
-            // swallow rejected promise error
-          });
-      };
-    }]);
-
-collectionModules.controller('CollectionCreateCtrl',
-  ['$scope', '$log', '$state', '$uibModal', '$location', 'NgTableParams', 'collection', 'project', 'types', 'CollectionModel', 'AlertService',
-    function($scope, $log, $state, $uibModal, $location, NgTableParams, collection, project, types, CollectionModel, AlertService) {
-      $scope.collection = collection;
-      $scope.collection.project = project._id;
-      $scope.project = project;
-      $scope.types = types;
-      $scope.save = function(isValid) {
-        if (!isValid) {
-          $scope.$broadcast('show-errors-check-validity', 'collectionForm');
-          AlertService.error('Error: The project could not be saved. Ensure project has a type, unique name, and description.', 4000, true);
-          return false;
-        }
-        // Update parent and status
-        $scope.collection.status = 'Issued';
-        switch($scope.collection.type) {
-        case 'Permit Amendment':
-          $scope.collection.parentType = 'Authorizations';
-          $scope.collection.status = 'Amended';
-          break;
-
-        case 'Permit':
-          $scope.collection.parentType = 'Authorizations';
-          break;
-
-        case 'Inspection Report':
-        case 'Order':
-          $scope.collection.parentType = 'Compliance and Enforcement';
-          break;
-
-        case 'Annual Report':
-        case 'Management Plan':
-        case 'Dam Safety Inspection':
-        case 'Letter of Assurance':
-          $scope.collection.parentType = 'Other';
-          break;
-        }
-        CollectionModel.add($scope.collection)
-          .then(function(/* model */) {
-            // var newparam = 5003;
-            AlertService.success('"'+ $scope.collection.displayName +'" was successfully created.', 4000, true);
-            $state.transitionTo('p.collection.edit', { projectid: project.code, collectionId: collection._id }, {
-              reload: true, inherit: false, notify: true
+        if ($scope.collection.addedBy) {
+          // Editing an existing collection.
+          CollectionModel.save($scope.collection)
+            .then(function(){
+              if ($scope.validationFlags.docsChanged) {
+                $scope.submitDocs(true);
+              } else {
+                AlertService.success('"' + $scope.collection.displayName + '" was saved successfully.', 4000, true)
+                $scope.goToEdit();
+              }
+            })
+            .catch(function() {
+              AlertService.error('"' + $scope.collection.displayName + '" was not saved.', 4000, true);
+              $scope.goToEdit();
             });
-          })
-          .catch(function(/* err */) {
-            // swallow error
-          });
+        } else {
+          // Creating a new collection.
+          CollectionModel.add($scope.collection)
+            .then(function() {
+              if ($scope.validationFlags.docsChanged) {
+                $scope.submitDocs(true);
+              } else {
+                AlertService.success('"' + $scope.collection.displayName + '" was saved successfully.', 4000, true)
+                $scope.goToEdit();
+              }
+            })
+            .catch(function() {
+              AlertService.error('"' + $scope.collection.displayName + '" was not saved.', 4000, true);
+            });
+        }
       };
-    }]);
 
-collectionModules.controller('CollectionListCtrl',
-  ['$scope', '$log', '$state', '$location', 'NgTableParams', 'project', 'collections', 'types',
-    function($scope, $log, $state, $location, NgTableParams, project, collections, types) {
-      $scope.tableParams = new NgTableParams({ count: 10 },{ dataset: collections });
-      $scope.project = project;
-      $scope.types = types;
+      // Helper function when saving, to submit any changes to documents.
+      $scope.submitDocs = function(reload) {
+        var docPromises = {};
+        _.forEach($scope.modifiedDocuments, function(updatedDocs, docType) {
+          var addedDocuments = _.filter(updatedDocs, function(updatedDoc) {
+            return !_.find($scope.originalDocuments[docType], function(originalDoc) { return originalDoc._id === updatedDoc._id; });
+          });
+          var removedDocuments = _.filter($scope.originalDocuments[docType], function(originalDoc) {
+            return !_.find(updatedDocs, function(updatedDoc) { return updatedDoc._id === originalDoc._id; });
+          });
+          // Generate promises for document management.
+          docPromises[docType] = _.union(_.map(addedDocuments, function(doc) {
+            return CollectionModel.addDocument(collection._id, doc._id, docType);
+          }), _.map(removedDocuments, function(doc) {
+            return CollectionModel.removeDocument(collection._id, doc._id, docType);
+          }));
+        })
+        if (reload) {
+          // We're saving/creating a collection. This is the last operation to happen, so we need it to complete before reloading!
+          return Promise.all(_.union(docPromises.main, docPromises.other))
+            .then(function() {
+              AlertService.success('"' + $scope.collection.displayName + '" and documents were saved successfully.', 4000, true);
+              $scope.goToEdit();
+            }, function() {
+              AlertService.error('"' + $scope.collection.displayName + '" documents were not saved.', 4000, true);
+              $scope.goToEdit();
+            });
+        } else {
+          // We're publishing/unpublishing. Do not reload; more operations need to happen!
+          return Promise.all(_.union(docPromises.main, docPromises.other))
+        }
+      }
+
+      // Cancel any unsaved changes on the page.
+      $scope.cancel = function() {
+        if ($scope.collectionForm.$dirty || $scope.validationFlags.docsChanged) {
+          ConfirmService.confirmDialog({
+            titleText: "Warning: Unsaved Changes",
+            confirmText: "Are you sure you want to leave this page?",
+            okText: 'Yes',
+            cancelText: 'No',
+            onOk: function() {
+              $scope.goToList();
+            }
+          });
+        } else {
+          $scope.goToList();
+        }
+      }
+
+      // Delete a collection.
+      $scope.delete = function() {
+        if ($scope.collection.isPublished) {
+          AlertService.error("Error: published collections cannot be deleted", 4000, true);
+          return;
+        }
+        var modalView = $uibModal.open({
+          animation: true,
+          templateUrl: 'modules/utils/client/views/partials/modal-confirm-delete.html',
+          controller: function($scope, $state, $uibModalInstance) {
+            var self = this;
+            self.dialogTitle = "Delete Collection";
+            self.name = $scope.collection.displayName;
+            self.ok = function() {
+              $uibModalInstance.close($scope.collection);
+            };
+            self.cancel = function() {
+              $uibModalInstance.dismiss('cancel');
+            };
+          },
+          controllerAs: 'self',
+          scope: $scope,
+          size: 'md'
+        });
+        modalView.result.then(function() {
+          CollectionModel.deleteId($scope.collection._id)
+            .then(function() {
+              // Collection deleted. Show confirmation message and return to list.
+              AlertService.success('"'+ $scope.collection.displayName +'" was deleted successfully.', 4000, true);
+              $scope.goToList();
+            })
+            .catch(function() {
+              // User cancels delete, or error is thrown.
+              AlertService.error('"'+ $scope.collection.displayName +'" was not deleted.', 4000, true);
+              $state.reload();
+            });
+        });
+      };
     }]);

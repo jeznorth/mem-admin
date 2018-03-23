@@ -1,4 +1,4 @@
-<form class="edit-collection view-form" name="collectionForm" ng-submit="save(collectionForm.$valid)" novalidate x-show-errors>
+<form class="edit-collection view-form" name="collectionForm" novalidate x-show-errors>
 
   <div class="view-title">
     <div class="view-title__container">
@@ -15,25 +15,24 @@
         </span>
       </div>
       <div class="view-title__actions">
-        <button class="btn btn-default" title="Cancel and return to the Collections List"
-          ng-if="collection.addedBy" ui-sref="p.collection.list">
-          Cancel
-        </button>
-        <button class="btn btn-primary" type="submit" title="Save this Collection">
-          Save
-        </button>
-        <button class="btn btn-primary" title="Publish this Collection"
-          ng-if="!collection.isPublished" ng-click="publish()" type="button">
-          Publish
-        </button>
-        <button class="btn btn-danger" title="Unpublish this Collection"
-          ng-if="collection.isPublished" ng-click="unpublish()" type="button">
-          Unpublish
-        </button>
-        <button class="btn btn-danger" title="Delete this Collection from this project"
-          ng-if="collection.addedBy" ng-click="delete()" type="button">
-          Delete
-        </button>
+        <button class="btn btn-default" title="Cancel and return to the Collections List" ng-click="cancel()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" title="Save this Collection" ng-click="save()">
+            Save
+          </button>
+          <button class="btn btn-primary" title="Publish this Collection"
+            ng-if="!collection.isPublished" ng-click="publish()" type="button">
+            Publish
+          </button>
+          <button class="btn btn-danger" title="Unpublish this Collection"
+            ng-if="collection.isPublished" ng-click="unpublish()" type="button">
+            Unpublish
+          </button>
+          <button class="btn btn-danger" title="Delete this Collection from this project"
+            ng-if="collection.addedBy" ng-click="delete()" type="button">
+            Delete
+          </button>
       </div>
     </div>
   </div>
@@ -41,22 +40,14 @@
   <div class="view-body">
     <div class="view-body__container">
 
-      <!-- TODO: Hook up top-level validation alert -->
-
-      <div class="alert alert-danger" ng-if="!collectionForm.$valid">
-        <span class="alert__icon glyphicon glyphicon-exclamation-sign"></span>
-        <span class="alert__msg">One or more errors were found in your collection.</span>
-      </div>
-
-      <!-- TODO: Fix functionality to render error notification in tabs -->
       <ul class="nav nav-tabs" ng-init="form.curTab = currTab || 'Collection Details'">
-        <li role="presentation" ng-class="{'active':form.curTab === 'Collection Details'}" x-show-errors>
+        <li role="presentation" ng-class="{'active': form.curTab === 'Collection Details', 'has-error': validationFlags.detailsTabInvalid}">
           <a title="Edit Project Details" name="collectionDetailsForm" ng-click="form.curTab = 'Collection Details'">
             <span class="glyphicon glyphicon-exclamation-sign"></span>
             Collection Details
           </a>
         </li>
-        <li role="presentation" ng-class="{'active':form.curTab === 'Collection Documents'}" x-show-errors>
+        <li role="presentation" ng-class="{'active':form.curTab === 'Collection Documents', 'has-error': validationFlags.documentsTabInvalid}" x-show-errors>
           <a title="Collection Documents" name="collectionDocuments" ng-click="form.curTab = 'Collection Documents'">
             <span class="glyphicon glyphicon-exclamation-sign"></span>
             Manage Documents
@@ -64,44 +55,53 @@
         </li>
       </ul>
 
-      <div class="tab-pane active" ng-show="form.curTab === 'Collection Details'" ng-form="collectionDetailsForm">
+      <div class="tab-pane active" ng-show="form.curTab === 'Collection Details'" ng-form="collectionDetailsForm" novalidate>
         <fieldset>
           <legend>General Information</legend>
-          <div class="form-group" x-show-errors>
-            <label class="control-label" for="type">Type<em class="required">(Required)</em></label>
-            <select class="form-control" id="type" name="type" ng-model='collection.type' ng-options="t.id as t.title for t in types" required></select>
-          </div>
-          <div class="form-group" x-show-errors>
+          <div ng-class="{'form-group': true, 'has-error': validationFlags.name}">
             <label class="control-label" for="displayName">Name<em class="required">(Required)</em></label>
-            <input class="form-control" id="displayName" name="displayName" ng-model='collection.displayName' required>
+            <input class="form-control" id="displayName" name="displayName"
+              ng-model='collection.displayName'
+              ng-blur="checkDetailsField()">
           </div>
-          <div class="form-group">
-            <label class="control-label" for="description">Description</label>
-            <textarea class="form-control" id="description" name="description" rows="3" ng-model="collection.description" required></textarea>
+          <div ng-class="{'form-group': true, 'has-error': validationFlags.type}">
+            <label class="control-label" for="type">Type<em class="required">(Required)</em></label>
+            <select class="form-control" id="type" name="type"
+              ng-model='collection.type'
+              ng-options="t.id as t.title for t in types"
+              ng-change="checkDetailsField()"></select>
           </div>
-          <div class="form-group" x-show-errors>
+          <div ng-class="{'form-group': true}">
+            <label class="control-label" for="description">Description<em>(Optional)</em></label>
+            <textarea class="form-control" id="description" name="description" rows="3"
+              ng-model="collection.description"></textarea>
+          </div>
+          <div ng-class="{'form-group': true, 'datepicker__input': true, 'has-error': validationFlags.date}">
             <label for="date" class="control-label">Date<em class="required">(Required)</em></label>
-            <div class="form-control datepicker__input" name="date" x-modal-date-picker
-              x-selected-date="collection.date" x-header="'Choose a Date'">
-              <span ng-if="!collection.date">YYYY-MM-DD</span> {{ collection.date | amDateFormat:'YYYY-MM-DD'}}
-              <span class="calendar-btn">
-                <span class="glyphicon glyphicon-calendar"></span>
-              </span>
+            <div class="datepicker__input">
+              <input class="form-control" placeholder="{{ collection.date | amDateFormat:'YYYY-MM-DD' }}"  id="date" name="date"
+                ng-model="collection.date" type="text"
+                uib-datepicker-popup
+                is-open="datePicker.opened"
+                close-text="Close"
+                ng-change="checkDetailsField()"/>
+              <button class="btn btn-default calendar-btn"  type="button" ng-click="datePicker.opened = true;"><span class="glyphicon glyphicon-calendar"/></button>
             </div>
           </div>
         </fieldset>
         <fieldset>
-          <legend>Authorized by</legend>
-          <div class="form-group">
-            <div class="checkbox m-t-0 m-b-2">
+          <legend>Authorizations</legend>
+          <div ng-class="{'form-group': true, 'has-error': validationFlags.authorization}">
+            <label class="control-label m-b-2">Select an Authorizing Agency<em class="required" ng-if="validationFlags.authorization">(Required)</em></label>
+              <div class="checkbox m-t-0 m-b-2">
               <label for="isForMEM">
-              <input type="checkbox" ng-model="collection.isForMEM" id="isForMEM" name="isForMEM" />
+              <input type="checkbox" ng-model="collection.isForMEM" id="isForMEM" name="isForMEM" ng-change="checkDetailsField()"/>
                 Ministry of Energy, Mines and Petroleum Resources (EMPR)
               </label>
             </div>
             <div class="checkbox">
               <label for="isForENV">
-                <input type="checkbox" ng-model="collection.isForENV" id="isForENV" name="isForENV" />
+                <input type="checkbox" ng-model="collection.isForENV" id="isForENV" name="isForENV" ng-change="checkDetailsField()"/>
                 Ministry of Environment and Climate Change Strategy (ENV)
               </label>
             </div>
@@ -112,36 +112,43 @@
         <fieldset>
           <legend>Main Documents</legend>
 
-          <div class="alert alert-danger" ng-if="!collection.hasPublished">
+          <div class="alert alert-danger" ng-if="validationFlags.documentsTabInvalid">
             <span class="alert__icon glyphicon glyphicon-exclamation-sign"></span>
-            <span class="alert__msg">A minimum of one (1) PUBLISHED Main Document is required before this Collection can be published.</span>
+            <span class="alert__msg">A minimum of one (1) PUBLISHED Main Document is required for a Collection to be published.</span>
           </div>
 
           <div class="btn-toolbar">
-            <button class="btn btn-info" title="Link main document to this collection" x-document-mgr-link-modal x-project="project" x-target="linkedMainDocuments"
-              x-collection="collection" x-doc-type="main" x-on-ok="updateDocuments">
+            <button class="btn btn-info" title="Link main document to this collection"
+              x-document-mgr-link-modal
+              x-project="project"
+              x-target="modifiedDocuments.main"
+              x-collection="collection"
+              x-doc-type="main"
+              x-on-ok="updateDocuments">
               <span class="glyphicon glyphicon-link"></span><span>Add Main Documents</span>
             </button>
           </div>
 
-          <table class="table collection-document-table m-t-1" ng-table="mainTableParams">
+          <table class="table collection-document-table m-t-1" ng-table="tableParams.main">
             <tr ng-repeat="d in $data">
               <td header-class="'name'"
                 data-title="'Name'"
-                sortable="'document.displayName'">{{ d.document.displayName | removeExtension }}</td>
+                sortable="'displayName'">
+                <a href="{{goToDocument(d)}}" target="_blank">{{ d.displayName | removeExtension }}</a></td>
               <td header-class="'date'"
                 data-title="'Document Date'"
-                sortable="'document.documentDate'">{{ d.document.documentDate | amDateFormat:'YYYY-MM-DD' }}</td>
+                sortable="'documentDate'">
+                {{ d.documentDate | amDateFormat:'YYYY-MM-DD' }}</td>
               <td header-class="'status'"
                 data-title="'Status'"
-                sortable="'document.isPublished'">
+                sortable="'isPublished'">
                 <span class="label"
-                  ng-class="{'label-success': d.document.isPublished == true, 'label-unpublished': d.document.isPublished == false}">
-                  {{d.document.isPublished ? 'PUBLISHED' : 'UNPUBLISHED'}}
+                  ng-class="{'label-success': d.isPublished == true, 'label-unpublished': d.isPublished == false}">
+                  {{d.isPublished ? 'PUBLISHED' : 'UNPUBLISHED'}}
                 </span>
               </td>
               <td class="actions" header-class="'actions'">
-                <a class="btn icon-btn" title="Remove document from this collection" ng-click="removeDocument(d.document, 'main')">
+                <a class="btn icon-btn" title="Remove document from this collection" ng-click="removeDocument(d, 'main')">
                   <span class="glyphicon glyphicon-trash"></span>
                 </a>
               </td>
@@ -158,7 +165,7 @@
           <div class="btn-toolbar">
             <button class="btn btn-info" title="Link other documents to this collection"
               x-document-mgr-link-modal x-project="project"
-              x-target="linkedOtherDocuments"
+              x-target="modifiedDocuments.other"
               x-collection="collection"
               x-doc-type="other"
               x-on-ok="updateDocuments">
@@ -176,26 +183,26 @@
             -->
           </div>
 
-          <table class="table collection-document-table m-t-1" ng-table="otherTableParams">
+          <table class="table collection-document-table m-t-1" ng-table="tableParams.other">
             <tr ng-repeat="d in $data">
               <td header-class="'name'"
                 data-title="'Name'"
-                sortable="'document.displayName'">
-                {{ d.document.displayName | removeExtension }}</td>
+                sortable="'displayName'">
+                <a href="{{goToDocument(d)}}" target="_blank">{{ d.displayName | removeExtension }}</a></td>
               <td header-class="'date'"
                 data-title="'Document Date'"
-                sortable="'document.documentDate'">
-                {{ d.document.documentDate | amDateFormat:'YYYY-MM-DD' }}</td>
+                sortable="'documentDate'">
+                {{ d.documentDate | amDateFormat:'YYYY-MM-DD' }}</td>
               <td header-class="'status'"
                 data-title="'Status'"
-                sortable="'document.isPublished'">
+                sortable="'isPublished'">
                 <span class="label"
-                  ng-class="{'label-success': d.document.isPublished == true, 'label-unpublished': d.document.isPublished == false}">
-                  {{d.document.isPublished ? 'PUBLISHED' : 'UNPUBLISHED'}}
+                  ng-class="{'label-success': d.isPublished == true, 'label-unpublished': d.isPublished == false}">
+                  {{d.isPublished ? 'PUBLISHED' : 'UNPUBLISHED'}}
                 </span>
               </td>
               <td class="actions" header-class="'actions'">
-                <a class="btn icon-btn" title="Remove document from this collection" ng-click="removeDocument(d.document, 'other')">
+                <a class="btn icon-btn" title="Remove document from this collection" ng-click="removeDocument(d, 'other')">
                   <span class="glyphicon glyphicon-trash"></span>
                 </a>
               </td>
@@ -208,11 +215,10 @@
       </div>
       <div class="form-footer clearfix">
         <div class="form-footer__buttons">
-          <button class="btn btn-default" title="Cancel and return to the Collections List"
-            ng-if="collection.addedBy" ui-sref="p.collection.list">
+          <button class="btn btn-default" title="Cancel and return to the Collections List" ng-click="cancel()">
             Cancel
           </button>
-          <button class="btn btn-primary" type="submit" title="Save this Collection">
+          <button class="btn btn-primary" title="Save this Collection" ng-click="save()">
             Save
           </button>
           <button class="btn btn-primary" title="Publish this Collection"
