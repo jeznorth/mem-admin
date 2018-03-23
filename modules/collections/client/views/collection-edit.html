@@ -22,7 +22,7 @@
             Save
           </button>
           <button class="btn btn-primary" title="Publish this Collection"
-            ng-if="!collection.isPublished" ng-click="publish()" type="button">
+            ng-if="!collection.isPublished && collection.addedBy" ng-click="publish()" type="button">
             Publish
           </button>
           <button class="btn btn-danger" title="Unpublish this Collection"
@@ -222,7 +222,7 @@
             Save
           </button>
           <button class="btn btn-primary" title="Publish this Collection"
-            ng-if="!collection.isPublished" ng-click="publish()" type="button">
+            ng-if="!collection.isPublished && collection.addedBy" ng-click="publish()" type="button">
             Publish
           </button>
           <button class="btn btn-danger" title="Unpublish this Collection"
