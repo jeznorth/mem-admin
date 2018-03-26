@@ -13,7 +13,7 @@ mongoose.loadModels();
 
 //SeedDB
 if (config.seedDB) {
-  console.log ('seeding');
+  console.log ('seeding...'); //eslint-disable-line
   require('./seed');
 }
 

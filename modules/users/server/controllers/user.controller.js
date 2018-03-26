@@ -20,7 +20,6 @@ module.exports = DBModel.extend({
   populate: 'org',
 
   searchForUsersToInvite: function (projectId, name, email, org, groupId) {
-    //console.log('projectId = ', projectId);
     var self = this;
     if (!_.isEmpty(projectId)) {
 
@@ -128,7 +127,7 @@ module.exports = DBModel.extend({
           });
       });
     } else {
-      // let's deal with this later when we are doing system level invites...
+      // TODO: handle this when we address system level invites...
       return Promise.resolve([]);
     }
   },

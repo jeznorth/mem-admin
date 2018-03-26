@@ -1,4 +1,4 @@
-import geb.spock.GebReportingSpec
+package specs.app
 
 import pages.app.HomePage
 import pages.app.NewsPage
@@ -13,22 +13,19 @@ import pages.app.modal.EditProfileModal
 
 import pages.external.ExternalLinkPage
 
+import modules.FooterModule
 import spock.lang.Unroll
 import spock.lang.Title
 import spock.lang.Stepwise
 
 @Title("Functional tests for the Home page")
 @Stepwise
-class HomeSpec extends GebReportingSpec {
-  def setupSpec() {
-    to LoginPage
-    login("admin", System.getenv("ADMINPW"))
-    to HomePage
-  }
+class HomeSpec extends LoggedInSpec {
 
   @Unroll
   def "Navigate Page from: HomePage, click Link: #ClickLink, Assert Page: #AssertPage"() {
     given: "I start on the HomePage"
+      sleep(1000)
       to HomePage
     when: "I click on the link #ItemSelector -> #SubItemSelector"
       headerModule.clickMenuItem(ItemSelector, SubItemSelector)
@@ -79,5 +76,6 @@ class HomeSpec extends GebReportingSpec {
       "AccessibilityLink"   || new ExternalLinkPage("Web Accessibility - Province of British Columbia", "gov.bc.ca")
       //TODO "LogInSiteminderLink" || LoginSiteminderPage
       "LogInLocalLink"      || LoginPage
+
   }
 }

@@ -46,10 +46,7 @@ angular.module('core').service('Menus', ['Application',
       var applicationPermissions = (Application && Application.userCan) ? Application.userCan : {};
       var contextPermissions = (context && context.userCan) ? context.userCan : {};
       // allows a logged in user not on the project to get some menu items.
-      //contextPermissions['public'] = true;
-      //console.log ('applicationPermissions:',applicationPermissions);
-      //console.log ('contextPermissions:',contextPermissions);
-      //console.log ('this.permissions:',this.permissions);
+
       var result = this.permissions.map (function (p) {
         return checkPermission ({
           permission  : p,
@@ -59,7 +56,7 @@ angular.module('core').service('Menus', ['Application',
       }).reduce (function (prev, current) {
         return (prev || current);
       });
-      // console.log ('checking for :', this.title, result);
+
       return result;
     };
     // -------------------------------------------------------------------------

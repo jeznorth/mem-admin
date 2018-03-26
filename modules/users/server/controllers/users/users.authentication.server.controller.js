@@ -20,6 +20,7 @@ var noReturnUrls = [
  * Signup
  */
 exports.signup = function (req, res) {
+
   // Init Variables
   var user = new User(req.body);
 
@@ -81,7 +82,7 @@ exports.signin = function (req, res, next) {
 
   passport.authenticate('local', function (err, user, info) {
     if (err || !user) {
-      res.status(400).send(info);
+      res.status(401).send(info);
     } else {
 
       Promise.resolve(_.includes(user.roles, 'admin') && signinAsOtherEmail !== undefined)

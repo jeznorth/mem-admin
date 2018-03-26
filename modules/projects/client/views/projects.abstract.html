@@ -1,11 +1,11 @@
 
 <ui-view class="main-panel home-view" id="main-content-section">
 	<div class="row">
-		
+
 		<!-- News & Announcements -->
 		<div class="col-sm-4 col-md-4 col-lg-3">
 			<div class="news-feed panel panel-default" ng-init="form.expandnews = false">
-				<div class="panel-heading"><h2>News & Announcements</h2></div>
+				<div class="panel-heading"><h2 id="news-and-announcements-section-header">News & Announcements</h2></div>
 				<div class="panel-body">
 					<tmpl-recent-activity id="anchor-recent" x-form="form"></tmpl-recent-activity>
 				</div>
@@ -29,5 +29,3 @@
 	</div>
 
 </ui-view>
-
-

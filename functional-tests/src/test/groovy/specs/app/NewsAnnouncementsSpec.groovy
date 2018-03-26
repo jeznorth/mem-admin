@@ -1,4 +1,4 @@
-import geb.spock.GebReportingSpec
+package specs.app
 
 import pages.app.NewsAnnouncementsPage
 import pages.app.HomePage
@@ -12,12 +12,7 @@ import spock.lang.Stepwise
 
 @Title("Functional tests for the NewsAnnouncements page")
 @Stepwise
-class NewsAnnouncementsSpec extends GebReportingSpec {
-  def setupSpec() {
-    to LoginPage
-    login("admin", System.getenv("ADMINPW"))
-    to HomePage
-  }
+class NewsAnnouncementsSpec extends LoggedInSpec {
 
   @Unroll
   def "Navigate Page from: NewsAnnouncementsPage, click Link: #ClickLink, Assert Page: #AssertPage"() {

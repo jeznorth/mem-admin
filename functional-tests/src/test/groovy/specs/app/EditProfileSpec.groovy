@@ -1,4 +1,4 @@
-import geb.spock.GebReportingSpec
+package specs.app
 
 import pages.app.modal.EditProfileModal
 import pages.app.HomePage
@@ -12,13 +12,8 @@ import spock.lang.Stepwise
 
 @Title("Functional tests for the EditProfile modal page")
 @Stepwise
-class EditProfileRolesSpec extends GebReportingSpec {
-  def setupSpec() {
-    to LoginPage
-    login("admin", System.getenv("ADMINPW"))
-    to HomePage
-  }
-
+class EditProfileRolesSpec extends LoggedInSpec {
+  
   @Unroll
   def "Start on Page #InitialPage, open modal: EditProfileModal, click Link: #ClickLink, Assert Page: #AssertPage"() {
     given: "I start on the #InitialPage and open the modal EditProfileModal"

@@ -1,3 +1,5 @@
+package specs.app
+
 import geb.spock.GebReportingSpec
 
 import pages.app.ForgotPasswordPage

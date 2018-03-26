@@ -2,7 +2,7 @@
 
 	<nav class="navbar">
 		<div class="navbar-header">
-			<button class="navbar-toggle collapsed" type="button"
+			<button id="header-navbar-toggle" class="navbar-toggle collapsed" type="button"
 				data-target="#mainNav"
 				data-toggle="collapse"
 				aria-expanded="false"
@@ -51,7 +51,7 @@
 					</ul>
 				</li>
 				<li class="custom-nav-item user-menu" ng-show="!authentication.user">
-					<a ui-sref="authentication.signin">
+					<a id="header-login-link" ui-sref="authentication.signin">
 						<span>LOG IN</span>
 					</a>
 				</li>

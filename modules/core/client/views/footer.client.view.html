@@ -20,10 +20,10 @@
 				<a ui-sref="authentication.signin">Log In (Siteminder)</a>
 			</li>
 			<li ng-show="!footer.authentication.user">
-				<a href ui-sref="authentication.local">Log In (Local)</a>
+				<a id="footer-login-local-link" href ui-sref="authentication.local">Log In (Local)</a>
 			</li>
 			<li ng-show="footer.authentication.user">
-				<a href="/api/auth/signout" target="_self">Log Out</a>
+				<a id="footer-logout-link" href="/api/auth/signout" target="_self">Log Out</a>
 			</li>
 		</ul>
 	</nav>
