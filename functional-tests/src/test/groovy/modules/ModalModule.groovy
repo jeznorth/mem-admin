@@ -1,7 +1,6 @@
 package modules
 
 import geb.Module
-import geb.Page
 
 import modules.HeaderModule
 

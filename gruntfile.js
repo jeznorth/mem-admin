@@ -303,46 +303,55 @@ module.exports = function (grunt) {
   grunt.task.registerTask('server', 'Starting server...', function() {
     var done = this.async();
 
-    server_proc = childProcess.spawn('node', ['server.js'],
-      {
-        env: process.env,
-        detached: true,
-        shell: false,
-        stdio: 'inherit'
-      });
+    server_proc = childProcess.spawn('node', ['server.js'], {
+      env: process.env,
+      detached: true,
+      shell: false,
+      stdio: 'ignore'
+    });
 
     done();
   });
 
-  grunt.task.registerTask('functional', 'Starting functional tests...', function () {
-    var done = this.async();
+  grunt.task.registerTask(
+    'functional',
+    'Starting functional tests...',
+    function() {
+      var done = this.async();
 
-    //'-DchromeTest.single=AddEditProjectSpec', --before chromeTest
-    //'--info' --- after chromeTest
-    //'--
-    var test_proc = childProcess.spawn('./gradlew', ['chromeHeadlessTest'],
-      {
-        env: process.env,
-        cwd: process.cwd() + '/functional-tests',
-        stdio: 'inherit'
-      });
+      //'-DchromeTest.single=AddEditProjectSpec', --before chromeTest
+      //'--info' --- after chromeTest
+      //'--
+      var test_proc = childProcess.spawn(
+        process.platform == 'win32' ? 'gradlew.bat' : './gradlew',
+        ['chromeHeadlessTest'],
+        {
+          env: process.env,
+          cwd: path.join(process.cwd(), 'functional-tests'),
+          stdio: 'inherit'
+        }
+      );
 
-    test_proc.on('exit', done);
-  });
+      test_proc.on('exit', done);
+    }
+  );
 
-  grunt.task.registerTask('drop_database', 'Dropping database...', function () {
+  grunt.task.registerTask('drop_database', 'Dropping database...', function() {
     var done = this.async();
 
     var mongoose = require('./config/lib/mongoose.js');
-    mongoose.dropDatabase( function () {
+    mongoose.dropDatabase(function() {
       done();
     });
-
   });
 
-  grunt.task.registerTask('shutdown_server', 'Shutting down server...', function() {
-    server_proc.kill('SIGINT');
-  });
+  grunt.task.registerTask(
+    'shutdown_server',
+    'Shutting down server...',
+    function() {
+      server_proc.kill('SIGINT');
+    }
+  );
 
   // Lint CSS and JavaScript files.
   grunt.registerTask('lint', ['sass', 'less', 'eslint', 'csslint']);

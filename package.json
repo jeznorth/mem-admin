@@ -1,6 +1,7 @@
 {
   "name": "meanjs",
-  "description": "Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js.",
+  "description":
+    "Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js.",
   "version": "0.4.1",
   "private": false,
   "author": "https://github.com/meanjs/mean/graphs/contributors",
@@ -17,7 +18,9 @@
   "scripts": {
     "start": "grunt build && node server.js",
     "test": "grunt test",
-    "postinstall": "git config --global url.https://.insteadOf git:// && bower install --config.interactive=false --allow-root && grunt buildprod",
+    "e2e": "grunt runfunctional",
+    "postinstall":
+      "git config --global url.https://.insteadOf git:// && bower install --config.interactive=false --allow-root && grunt buildprod",
     "build": "grunt buildprod"
   },
   "dependencies": {
@@ -79,7 +82,7 @@
     "grunt-contrib-uglify": "~0.9.1",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-env": "~0.4.4",
-    "grunt-eslint":"latest",
+    "grunt-eslint": "latest",
     "grunt-karma": "~0.11.2",
     "grunt-mocha-istanbul": "^2.4.0",
     "grunt-mocha-test": "~0.12.7",
