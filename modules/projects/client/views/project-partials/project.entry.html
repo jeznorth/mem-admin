@@ -122,13 +122,13 @@
               <em class="required">(Required)</em>
             </label>
             <select class="form-control width-auto" title="Project Type" id="type" name="type" ng-model="project.type" ng-change="project.sector = undefined"
-              ng-options="type for type in types" required></select>
+              ng-options="type for type in types" ng-click="getCommodities()" required></select>
           </div>
           <div class="form-group" x-show-errors>
             <label for="commodities">Commodities</label>
             <ui-select class="form-control" multiple id="commodities" name="commodities" ng-model="project.commodities" ng-required="true"
               close-on-select="false">
-              <ui-select-match placeholder="Enter a commodity">{{$item}}</ui-select-match>
+              <ui-select-match placeholder="{{commodityMessage}}">{{$item}}</ui-select-match>
               <ui-select-choices repeat="c in commoditiesList | filter: $select.search">
                 <div ng-bind-html="c | highlight: $select.search"></div>
               </ui-select-choices>
