@@ -259,7 +259,7 @@ collectionModules.controller('CollectionEditCtrl',
           $scope.collection.parentType = 'Other';
           break;
         }
-        if ($scope.collection.addedBy) {
+        if ($scope.collection.dateAdded) {
           // Editing an existing collection.
           CollectionModel.save($scope.collection)
             .then(function(){

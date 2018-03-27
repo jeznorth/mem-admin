@@ -4,7 +4,7 @@
     <div class="view-title__container">
       <div class="view-title__info">
         <h1 class="view-title__info--title">
-          {{collection.addedBy ? "Edit Collection" : "Add Collection"}} &nbsp;&rsaquo;&nbsp; {{collection.displayName ? collection.displayName : 'Untitled'}}
+          {{collection.dateAdded ? "Edit Collection" : "Add Collection"}} &nbsp;&rsaquo;&nbsp; {{collection.displayName ? collection.displayName : 'Untitled'}}
         </h1>
         <span class="view-title__info--meta" ng-if="collection.dateUpdated">
           <span>Last Modified {{collection.dateUpdated | date : "yyyy-MM-dd"}} by {{collection.updatedBy.displayName}}</span>
@@ -22,7 +22,7 @@
             Save
           </button>
           <button class="btn btn-primary" title="Publish this Collection"
-            ng-if="!collection.isPublished && collection.addedBy" ng-click="publish()" type="button">
+            ng-if="!collection.isPublished && collection.dateAdded" ng-click="publish()" type="button">
             Publish
           </button>
           <button class="btn btn-danger" title="Unpublish this Collection"
@@ -30,7 +30,7 @@
             Unpublish
           </button>
           <button class="btn btn-danger" title="Delete this Collection from this project"
-            ng-if="collection.addedBy" ng-click="delete()" type="button">
+            ng-if="collection.dateAdded" ng-click="delete()" type="button">
             Delete
           </button>
       </div>
@@ -222,7 +222,7 @@
             Save
           </button>
           <button class="btn btn-primary" title="Publish this Collection"
-            ng-if="!collection.isPublished && collection.addedBy" ng-click="publish()" type="button">
+            ng-if="!collection.isPublished && collection.dateAdded" ng-click="publish()" type="button">
             Publish
           </button>
           <button class="btn btn-danger" title="Unpublish this Collection"
@@ -230,7 +230,7 @@
             Unpublish
           </button>
           <button class="btn btn-danger" title="Delete this Collection from this project"
-            ng-if="collection.addedBy" ng-click="delete()" type="button">
+            ng-if="collection.dateAdded" ng-click="delete()" type="button">
             Delete
           </button>
         </div>
