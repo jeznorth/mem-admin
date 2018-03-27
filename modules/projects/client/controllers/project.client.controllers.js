@@ -111,10 +111,15 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
   };
 
   // Commodities
-  var found = _.find($scope.commodities, function(list) {
-    return list.type === $scope.project.type;
-  });
-  $scope.commoditiesList = found ? found.commodities : [];
+  $scope.getCommodities = function() {
+    var found = _.find($scope.commodities, function(list) {
+      return list.type === $scope.project.type;
+    });
+    $scope.commoditiesList = found ? found.commodities : [];
+    $scope.commodityMessage = $scope.project.type ? 'Enter a commodity' : 'Select a project type to view commodity list'
+  }
+  // Want this to fire once on load, then every time the field is clicked.
+  $scope.commodityMessage = $scope.project.type ? 'Enter a commodity' : 'Select a project type to view commodity list'
 
   // Project Description
   $scope.tinymceOptions = {
