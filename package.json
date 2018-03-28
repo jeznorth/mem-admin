@@ -89,7 +89,6 @@
     "grunt-ng-annotate": "^1.0.1",
     "grunt-ng-constant": "^2.0.1",
     "grunt-node-inspector": ">=0.2.0",
-    "grunt-protractor-runner": "^2.0.0",
     "grunt-sass": "^1.2.0",
     "karma": "1.7.1",
     "karma-chrome-launcher": "2.2.0",
