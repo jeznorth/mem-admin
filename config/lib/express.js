@@ -112,7 +112,7 @@ module.exports.initMiddleware = function (app) {
   // Add multipart handling middleware
   var uploaddir = process.env.UPLOAD_PATH || './uploads/';
   if (uploaddir.substr(-1, 1) !== '/') {uploaddir += '/';}
-  app.use(multer({
+  app.use(multer({//TODO: multer upgrade
     dest: uploaddir,
     inMemory: false
   }));
