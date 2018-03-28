@@ -119,7 +119,7 @@ function controllerProjectEntry ($scope, $state, $stateParams, $uibModal, projec
     $scope.commodityMessage = $scope.project.type ? 'Enter a commodity' : 'Select a project type to view commodity list'
   }
   // Want this to fire once on load, then every time the field is clicked.
-  $scope.commodityMessage = $scope.project.type ? 'Enter a commodity' : 'Select a project type to view commodity list'
+  $scope.getCommodities();
 
   // Project Description
   $scope.tinymceOptions = {
