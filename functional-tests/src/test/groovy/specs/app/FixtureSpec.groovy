@@ -28,8 +28,8 @@ abstract class FixtureSpec extends GebReportingSpec {
   def fixture(method) {
     def env = System.getenv()
 
-    println( env['FUNCTIONAL_HOST'] ? "FUNCTIONAL_HOST: " + env['FUNCTIONAL_HOST'] : "FUNCTIONAL_HOST not set - using localhost")
-    def _host = env['FUNCTIONAL_HOST'] ? env['FUNCTIONAL_HOST'] : 'localhost'
+    println( env['MONGODB_FUNC_HOST'] ? "MONGODB_FUNC_HOST: " + env['MONGODB_FUNC_HOST'] : "MONGODB_FUNC_HOST not set - using localhost")
+    def _host = env['MONGODB_FUNC_HOST'] ? env['MONGODB_FUNC_HOST'] : 'localhost'
     println( env['MONGODB_FUNC_DATABASE'] ? "MONGODB_FUNC_DATABASE: " + env['MONGODB_FUNC_DATABASE'] : "MONGODB_FUNC_DATABASE not set - using mem-dev-func")
     def _database = env['MONGODB_FUNC_DATABASE'] ? env['MONGODB_FUNC_DATABASE'] : "mem-dev-func"
 
