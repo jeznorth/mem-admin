@@ -7,6 +7,7 @@ var config = require('../config'),
   chalk = require('chalk'),
   path = require('path'),
   mongoose = require('mongoose');
+
   // mongoose's promise library is deprecated, make use of the native promises instead
 mongoose.Promise = Promise;
 // Load the mongoose models
@@ -40,17 +41,38 @@ module.exports.connect = function (cb) {
 
 module.exports.disconnect = function (cb) {
   mongoose.disconnect(function (err) {
-    console.info(chalk.yellow('Disconnected from MongoDB.'));
+    console.info(chalk.yellow('Disconnected from MongoDB.'));//eslint-disable-line
     cb(err);
   });
 };
 
 module.exports.dropDatabase = function(cb) {
-  console.error(chalk.white('Mongoose drop database...'));
-  console.error(chalk.white('Connect cb MongoDB...'));
-  mongoose.connect(config.db.uri, function() {
-    console.error(chalk.white('Dropping db...'));
-    mongoose.connection.db.dropDatabase();
-    cb();
+  console.log(chalk.white('Mongoose drop database...'));//eslint-disable-line
+
+  var MongoClient = require('mongodb').MongoClient;
+
+  console.log(chalk.white("Connecting to database server ..."));//eslint-disable-line
+  console.log(chalk.white("config.db.uri: ", config.db.uri));//eslint-disable-line
+
+  MongoClient.connect(config.db.uri, function(err, client) {
+    if(err) {
+      console.error(err);//eslint-disable-line
+      return;
+    }
+
+    console.log("Connected to database server ...");//eslint-disable-line
+
+    var db = client.db(config.db.name);
+
+    db.dropDatabase(function(err){
+      if (err) {
+        throw err;
+      }
+      client.close();
+    });
+
+    if(cb) {
+      cb();
+    }
   });
 }

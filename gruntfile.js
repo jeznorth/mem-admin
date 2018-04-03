@@ -11,7 +11,51 @@ var _ = require('lodash'),
 
 var childProcess = require('child_process');
 
+var server_proc;
+var server_proc_done;
+
+var test_proc;
+var test_proc_done;
+
+var drop_database_task_done
+
 module.exports = function (grunt) {
+
+  // handle control c
+  var shuttingDown = false;
+  var readline = require("readline");
+
+  var stdInterface = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  if (process.platform != 'win32' ) {
+    stdInterface.on("SIGINT", function() {
+      grunt.task.clearQueue();//don't run any more grunt tasks
+      if (shuttingDown) {//allow kill initiated call to exit and not overflow the stack
+        return;
+      }
+      shuttingDown = true;
+
+      console.info("SIGINT handler ...");//eslint-disable-line
+      shutdownTests();
+      shutdownServer();
+
+      var out = fs.openSync('./gruntOut.log', 'a');
+      var err = fs.openSync('./gruntError.log', 'a');
+
+      var cleanupProcess = childProcess.spawn('grunt', ['cleanup'], {//need a child process so that the database can be cleaned up before the process is interupted
+        env: process.env,
+        detatched: true,
+        shell:false,
+        stdio: ['ignore', out, err ]
+      });
+
+      cleanupProcess.unref();//fully detatch from parent
+    });
+  }//TODO: determine kill process method in windows and implement
+
   // Project Configuration
   var LOGO = 'modules/core/client/img/brand/bc_logo_transparent.png'; // BC Logo
   var ENV = "MEM";
@@ -255,62 +299,61 @@ module.exports = function (grunt) {
   // Load NPM tasks
   require('load-grunt-tasks')(grunt);
 
-  //grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-ng-constant');
 
-  grunt.task.registerTask('buildconstants', 'Builds all the environment information and bakes it into a conf.js file.', function () {
-    grunt.task.run('ngconstant');
-  });
+  grunt.task.registerTask('buildconstants',
+    'Builds all the environment information and bakes it into a conf.js file.', function () {
+      grunt.task.run('ngconstant');
+    });
 
   // Make sure upload directory exists
-  grunt.task.registerTask('mkdir:upload', 'Task that makes sure upload directory exists.', function () {
-    // Get the callback
-    var done = this.async();
+  grunt.task.registerTask('mkdir:upload',
+    'Task that makes sure upload directory exists.', function () {
+      // Get the callback
+      var done = this.async();
 
-    grunt.file.mkdir(path.normalize(__dirname + '/modules/users/client/img/profile/uploads'));
+      grunt.file.mkdir(path.normalize(__dirname + '/modules/users/client/img/profile/uploads'));
 
-    done();
-  });
-
-  // Connect to the MongoDB instance and load the models
-  grunt.task.registerTask('mongoose', 'Task that connects to the MongoDB instance and loads the application models.', function () {
-    // Get the callback
-    var done = this.async();
-
-    // Use mongoose configuration
-    var mongoose = require('./config/lib/mongoose.js');
-
-    // Connect to database
-    mongoose.connect(function () {
       done();
     });
-  });
 
-  var server_proc;
+  // Connect to the MongoDB instance and load the models
+  grunt.task.registerTask('mongoose',
+    'Task that connects to the MongoDB instance and loads the application models.', function () {
+      // Get the callback
+      var done = this.async();
 
-  grunt.task.registerTask('server', 'Starting server...', function() {
-    var done = this.async();
+      // Use mongoose configuration
+      var mongoose = require('./config/lib/mongoose.js');
 
-    server_proc = childProcess.spawn('node', ['server.js'], {
-      env: process.env,
-      detached: true,
-      shell: false,
-      stdio: 'ignore'
+      // Connect to database
+      mongoose.connect(function () {
+        done();
+      });
     });
 
-    done();
-  });
+  grunt.task.registerTask('server',
+    'Starting server...', function() {
+      server_proc_done = this.async();
 
-  grunt.task.registerTask(
-    'functional',
-    'Starting functional tests...',
-    function() {
-      var done = this.async();
+      server_proc = childProcess.spawn('node', ['server.js'], {
+        env: process.env,
+        detached: true,
+        shell: false,
+        stdio: 'ignore'
+      });
+
+      server_proc_done();
+    });
+
+  grunt.task.registerTask('functional',
+    'Starting functional tests...', function() {
+      test_proc_done = this.async();
 
       //'-DchromeTest.single=AddEditProjectSpec', --before chromeTest
       //'--info' --- after chromeTest
       //'--
-      var test_proc = childProcess.spawn(
+      test_proc = childProcess.spawn(
         process.platform == 'win32' ? 'gradlew.bat' : './gradlew',
         ['chromeHeadlessTest'],
         {
@@ -320,54 +363,79 @@ module.exports = function (grunt) {
         }
       );
 
-      test_proc.on('exit', done);
+      test_proc.on('exit', test_proc_done);
     }
   );
 
-  grunt.task.registerTask('drop_database', 'Dropping database...', function() {
-    var done = this.async();
+  grunt.task.registerTask('drop_database',
+    'Dropping database...', function() {
+      drop_database_task_done = this.async();
 
-    var mongoose = require('./config/lib/mongoose.js');
-    mongoose.dropDatabase(function() {
-      done();
+      var mongoose = require('./config/lib/mongoose.js');
+      mongoose.dropDatabase(function() {
+        drop_database_task_done();
+      });
     });
-  });
 
-  grunt.task.registerTask(
-    'shutdown_server',
+  grunt.task.registerTask('shutdown_server',
     'Shutting down server...',
-    function() {
-      server_proc.kill('SIGINT');
-    }
+    shutdownServer
   );
 
   // Lint CSS and JavaScript files.
-  grunt.registerTask('lint', ['sass', 'less', 'eslint', 'csslint']);
-  grunt.registerTask('default', ['sass', 'eslint']);
+  grunt.registerTask('lint',
+    ['sass', 'less', 'eslint', 'csslint']);
 
   // Lint project files and minify them into two production files.
-  grunt.registerTask('build', ['env:dev', 'lint', 'ngAnnotate', 'uglify', 'cssmin', 'buildconstants']);
-  grunt.registerTask('buildprod', ['env:prod', 'lint', 'ngAnnotate', 'uglify', 'cssmin', 'buildconstants']);
-  grunt.registerTask('buildtest', ['env:test', 'lint', 'ngAnnotate', 'uglify', 'cssmin', 'buildconstants']);
-  grunt.registerTask('buildfunctional', ['env:functional', 'lint', 'ngAnnotate', 'uglify', 'cssmin', 'buildconstants']);
+  grunt.registerTask('build',
+    ['env:dev', 'lint', 'ngAnnotate', 'uglify', 'cssmin', 'buildconstants']);
 
-  grunt.registerTask('runfunctional', ['buildfunctional', 'server', 'functional', 'drop_database', 'shutdown_server']);
+  grunt.registerTask('buildprod',
+    ['env:prod', 'lint', 'ngAnnotate', 'uglify', 'cssmin', 'buildconstants']);
+
+  grunt.registerTask('buildtest',
+    ['env:test', 'lint', 'ngAnnotate', 'uglify', 'cssmin', 'buildconstants']);
+
+  grunt.registerTask('buildfunctional',
+    ['env:functional', 'lint', 'ngAnnotate', 'uglify', 'cssmin', 'buildconstants']);
+
+  grunt.registerTask('runfunctional',
+    ['buildfunctional', 'server', 'functional', 'drop_database', 'shutdown_server']);
 
   // Run the project tests - NB: These are not maintained at the moment.
-  grunt.registerTask('test', 'env:test')
+  grunt.registerTask('test',
+    'env:test')
 
-  //grunt.registerTask('test', ['env:test', 'lint', 'mkdir:upload', 'copy:localConfig', 'copy:tinyjson', 'server', 'mochaTest', 'karma:unit']);
-  //grunt.registerTask('test:server', ['env:test', 'lint', 'server', 'mochaTest']);
-  //grunt.registerTask('test:client', ['env:test', 'lint', 'server', 'karma:unit']);
   // Run project coverage
-  grunt.registerTask('coverage', ['env:test', 'lint', 'mocha_istanbul:coverage']);
+  grunt.registerTask('coverage',
+    ['env:test', 'lint', 'mocha_istanbul:coverage']);
 
   // Run the project in development mode
-  grunt.registerTask('default', ['env:dev', 'lint', 'mkdir:upload', 'copy:localConfig', 'copy:tinyjson', 'buildconstants']);
+  grunt.registerTask('default',
+    ['env:dev', 'lint', 'mkdir:upload', 'copy:localConfig', 'copy:tinyjson', 'buildconstants']);
 
   // Run the project in debug mode
-  grunt.registerTask('debug', ['env:dev', 'lint', 'mkdir:upload', 'copy:localConfig', 'copy:tinyjson', 'buildconstants']);
+  grunt.registerTask('debug',
+    ['env:dev', 'lint', 'mkdir:upload', 'copy:localConfig', 'copy:tinyjson', 'buildconstants']);
 
   // Run the project in production mode
-  grunt.registerTask('prod', ['buildprod', 'env:prod', 'mkdir:upload', 'copy:localConfig', 'copy:tinyjson', 'buildconstants']);
+  grunt.registerTask('prod',
+    ['buildprod', 'env:prod', 'mkdir:upload', 'copy:localConfig', 'copy:tinyjson', 'buildconstants']);
+
+  // Cleanup task
+  grunt.registerTask('cleanup', ['env:functional', 'drop_database']);
+
+  function shutdownTests() {
+    if(test_proc) {
+      console.log("shutting down tests...");//eslint-disable-line
+      test_proc.kill('SIGINT');
+    }
+  }
+
+  function shutdownServer() {
+    if(server_proc) {
+      console.log("shutting down server...");//eslint-disable-line
+      server_proc.kill('SIGINT');
+    }
+  }
 };
