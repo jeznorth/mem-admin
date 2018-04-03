@@ -7,6 +7,9 @@ class AddEditProjectPage extends BaseAppPage {
   static url = "/p/new/edit"
   static content = {
     pageTitle { $(".main-panel .view-title").$("h1") }
+    projectName { $("#name") }
+    unpublishedProjectsTable { $("#unpublished-projects-table")}
+    saveProject { $("#save-project")}
 
     EditRolesLink { $(".sidenav-group").$("a").has("span", text:"Edit Roles") }
     EditPermissionsLink { $(".sidenav-group").$("a").has("span", text:"Edit Permissions") }

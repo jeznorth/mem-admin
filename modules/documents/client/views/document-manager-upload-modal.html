@@ -3,7 +3,7 @@
 	<button ng-disabled="uploadService.actions.busy" type="button" class="btn btn-default close" ng-click="uploadModal.cancel()">
 		<span aria-hidden="true">&times;</span>
 	</button>
-	<h3 class="modal-title">{{uploadModal.title}}</h3>
+	<h3 id="document-upload-modal-header" class="modal-title">{{uploadModal.title}}</h3>
 </div>
 
 <div class="modal-body">
@@ -36,10 +36,10 @@
 		<span ng-if="!uploadService.actions.busy && !uploadService.actions.completed">{{uploadService.counts.total}} files queued</span>
 		<span ng-if="uploadService.actions.busy || uploadService.actions.completed">{{uploadService.counts.uploaded}} of {{uploadService.counts.total}} files uploaded</span>
 	</div>
-	<button class="btn btn-default" type="button" 
+	<button class="btn btn-default" type="button"
 		ng-if="!uploadService.actions.busy"
 		ng-click="uploadModal.cancel()">{{uploadService.actions.completed ? 'Close' : 'Cancel'}}</button>
-	
+
 	<!--
 	<button ng-if="uploadService.actions.allowStop" class="btn btn-default" ng-click="uploadService.stopUploads()" type="button">Stop Uploads</button>
 	-->

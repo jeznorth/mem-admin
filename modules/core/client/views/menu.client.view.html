@@ -52,7 +52,7 @@
       <li ng-repeat="item in menu.projectMenu.items | orderBy: 'position'"
           ng-if="!menu.isNewProject && item.shouldRender(menu.authentication.user, menu.project);"
           ng-class="{ active: isActive(item.state) }" class="{{item.class}}">
-          <a ui-sref="{{item.state}}" ui-sref-opts="{reload: true}" ng-bind="item.title" title="{{item.title}}"></a>
+          <a id="{{item.title}}" ui-sref="{{item.state}}" ui-sref-opts="{reload: true}" ng-bind="item.title" title="{{item.title}}"></a>
       </li>
     </ul>
 

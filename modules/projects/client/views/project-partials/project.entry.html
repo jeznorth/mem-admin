@@ -522,7 +522,7 @@
           <button class="btn btn-default" ng-if="isNew" ui-sref="projects">
             Cancel
           </button>
-          <button class="btn btn-primary" type="submit" ng-click="saveProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)">
+          <button id="save-project" class="btn btn-primary" type="submit" ng-click="saveProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)">
             Save
           </button>
           <button class="btn btn-primary" ng-click="publishProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)" ng-if="!project.isPublished">

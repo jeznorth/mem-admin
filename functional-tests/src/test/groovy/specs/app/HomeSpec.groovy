@@ -1,5 +1,6 @@
 package specs.app
 
+import pages.app.DashboardPage
 import pages.app.HomePage
 import pages.app.NewsPage
 import pages.app.OrganizationsPage
@@ -23,7 +24,7 @@ import spock.lang.Stepwise
 class HomeSpec extends LoggedInSpec {
 
   @Unroll
-  def "Navigate Page from: HomePage, click Link: #ClickLink, Assert Page: #AssertPage"() {
+  def "Navigate Page from: HomePage, click Link: #ItemSelector > #SubItemSelector, Assert Page: #AssertPage"() {
     given: "I start on the HomePage"
       sleep(1000)
       to HomePage
@@ -34,7 +35,7 @@ class HomeSpec extends LoggedInSpec {
     where:
       ItemSelector              | SubItemSelector                    || AssertPage
       [text : "HOME"]           |  null                              || HomePage
-      [text : "DASHBOARD"]      |  null                              || HomePage
+      [text : "DASHBOARD"]      |  null                              || DashboardPage
       [text : "SYSTEM"]         | [text : "Organizations"]           || OrganizationsPage
       [text : "SYSTEM"]         | [text : "News & Announcements"]    || NewsAnnouncementsPage
       [text : "SYSTEM"]         | [text : "Contacts"]                || ContactsPage

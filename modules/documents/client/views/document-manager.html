@@ -32,7 +32,7 @@
 				x-node="documentMgr.selectedNode"><span class="glyphicon glyphicon-folder-close"></span>
 			</button>
 
-			<button class="btn icon-btn" title="Upload Files"
+			<button id="upload-files" class="btn icon-btn" title="Upload Files"
 				ng-if="project.userCan.createDocument"
 				ng-disabled="!documentMgr.selectedNode"
 				x-document-mgr-upload-modal

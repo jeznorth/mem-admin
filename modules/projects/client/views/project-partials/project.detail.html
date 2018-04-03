@@ -1,6 +1,6 @@
 <div class="view-title-container flex-row">
   <button class="btn icon-btn mobile-nav-btn" onclick="toggleSideNav();"><span class="glyphicon glyphicon-menu-hamburger"></span></button>
-  <h1>{{ project.name }}</h1>
+  <h1 id="project-name">{{ project.name }}</h1>
   <div class="actions">
     <div class="actions-group" ng-if="authentication.user">
       <a class="btn btn-default btn-sm" ui-sref="p.edit({pId:o._id})" ng-if="project.userCan.write">

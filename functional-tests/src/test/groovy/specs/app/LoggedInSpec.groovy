@@ -7,8 +7,8 @@ import modules.FooterModule
 abstract class LoggedInSpec extends FixtureSpec {
 
   def loadFixtures() {
-    FixtureSpec.fixture_files =['admin_user_fixture']
-    setupFixtures()
+    FixtureSpec.fixture_files.add('admin_user_fixture')
+    super.setupFixtures()
   }
 
   def setupSpec() {

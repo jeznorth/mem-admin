@@ -17,9 +17,7 @@
                 <h2>Unpublished Projects</h2>
             </div>
             <div class="table-container">
-                <table class="projects-table table table-hover"
-                    ng-table="projectParams"
-                    x-show-filter="true">
+                <table id="unpublished-projects-table"class="projects-table table table-hover" ng-table="projectParams" x-show-filter="true">
                     <tr ng-repeat="o in $data" ui-sref="p.detail({projectid: o.code})">
                         <td data-title="'Name'"
                             filter="{'name':'text'}"

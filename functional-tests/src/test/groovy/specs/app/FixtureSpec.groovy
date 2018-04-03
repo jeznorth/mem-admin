@@ -14,15 +14,17 @@ import com.mongodb.DBCursor
 import com.mongodb.DBObject
 
 abstract class FixtureSpec extends GebReportingSpec {
-  private static final String FIXTURES = "fixtures";
+  private static final String FIXTURES = 'fixtures'
+  private static final String INSERT = 'insert'
+  private static final String REMOVE = 'remove'
   static fixture_files = []
 
   protected setupFixtures () {
-    fixture("insert");
+    fixture(INSERT);
   }
 
   def cleanupSpec() {
-    fixture('remove');
+    fixture(REMOVE);
   }
 
   def fixture(method) {
