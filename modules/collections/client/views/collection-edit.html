@@ -118,10 +118,9 @@
           </div>
 
           <div class="btn-toolbar">
-            <button class="btn btn-info" title="Link main document to this collection"
+            <button class="btn btn-info" title="Add main documents to this collection"
               x-document-mgr-link-modal
               x-project="project"
-              x-target="modifiedDocuments.main"
               x-collection="collection"
               x-doc-type="main"
               x-on-ok="updateDocuments">
@@ -163,9 +162,9 @@
         <fieldset>
           <legend>Related Documents</legend>
           <div class="btn-toolbar">
-            <button class="btn btn-info" title="Link other documents to this collection"
-              x-document-mgr-link-modal x-project="project"
-              x-target="modifiedDocuments.other"
+            <button class="btn btn-info" title="Add related documents to this collection"
+              x-document-mgr-link-modal
+              x-project="project"
               x-collection="collection"
               x-doc-type="other"
               x-on-ok="updateDocuments">

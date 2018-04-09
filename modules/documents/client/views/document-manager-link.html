@@ -120,15 +120,15 @@
     </div>
 </section>
 
-<!-- Linked Files Section -->
+<!-- Selected Files Section -->
 <section>
-    <label>Linked Files ({{linkedFiles.length}})</label>
+    <label>Selected Files ({{linkedFiles.length}})</label>
     <div class="fb-body">
         <div class="fb-list">
             <ul>
                 <li class="fb-list-item" ng-if="linkedFiles.length == 0">
                     <span class="col first-col">
-                        No Documents linked.
+                        No Documents selected.
                     </span>
                 </li>
                 <li class="fb-list-item" ng-repeat="doc in linkedFiles">
@@ -151,4 +151,4 @@
             </ul>
         </div>
     </div>
-</section><!-- / Linked Files Section -->
+</section><!-- / Selected Files Section -->

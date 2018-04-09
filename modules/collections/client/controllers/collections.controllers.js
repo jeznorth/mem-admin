@@ -68,39 +68,39 @@ collectionModules.controller('CollectionEditCtrl',
       }
 
       // Called after using the Document Manager modal.
-      $scope.updateDocuments = function(updatedDocuments, docType) {
+      $scope.updateDocuments = function(selectedDocs, docType) {
         var alternate = docType == 'main' ? 'other' : 'main';
-        var duplicates = $scope.findDuplicates(updatedDocuments, $scope.modifiedDocuments[alternate]);
-        if (duplicates.length) {
-          // If duplicates are found...
-          var errMsg = '';
-          _.forEach(duplicates, function(doc) {
-            errMsg += ('<br/> - ' + doc.displayName);
-            updatedDocuments = _.without(updatedDocuments, doc);
-            // Remove them from the updated documents list, and alert the user.
-          })
+        var errMsg = '';
+        _.forEach(selectedDocs, function(doc) {
+          // Iterate through each selected document, and see if it exists in the collection already.
+          var match = false;
+          _.forEach($scope.modifiedDocuments[alternate], function(altDoc) {
+            if (altDoc.id == doc.id) {
+              // If it's in the other document set, we alert the user that it won't be added (no docs can be in both 'Main' and 'Related').
+              errMsg += ('<br/> - ' + doc.displayName);
+              match = true;
+            }
+          });
+          _.forEach($scope.modifiedDocuments[docType], function(mainDoc) {
+            if (mainDoc.id == doc.id) {
+              // If it's in the current document set, just don't add it (no duplicate documents).
+              match = true;
+            }
+          });
+          if (!match) {
+            $scope.modifiedDocuments[docType].push(doc);
+          }
+        });
+        if (errMsg.length > 0) {
           AlertService.error('The following document(s) already exist in "' + (docType == 'main' ? 'Related' : 'Main') + ' Documents" and have not been added:' + errMsg, 7000);
         }
-        $scope.modifiedDocuments[docType] = _.map(updatedDocuments)
         $scope.tableParams[docType] = new NgTableParams({ sorting: { sortOrder: 'asc' }, count: docType == 'main' ? 5 : 10 }, { dataset: $scope.modifiedDocuments[docType] });
+        // Reload the table
         $scope.validationFlags.docsChanged = true;
         if ($scope.validationFlags.documentsTabInvalid) {
           $scope.checkDocumentsField();
         }
       };
-
-      // Helper function to check if user has selected a document for both 'main' and 'other'.
-      $scope.findDuplicates = function(docs1, docs2) {
-        var duplicateFiles = [];
-        _.forEach(docs1, function(doc1) {
-          _.find (docs2, function(doc2) {
-            if (doc1.id == doc2.id) {
-              duplicateFiles.push(doc1);
-            }
-          })
-        })
-        return duplicateFiles;
-      }
 
       // Remove a document from the list via the trash glyphicon.
       $scope.removeDocument = function(removedDoc, docType) {
