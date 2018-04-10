@@ -4,28 +4,49 @@
     <div class="view-title__container">
       <div class="view-title__info">
         <h1 class="view-title__info--title">Edit Project &nbsp;&rsaquo;&nbsp; {{project.name ? project.name : "Untitled Project"}}</h1>
-        <span class="view-title__info--last-modified" ng-if="project.dateUpdated">
+        <span class="view-title__info--meta" ng-if="project.dateUpdated">
           Last Modified {{project.dateUpdated | date : "yyyy-MM-dd"}} by {{project.updatedBy.displayName}}
+          <span class="label"
+            ng-class="{'label-success': project.isPublished == true, 'label-unpublished': project.isPublished == false}">
+            {{project.isPublished ? 'PUBLISHED' : 'UNPUBLISHED'}}
+          </span>
         </span>
       </div>
       <div class="view-title__actions">
-        <button class="btn btn-default" ng-if="!isNew" ng-click="cancelChanges(form.curTab)">
+        <button class="btn btn-default" 
+          title="Cancel and return to project details" 
+          ng-if="!isNew" 
+          ng-click="cancelChanges(form.curTab)">
           Cancel
         </button>
-        <button class="btn btn-default" ng-if="isNew" ui-sref="projects">
+        <button class="btn btn-default" 
+          title="Cancel and return to project details" 
+          ng-if="isNew" 
+          ui-sref="projects">
           Cancel
         </button>
-        <button class="btn btn-primary" type="submit" ng-click="saveProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)">
+        <button class="btn btn-primary" 
+          title="Save" 
+          type="submit" 
+          ng-click="saveProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)">
           Save
         </button>
-        <button class="btn btn-primary" ng-click="publishProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)" ng-if="!project.isPublished">
-          Publish Project
+        <button class="btn btn-primary" 
+          title="Publish Project" 
+          ng-click="publishProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)" ng-if="!project.isPublished">
+          Publish
         </button>
-        <button class="btn btn-danger" ng-click="unpublishProject(form.curTab)" ng-if="project.isPublished">
-          Unpublish Project
+        <button class="btn btn-danger" 
+          title="Unpublish Project" 
+          ng-click="unpublishProject(form.curTab)" 
+          ng-if="project.isPublished">
+          Unpublish
         </button>
-        <button class="btn btn-danger" ng-click="deleteProject()" ng-if="!isNew && !project.isPublished && project.userCan.delete">
-          <span>Delete Project</span>
+        <button class="btn btn-danger" 
+          title="Delete Project" 
+          ng-click="deleteProject()" 
+          ng-if="!isNew && !project.isPublished && project.userCan.delete">
+          <span>Delete</span>
         </button>
       </div>
     </div>
@@ -516,24 +537,40 @@
       <!-- FOOTER BUTTONS -->
       <div class="form-footer clearfix">
         <div class="form-footer__buttons">
-          <button class="btn btn-default" ng-if="!isNew" ng-click="cancelChanges(form.curTab)">
+          <button class="btn btn-default" 
+            title="Cancel and return to project details" 
+            ng-if="!isNew" 
+            ng-click="cancelChanges(form.curTab)">
             Cancel
           </button>
-          <button class="btn btn-default" ng-if="isNew" ui-sref="projects">
+          <button class="btn btn-default" 
+            title="Cancel and return to project details" 
+            ng-if="isNew" 
+            ui-sref="projects">
             Cancel
           </button>
-          <button id="save-project" class="btn btn-primary" type="submit" ng-click="saveProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)">
+          <button class="btn btn-primary" 
+            title="Save" 
+            type="submit" 
+            ng-click="saveProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)">
             Save
           </button>
-          <button class="btn btn-primary" ng-click="publishProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)" ng-if="!project.isPublished">
-            Publish Project
+          <button class="btn btn-primary" 
+            title="Publish Project" 
+            ng-click="publishProject(detailsForm.$valid, proponentsForm.$valid, activitiesForm.$valid, publicContentForm.$valid, form.curTab)" ng-if="!project.isPublished">
+            Publish
           </button>
-          <button class="btn btn-danger" ng-click="unpublishProject(form.curTab)" ng-if="project.isPublished">
-            Unpublish Project
+          <button class="btn btn-danger" 
+            title="Unpublish Project" 
+            ng-click="unpublishProject(form.curTab)" 
+            ng-if="project.isPublished">
+            Unpublish
           </button>
-          <button class="btn btn-danger" ng-click="deleteProject()" ng-if="!isNew && !project.isPublished && project.userCan.delete">
-            <span class="glyphicon glyphicon-trash"></span>
-            <span>Delete Project</span>
+          <button class="btn btn-danger" 
+            title="Delete Project" 
+            ng-click="deleteProject()" 
+            ng-if="!isNew && !project.isPublished && project.userCan.delete">
+            <span>Delete</span>
           </button>
         </div>
       </div>
