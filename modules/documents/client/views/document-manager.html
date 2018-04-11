@@ -76,9 +76,10 @@
 					</li>
 					<li>
 						<a title="Publish"
-							ng-hide="documentMgr.publishSelected.publishableFiles.length === 0"
+							ng-hide="documentMgr.publishSelected.publishableFiles.length === 0 && documentMgr.publishSelected.publishableDirs.length === 0"
 							x-confirm-publish
-							x-publisher="documentMgr.publishFiles"
+							x-confirm-items="documentMgr.publishSelected.confirmPublishItems"
+							x-publisher="documentMgr.publishFilesAndDirs"
 						 	x-current-node="documentMgr.currentNode"
 							x-docs="documentMgr.checkedFiles">
 							<span class="glyphicon glyphicon-ok-circle"></span> Publish
@@ -86,13 +87,13 @@
 					</li>
 					<li>
 						<a title="Unpublish"
-							ng-hide="documentMgr.publishSelected.unpublishableFiles.length === 0"
+							ng-hide="documentMgr.publishSelected.unpublishableFiles.length === 0 && documentMgr.publishSelected.unpublishableDirs.length === 0"
 							x-confirm-dialog
-							x-title-text="'Unpublish File(s)'"
+							x-title-text="'Unpublish Item(s)'"
 							x-ok-text="documentMgr.publishSelected.okText"
 							x-cancel-text="documentMgr.publishSelected.cancelText"
-							x-confirm-text="'Are you sure you want to unpublish the selected file(s)?'"
-							x-confirm-items="documentMgr.publishSelected.confirmItems"
+							x-confirm-text="'Are you sure you want to unpublish the selected item(s)?'"
+							x-confirm-items="documentMgr.publishSelected.confirmUnpublishItems"
 							x-on-ok="documentMgr.publishSelected.unpublish"><span class="glyphicon glyphicon-ban-circle"></span> Unpublish</a>
 					</li>
 					<li>
