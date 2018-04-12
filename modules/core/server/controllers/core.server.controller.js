@@ -8,11 +8,6 @@ exports.renderIndex = function (req, res) {
     user: req.user || null
   });
 };
-exports.renderIndexPrototype = function (req, res) {
-  res.render('modules/core/server/views/prototype', {
-    user: req.user || null
-  });
-};
 
 /**
  * Render the server error page

@@ -1,6 +1,7 @@
 'use strict';
 angular
   .module('core')
+  .constant('ENV', 'MEM')
   .constant('_', window._)
   .constant('d3', window.d3)
   .constant('TreeModel', window.TreeModel)
@@ -297,19 +298,7 @@ angular
       'withdrawn' : 'Withdrawn'
     }
   )
-  .constant('RELEASE',
-    {
-      'enableEnforcements': true,
-      'enableDecisions': true,
-      'enableSchedule': true,
-      'enableComplaints': false,
-      'enableConditions': true,
-      'enableInvitations': true,
-      'enableInspectionReports': true,
-      'redirectHomepageToGeorgeMassey': false
-    }
-  )
-// types with shortest length last
+  // types with shortest length last
   .constant('INSPECTION_TYPES', ['Inspection Report Response', 'Inspection Report Follow Up', 'Inspection Report'] )
 
   .constant('SALUTATIONS', ['Mr','Mrs','Miss','Ms','Dr','Capt','Prof','Rev','Other'])

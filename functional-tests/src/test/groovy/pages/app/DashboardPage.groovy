@@ -1,6 +1,6 @@
 package pages.app
 
-import pages.app.BaseAppPage
+import pages.app.base.BaseAppPage
 
 class DashboardPage extends BaseAppPage {
   public static final def PROJECT_NAME = 0

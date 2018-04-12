@@ -70,6 +70,5 @@ module.exports = {
       port: 1025
     }
   },
-  livereload: true,
   seedDB: process.env.MONGO_SEED || true
 };

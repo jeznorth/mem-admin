@@ -1,6 +1,6 @@
 package pages.app
 
-import pages.app.BaseAppPage
+import pages.app.base.BaseAppPage
 
 class AddContactPage extends BaseAppPage {
   static at = { pageTitle.text().startsWith("Add Contact") }

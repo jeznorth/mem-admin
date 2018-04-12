@@ -1,6 +1,6 @@
 package pages.app
 
-import pages.app.BaseAppPage
+import pages.app.base.BaseAppPage
 
 class LoginPage extends BaseAppPage {
   static at = { $('#login-title').text().startsWith('Login') }

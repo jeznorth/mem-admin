@@ -31,26 +31,50 @@ mem-admin has been built using MongoDB, Express, AngularJS and NodeJS.  See http
 ## Start in development mode
  *npm start*
 
+
+## Unit Tests
+
+The unit tests are broken into two pieces: the client tests, and the server tests.
+
+### Client
+Run `npm run test-client`
+
+This will execute the unit tests using Karma and Jasmine. See the `karma.conf.js`
+
+This will create a code coverage report at `build/coverage/client`.
+
+### Server
+Run `npm run test-server`
+
+This will execute the unit tests using Mocha. See the `mocha_istanbul` grunt task.
+
+This will create a code coverage report at `build/coverage/server`.
 ## Functional Tests
 
- To run the functional tests use "npm run e2e"
- This will go through these steps:
- * Setup a functional test instance of the database
- * Spin up a functional test instance of the application
- * Spin up automated testing of the functional test instance of the application
+Run `npm run e2e`
 
- Note that you need the following env vars:
- * FUNCTIONAL_PORT=3001 -- used to server the functional test instance of the application
- * FUNCTIONAL_HOST=localhost -- location of the functional test instance of the application
- * BASEURL=http://localhost:3001 -- the url targeted by the functional tests
- * MONGODB_FUNC_HOST=localhost -- the host for the mongo instance targeted by the functional test instance of the application
- * MONGODB_FUNC_PORT=27017 -- port for the mongo instance targeted by the functional test instance of the application
- * MONGODB_FUNC_DATABASE=mem-dev-func -- name of the database used by the functional test instance of the application
+### Prerequisites
+* A Mongo DBMS must already be running as a service.
 
+This will trigger the following steps, via the gruntfile:
+1. Create a new functional test database
+2. Start the functional test server
+3. Run the functional tests
+4. Drop the functional test database
+5. Shutdown the functional test server
 
- Note that you need to have an instance of the Mongo DBMS running for this to work.
- This was initially set up on Ubuntu where the Mongo DBMS was running as a service.
- If running linux you should have grunt cli installed so that you take advantage of the automated kill/cleanup procedure provided by the grunt tasks.
+### Configurable Environment Variables
+Environment Variable  | Default Value         | Description
+--------------------- | --------------------- | ---------------------
+FUNCTIONAL_HOST       | localhost             | location of the functional test server
+FUNCTIONAL_PORT       | 3001                  | port of the functional test server
+BASEURL               | http://localhost:3001 | the url targeted by the functional tests
+MONGODB_FUNC_HOST     | localhost             | location of the mongodb instance targeted by the functional test server
+MONGODB_FUNC_PORT     | 27017                 | port of the mongodb instance targeted by the functional test server
+MONGODB_FUNC_DATABASE | mem-dev-func          | name of the database used by the functional test server
+
+### Extra
+If running linux you should have grunt cli installed so that you take advantage of the automated kill/cleanup procedure provided by the grunt tasks.
 
 ## Project Status
 

@@ -1,7 +1,7 @@
 package pages.app
 
 import geb.Browser
-import pages.app.BaseAppPage
+import pages.app.base.BaseAppPage
 
 class DocumentsPage extends BaseAppPage {
 
