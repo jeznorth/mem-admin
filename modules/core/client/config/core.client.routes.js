@@ -64,15 +64,5 @@ angular.module('core').config (
             // combine this with reloadOnSearch = false to strip off the query string now that we have the value we need.
             $location.url($location.path());
           }
-        })
-        .state('prototype-load-error', {
-          url: '/error/prototype',
-          reloadOnSearch: false,
-          templateUrl: 'modules/core/client/views/prototype.load.error.html',
-          controller: function() {
-            // TODO: needs implementation
-          }
         });
     }]);
-
-

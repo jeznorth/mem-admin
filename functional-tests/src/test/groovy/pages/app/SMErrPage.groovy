@@ -1,6 +1,6 @@
 package pages.app
 
-import pages.app.BaseAppPage
+import pages.app.base.BaseAppPage
 
 class SMErrPage extends BaseAppPage{
   static at = { $('#authentication_error_header').text().equals('Authentication Error') }

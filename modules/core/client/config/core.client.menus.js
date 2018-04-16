@@ -6,7 +6,7 @@
 // a permision, or set of permissions, assigned to them
 //
 // =========================================================================
-angular.module('core').run(['Menus', 'ENV', 'ADMIN_FEATURES', 'FEATURES', function (Menus, ENV, ADMIN_FEATURES, FEATURES) {
+angular.module('core').run(['Menus', function (Menus) {
   // -------------------------------------------------------------------------
   //
   // System Menu
@@ -25,19 +25,19 @@ angular.module('core').run(['Menus', 'ENV', 'ADMIN_FEATURES', 'FEATURES', functi
     title: 'Organizations',
     state: 'admin.organization.list',
     permissions: ['application.listOrganizations'],
-    enable: 'true' === ADMIN_FEATURES.enableOrganizations
+    enable: true
   });
   Menus.addMenuItem('systemMenu', {
     title: 'News & Announcements',
     state: 'admin.recentactivity.list',
     permissions: ['application.listNews'],
-    enable: 'true' === ADMIN_FEATURES.enableNews
+    enable: true
   });
   Menus.addMenuItem('systemMenu', {
     title: 'Contacts',
     state: 'admin.user.list',
     permissions: ['application.listContacts'],
-    enable: 'true' === ADMIN_FEATURES.enableContacts
+    enable: true
   });
   // -------------------------------------------------------------------------
   //
@@ -74,13 +74,13 @@ angular.module('core').run(['Menus', 'ENV', 'ADMIN_FEATURES', 'FEATURES', functi
     title: 'Schedule',
     state: "p.schedule",
     permissions: ['context.viewSchedule'],
-    enable: 'true' === FEATURES.enableSchedule
+    enable: true
   });
   Menus.addMenuItem('projectTopMenu', {
     title: 'Comment Periods',
     state: "p.commentperiod.list",
     permissions: ['context.listCommentPeriods'],
-    enable: 'true' === FEATURES.enablePcp
+    enable: true
   });
 
   // -------------------------------------------------------------------------
@@ -104,37 +104,36 @@ angular.module('core').run(['Menus', 'ENV', 'ADMIN_FEATURES', 'FEATURES', functi
     title: 'Documents',
     state: 'p.docs',
     permissions: ['context.listDocuments'],
-    enable: 'true' === FEATURES.enableDocuments
+    enable: true
   });
   Menus.addMenuItem('projectMenu', {
     title: 'Collections',
     state: 'p.collection.list',
     permissions: ['context.listProjectCollections'],
-    enable: 'true' === FEATURES.enableCollections
+    enable: true
   });
   Menus.addMenuItem('projectMenu', {
     title: 'Groups',
     state: 'p.group.list',
     permissions: ['context.listProjectGroups'],
-    enable: 'true' === FEATURES.enableGroups
+    enable: true
   });
   Menus.addMenuItem('projectMenu', {
     title: 'Updates',
     state: 'p.communication.list',
     permissions: ['context.listProjectUpdates'],
-    enable: 'true' === FEATURES.enableUpdates
+    enable: true
   });
   Menus.addMenuItem('projectMenu', {
     title: 'Compliance Oversight',
     state: 'p.ir.list',
     permissions: ['context.listCompliance'],
-    enable: 'true' === FEATURES.enableCompliance
+    enable: true
   });
   Menus.addMenuItem('projectMenu', {
     title: 'Valued Components',
     state: 'p.vc.list',
     permissions: ['context.listValuedComponents'],
-    enable: 'true' === FEATURES.enableVcs
+    enable: true
   });
 }]);
-

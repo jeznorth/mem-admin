@@ -1,6 +1,6 @@
 package pages.app.modal
 
-import pages.app.BaseAppPage
+import pages.app.base.BaseAppPage
 
 class EditSystemPermissionsModal extends BaseAppPage {
   static at = { pageTitle.text().startsWith("Edit Permissions") }

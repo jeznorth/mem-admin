@@ -25,11 +25,11 @@ angular.module(ApplicationConfiguration.applicationModuleName).config(['$locatio
   }
 ]);
 
-angular.module(ApplicationConfiguration.applicationModuleName).run(function ($window, $rootScope, $state, $uibModalStack, Authentication, _, $cookies, Application, ContextService, AlertService, ADMIN_FEATURES, FEATURES) {
+angular.module(ApplicationConfiguration.applicationModuleName).run(function ($window, $rootScope, $state, $uibModalStack, Authentication, _, $cookies, Application, ContextService, AlertService) {
 
 
   // Check authentication before changing state
-  $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState) {
+  $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
     //
     // for some states just go, no pre-processing
     //
@@ -37,145 +37,25 @@ angular.module(ApplicationConfiguration.applicationModuleName).run(function ($wi
       return true;
     }
     else {
-      var isRouteEnabled = function() {
-        var enabled = false;
-        var str = toState.name;
-        switch(str) {
-        case String(str.match(/^admin.emailtemplate.*/)):
-          enabled = 'true' === ADMIN_FEATURES.enableEmailTemplates;
-          break;
-        case String(str.match(/^admin.organization.*/)):
-          enabled = 'true' === ADMIN_FEATURES.enableOrganizations;
-          break;
-        case String(str.match(/^admin.recentactivity.*/)):
-          enabled = 'true' === ADMIN_FEATURES.enableNews;
-          break;
-        case String(str.match(/^admin.template.*/)):
-          enabled = 'true' === ADMIN_FEATURES.enableTemplates;
-          break;
-        case String(str.match(/^admin.topic.*/)):
-          enabled = 'true' === ADMIN_FEATURES.topic;
-          break;
-        case String(str.match(/^admin.user.*/)):
-          enabled = 'true' === ADMIN_FEATURES.enableContacts;
-          break;
-
-          // core.client.menus -> projectTopMenu
-        case String(str.match(/^p.schedule/)):
-          enabled = 'true' === FEATURES.enableSchedule;
-          break;
-        case String(str.match(/^p.commentperiod.*/)):
-          enabled = 'true' === FEATURES.enablePcp;
-          break;
-
-          // core.client.menus -> projectMenu
-        case String(str.match(/^p.documents$/)):
-          enabled = 'true' === FEATURES.enableDocuments;
-          break;
-        case String(str.match(/^p.collection$/)):
-          enabled = 'true' === FEATURES.enableCollections;
-          break;
-        case String(str.match(/^p.invitation.*/)):
-          enabled = 'true' === FEATURES.enableInvitations;
-          break;
-        case String(str.match(/^p.group.*/)):
-          enabled = 'true' === FEATURES.enableGroups;
-          break;
-        case String(str.match(/^p.communication.*/)):
-          enabled = 'true' === FEATURES.enableUpdates;
-          break;
-        case String(str.match(/^p.complaint.*/)):
-          enabled = 'true' === FEATURES.enableComplaints;
-          break;
-        case String(str.match(/^p.projectcondition.*/)):
-          enabled = 'true' === FEATURES.enableConditions;
-          break;
-        case String(str.match(/^p.ir.*/)):
-          enabled = 'true' === FEATURES.enableCompliance;
-          break;
-        case String(str.match(/^p.vc.*/)):
-          enabled = 'true' === FEATURES.enableVcs;
-          break;
-        case String(str.match(/^p.publiccontent$/)):
-          enabled = 'true' === FEATURES.enablePublicContent;
-          break;
-
-        default:
-          enabled = true;
-          break;
-        }
-        return enabled;
-      };
-
-      var prototypeEnabled = 'true' === ADMIN_FEATURES.enablePrototype;
-      var handleCssLoad = function() {
-        var handled = !prototypeEnabled;
-        if (!handled) {
-          if (fromState.name === 'prototype-load-error') {
-            event.preventDefault();
-            // go to MEM Projects / Home
-            $window.location.href = $window.location.origin;
-            handled = true;
-          } else {
-            if (toState.name === 'admin.prototype.actions' || $window.location.search === '?allow') {
-              // let this one through for now
-            } else {
-              if (_.startsWith(toState.name, 'admin.prototype.') && !_.startsWith(fromState.name, 'admin.prototype.')) {
-                if ($window.location.search !== '?cssload=true') {
-                  event.preventDefault();
-                  $window.location.href = $window.location.origin + '/admin/prototype/project-main?cssload=true'; // go to our prototype main page...
-                  handled = true;
-                }
-              } else if (!_.startsWith(toState.name, 'admin.prototype.') && _.startsWith(fromState.name, 'admin.prototype.')) {
-                if ($window.location.search !== '?cssload=true') {
-                  event.preventDefault();
-                  $window.location.href = $window.location.origin + '/?cssload=true'; // go to application main page (projects)
-                  handled = true;
-                }
-              }
-
-            }
-          }
-        }
-        return handled;
-      };
-
-
-      if (isRouteEnabled()) {
-        if (!ContextService.isSynced(toState, toParams)) {
-          event.preventDefault();
-          ContextService.sync(toState, toParams).then(function() {
-            if (ContextService.isAllowed(toState.data)) {
-              if (prototypeEnabled) {
-                if (!handleCssLoad()) {
-                  $state.go(toState, toParams);
-                }
-              } else {
-                $state.go(toState, toParams);
-              }
-            } else {
-              $state.go('forbidden');
-            }
-          }, function() {
-            return false;
-          });
-        } else {
-          // proceed...
+      if (!ContextService.isSynced(toState, toParams)) {
+        event.preventDefault();
+        ContextService.sync(toState, toParams).then(function() {
           if (ContextService.isAllowed(toState.data)) {
-            if (prototypeEnabled) {
-              return handleCssLoad();
-            } else {
-              return true;
-            }
+            $state.go(toState, toParams);
           } else {
-            event.preventDefault();
             $state.go('forbidden');
           }
-        }
-
+        }, function() {
+          return false;
+        });
       } else {
-        event.preventDefault();
-        $state.go('not-found');
+        // proceed...
+        if (ContextService.isAllowed(toState.data)) {
+          return true;
+        } else {
+          event.preventDefault();
+          $state.go('forbidden');
+        }
       }
     }
   });
@@ -189,14 +69,6 @@ angular.module(ApplicationConfiguration.applicationModuleName).run(function ($wi
         params: fromParams,
         href: $state.href(fromState, fromParams)
       };
-    }
-  });
-
-  $rootScope.$on( "$stateChangeError", function( event, toState){
-    if (_.startsWith(toState.name, 'admin.prototype.')) {
-      $state.go('prototype-load-error');
-    } else {
-      // swallow error
     }
   });
 

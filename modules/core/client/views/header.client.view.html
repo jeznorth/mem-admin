@@ -26,7 +26,7 @@
 						<span>DASHBOARD</span>
 					</a>
 				</li>
-				<li class="dropdown" ng-if="'true' === ADMIN_FEATURES.enableSystemMenu && systemMenu.shouldRender(authentication.user)">
+				<li class="dropdown" ng-if="systemMenu.shouldRender(authentication.user)">
 					<a class="dropdown-toggle" title="System Configuration"
 						id="dropdownSystemMenu"
 						ng-click="$event.preventDefault();"
