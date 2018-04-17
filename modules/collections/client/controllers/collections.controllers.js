@@ -256,10 +256,17 @@ collectionModules.controller('CollectionEditCtrl',
           break;
         }
 
-        CollectionModel.save($scope.collection)
-          .then(function(){
-            $scope.saveCollectionDocuments(true);
-          })
+        var collectionSaved;
+        if($scope.collection.dateAdded){
+          // editing existing collection
+          collectionSaved = CollectionModel.save($scope.collection);
+        } else {
+          // creating new collection
+          collectionSaved = CollectionModel.add($scope.collection);
+        }
+        collectionSaved.then(function(){
+          $scope.saveCollectionDocuments(true);
+        })
           .catch(function() {
             AlertService.error('"' + $scope.collection.displayName + '" was not saved.', 4000, true);
             self.goToEdit();
