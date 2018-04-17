@@ -109,107 +109,132 @@
         </fieldset>
       </div>
       <div class="tab-pane active" ng-show="form.curTab === 'Collection Documents'" ng-form="collectionDocuments">
+        
+        <!-- MAIN DOCUMENTS -->
         <fieldset>
           <legend>Main Documents</legend>
-
           <div class="alert alert-danger" ng-if="validationFlags.documentsTabInvalid">
             <span class="alert__icon glyphicon glyphicon-exclamation-sign"></span>
             <span class="alert__msg">A minimum of one (1) PUBLISHED Main Document is required for a Collection to be published.</span>
           </div>
-
-          <div class="btn-toolbar">
-            <button class="btn btn-info" title="Add main documents to this collection"
+          <div class="btn-toolbar m-b-2">
+            <button class="btn btn-default" title="Link main document to this collection"
               x-document-mgr-link-modal
               x-project="project"
+              x-target="documentList.main"
               x-collection="collection"
               x-doc-type="main"
               x-on-ok="updateDocuments">
-              <span class="glyphicon glyphicon-link"></span><span>Add Main Documents</span>
+              <span class="glyphicon glyphicon-plus"></span><span>Add Main Documents</span>
             </button>
           </div>
-
-          <table class="table collection-document-table m-t-1" ng-table="tableParams.main">
-            <tr ng-repeat="d in $data">
-              <td header-class="'name'"
-                data-title="'Name'"
-                sortable="'displayName'">
-                <a href="{{goToDocument(d)}}" target="_blank">{{ d.displayName | removeExtension }}</a></td>
-              <td header-class="'date'"
-                data-title="'Document Date'"
-                sortable="'documentDate'">
-                {{ d.documentDate | amDateFormat:'YYYY-MM-DD' }}</td>
-              <td header-class="'status'"
-                data-title="'Status'"
-                sortable="'isPublished'">
-                <span class="label"
-                  ng-class="{'label-success': d.isPublished == true, 'label-unpublished': d.isPublished == false}">
-                  {{d.isPublished ? 'PUBLISHED' : 'UNPUBLISHED'}}
+          <div class="fb-list collection-doc-list">
+            <div class="column-header">
+              <span class="col sort-handle"><!-- Spacer for reorder handle column --></span>
+              <div class="fb-col-group">
+                <div class="col name-col first-col">
+                  <span>Name</span>
+                </div>
+                <div class="col date-col">
+                  <span>Document Date</span>
+                </div>
+                <div class="col status-col last-col">
+                  <span>Status</span>
+                </div>
+              </div>
+            </div>
+            <ul class="sortable-list" ui-sortable="sortableOptionsList[0]" ng-model="documentList.main">
+              <li class="fb-list-item ng-scope" ng-repeat="document in documentList.main">
+                <span class="col sort-handle ng-scope" title="Drag to reorder documents">
+                  <span class="glyphicon glyphicon-sort"></span>
                 </span>
-              </td>
-              <td class="actions" header-class="'actions'">
-                <a class="btn icon-btn" title="Remove document from this collection" ng-click="removeDocument(d, 'main')">
-                  <span class="glyphicon glyphicon-trash"></span>
-                </a>
-              </td>
-            </tr>
-            <tr class="no-results" ng-if="!$data || $data.length === 0">
-              <td colspan="5">
-                <span>No Documents Found. A minimum of one (1) PUBLISHED Main Document is required before this Collection can be published</span>
-              </td>
-            </tr>
-          </table>
+                <span class="fb-col-group">
+                  <span class="col name-col first-col">
+                    <a ng-href="{{goToDocument(document)}}" target="_blank">{{ document.displayName | removeExtension }}</a>
+                  </span>
+                  <span class="col date-col">
+                    {{ document.documentDate | amDateFormat:'YYYY-MM-DD' }}
+                  </span>
+                  <span class="col status-col last-col ng-scope">
+                    <span class="label"
+                      ng-class="{'label-success': document.isPublished == true, 'label-unpublished': document.isPublished == false}">
+                      {{document.isPublished ? 'PUBLISHED' : 'UNPUBLISHED'}}
+                    </span>
+                  </span>
+                  <div class="row-actions">
+                    <a class="btn icon-btn" title="Remove document from this collection" ng-click="removeDocument(document, 'main')">
+                      <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                  </div>
+                </span>
+              </li>
+              <li class="no-results" ng-if="!documentList.main || documentList.main.length === 0">
+                No Documents Found. A minimum of one (1) PUBLISHED Main Document is required before this Collection can be published.
+              </li>
+            </ul>
+          </div>
         </fieldset>
+
+        <!-- RELATED DOCUMENTS -->
         <fieldset>
           <legend>Related Documents</legend>
-          <div class="btn-toolbar">
-            <button class="btn btn-info" title="Add related documents to this collection"
+          <div class="btn-toolbar m-b-2">
+            <button class="btn btn-default" title="Link other documents to this collection"
               x-document-mgr-link-modal
               x-project="project"
+              x-target="documentList.other"
               x-collection="collection"
               x-doc-type="other"
               x-on-ok="updateDocuments">
-              <span class="glyphicon glyphicon-link"></span><span>Add Related Documents</span>
+              <span class="glyphicon glyphicon-plus"></span><span>Add Related Documents</span>
             </button>
-            <!-- TODO: Ditch the additional UI to sort documents and do it right in this interface -->
-            <!--
-            <button class="btn btn-info"
-              title="Set the default order documents will be displayed"
-              x-reorder-collection-modal x-collection="collection"
-              x-on-save="otherDocsReordered">
-              <span class="glyphicon glyphicon-sort"></span>
-              <span>Set Document Order</span>
-            </button>
-            -->
           </div>
 
-          <table class="table collection-document-table m-t-1" ng-table="tableParams.other">
-            <tr ng-repeat="d in $data">
-              <td header-class="'name'"
-                data-title="'Name'"
-                sortable="'displayName'">
-                <a href="{{goToDocument(d)}}" target="_blank">{{ d.displayName | removeExtension }}</a></td>
-              <td header-class="'date'"
-                data-title="'Document Date'"
-                sortable="'documentDate'">
-                {{ d.documentDate | amDateFormat:'YYYY-MM-DD' }}</td>
-              <td header-class="'status'"
-                data-title="'Status'"
-                sortable="'isPublished'">
-                <span class="label"
-                  ng-class="{'label-success': d.isPublished == true, 'label-unpublished': d.isPublished == false}">
-                  {{d.isPublished ? 'PUBLISHED' : 'UNPUBLISHED'}}
+          <div class="fb-list collection-doc-list">
+            <div class="column-header">
+              <span class="col sort-handle"></span>
+              <div class="fb-col-group">
+                <div class="col name-col first-col">
+                  <span>Name</span>
+                </div>
+                <div class="col date-col">
+                  <span>Document Date</span>
+                </div>
+                <div class="col status-col">
+                  <span>Status</span>
+                </div>
+              </div>
+            </div>
+            <ul class="sortable-list" ui-sortable="sortableOptionsList[1]" ng-model="documentList.other">
+              <li class="fb-list-item" ng-repeat="document in documentList.other">
+                <span class="col sort-handle" title="Drag to reorder documents">
+                  <span class="glyphicon glyphicon-sort"></span>
                 </span>
-              </td>
-              <td class="actions" header-class="'actions'">
-                <a class="btn icon-btn" title="Remove document from this collection" ng-click="removeDocument(d, 'other')">
-                  <span class="glyphicon glyphicon-trash"></span>
-                </a>
-              </td>
-            </tr>
-            <tr class="no-results" ng-if="!$data || $data.length === 0">
-              <td colspan="5">No Documents Found.</td>
-            </tr>
-          </table>
+                <span class="fb-col-group">
+                  <span class="col name-col first-col">
+                    <a ng-href="{{goToDocument(document)}}" target="_blank">{{ document.displayName | removeExtension }}</a>
+                  </span>
+                  <span class="col date-col">
+                    {{ document.documentDate | amDateFormat:'YYYY-MM-DD' }}
+                  </span>
+                  <span class="col status-col">
+                    <span class="label"
+                      ng-class="{'label-success': document.isPublished == true, 'label-unpublished': document.isPublished == false}">
+                      {{document.isPublished ? 'PUBLISHED' : 'UNPUBLISHED'}}
+                    </span>
+                  </span>
+                  <div class="row-actions">
+                    <a class="btn icon-btn" title="Remove document from this collection" ng-click="removeDocument(document, 'other')">
+                      <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                  </div>
+                </span>
+              </li>
+              <li class="no-results" ng-if="!documentList.other || documentList.other.length === 0">
+                No Documents Found.
+              </li>
+            </ul>
+          </div>
         </fieldset>
       </div>
       <div class="form-footer clearfix">

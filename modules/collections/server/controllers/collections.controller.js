@@ -136,60 +136,6 @@ module.exports = DBModel.extend({
     });
   },
 
-  sortOtherDocuments: function (collectionId, idList) {
-    return this.findById(collectionId).then(function (collection) {
-      if (!collection) { throw new Error('Missing collection'); }
-      if (!idList || !Array.isArray(idList) || idList.length === 0) { throw new Error('Missing id list'); }
-      if (!collection.otherDocuments || !Array.isArray(collection.otherDocuments) || collection.otherDocuments.length === 0) { throw new Error('Missing other documents in collection'); }
-
-      // shallow copy array
-      var toSortList = collection.otherDocuments.slice();
-      var document, index = 0;
-
-      idList.forEach(function (id) {
-        var foundIndex = toSortList.findIndex(function (item) {
-          return item._id.toString() === id;
-        });
-        if (foundIndex > -1) {
-          document = toSortList[foundIndex];
-          // update the document
-          document.sortOrder = index++;
-          document.save();
-          // remove the found item from the temporary list
-          toSortList.splice(foundIndex, 1);
-        }
-      });
-      if (toSortList.length > 0) {
-        /*
-          Handle items not in the passed in list of ids.  E.g. Two users working on collection.
-          One is sorting the other is adding or removing documents. Both start from the same list but the second
-          user submits the new document list before the first user finishes sorting.  We make sure the newly added
-          documents are at the bottom of the new list.
-        */
-        toSortList.forEach(function (document) {
-          document.sortOrder = index++;
-          document.save();
-        });
-      }
-    });
-  },
-
-  updateOtherDocumentSortOrder: function(collectionId, documentId, sortOrder) {
-    return this.findById(collectionId).then(function(collection) {
-      if (!collection) {return;}
-
-      // Is the document already in there?
-      var collectionDocument = _.find(collection.otherDocuments, function(cd) {
-        return cd.document._id.equals(documentId);
-      });
-
-      if (collectionDocument) {
-        collectionDocument.sortOrder = sortOrder;
-        return collectionDocument.save();
-      }
-    });
-  },
-
   addMainDocument: function(collectionId, documentId) {
     return this.addDocument(collectionId, documentId, "main");
   },
@@ -198,49 +144,43 @@ module.exports = DBModel.extend({
     return this.addDocument(collectionId, documentId, "other");
   },
 
-  addDocument: function(collectionId, documentId, targetDocType) {
+  addDocument: function(collectionId, documentId, docType) {
     var self = this;
 
+    // find the target collection in the database
     return this.findById(collectionId).then(function(collection) {
       if (!collection) {
         return;
       }
+
       // hold a reference to the doc lists, so we can flex the function based on the type of document being processed
       var docLists = {
         main : collection.mainDocuments,
         other : collection.otherDocuments
       };
-      var watchDocListType = targetDocType === "main" ? "other" : "main";
 
-      // do not re-add the same document
-      if (!_.find(docLists[targetDocType], function(cd) { return cd.document._id.equals(documentId); })) {
+      // find the database record for the document we are adding
+      var Document = new DocumentClass(self.opts);
+      return Document.findById(documentId).then(function(document) {
+        if (document) {
+          // update the record in the documents table, adding the reference
+          // to the collection we are adding it to
+          document.collections.push(collection);
+          document.save();
 
-        // remove from the other document list, if it is there
-        var inWatchDocList = _.filter(docLists[watchDocListType], function(cd) { return cd.document._id.equals(documentId); });
-        _.each(inWatchDocList, function(otherDoc){
-          self.removeDocument(collectionId, otherDoc.document._id, watchDocListType);
-        })
-
-        // add to the target document list
-        var Document = new DocumentClass(self.opts);
-        return Document.findById(documentId).then(function(document) {
-          if (document) {
-            // Add to document collection
-            document.collections.push(collection);
-            document.save();
-
-            // Add to collection
-            var CollectionDocument = new CollectionDocClass(self.opts);
-            return CollectionDocument.create({
-              document: document,
-            }).then(function(collectionDocument) {
-              docLists[targetDocType].push(collectionDocument);
-              collection.save();
-              return collectionDocument;
-            });
-          }
-        });
-      }
+          // create the new record in the collectiondocuments table
+          var CollectionDocument = new CollectionDocClass(self.opts);
+          return CollectionDocument.create({
+            document: document,
+          }).then(function(collectionDocument) {
+            // update the record in the collections table, adding the reference to
+            // the new document
+            docLists[docType].push(collectionDocument);
+            collection.save();
+            return collectionDocument;
+          });
+        }
+      });
     });
   },
 
@@ -255,40 +195,44 @@ module.exports = DBModel.extend({
   removeDocument: function(collectionId, documentId, docType) {
     var self = this;
 
+    // find the target collection in the database
     return this.findById(collectionId).then(function(collection) {
       if (!collection) {
         return;
       }
 
-      var docList = docType === "main" ? collection.mainDocuments : collection.otherDocuments;
-      // Is the document in the collection?
-      var collectionDocument = _.find(docList, function(cd) {
+      // hold a reference to the doc lists, so we can flex the function based on the type of document being processed
+      var docLists = {
+        main : collection.mainDocuments,
+        other : collection.otherDocuments
+      };
+
+      // verify the document we are trying to remove is in the collection,
+      // and proceed only if this is true
+      var collectionDocument = _.find(docLists[docType], function(cd) {
         return cd.document._id.equals(documentId);
       });
 
       if (collectionDocument) {
-        // Remove from document
+        // find the database record for the document we are processing
         var Document = new DocumentClass(self.opts);
         Document.findById(documentId).then(function(document) {
+          // update the record on the documents table, removing the reference
+          // to the collection we are removing it from
           document.collections = _.reject(document.collections, function(c) {
             return c.equals(collectionId);
           });
           document.save();
 
-          // Remove from Collection
-          docList = _.without(docList, collectionDocument);
-          if (docType == 'main') {
-            collection.hasPublished = _.find(docList, function(o) {
-              return o.document.isPublished
-            });
-          }
+          // remove the reference to the document from the record in the collections table
+          docLists[docType] = _.without(docLists[docType], collectionDocument);
           collection.save();
 
-          // Remove from CollectionDocument
+          // remove the corresponding record in the collectiondocuments table
           var CollectionDocument = new CollectionDocClass(self.opts);
           CollectionDocument.delete(collectionDocument);
         });
       }
     });
-  },
+  }
 });

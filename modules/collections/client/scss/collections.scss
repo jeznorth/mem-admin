@@ -1,5 +1,18 @@
-.collection-document-table {
-    .actions {
-      width: 6rem;
+.collection-doc-list {
+  overflow: visible;
+  border: $fb-border;
+
+  .col {
+    &.date-col {
+      @include flex(0 0 25%);
     }
-  };
+
+    &.status-col {
+      @include flex(0 0 25%);
+    }
+  }
+
+  .row-actions {
+    right: 1rem;
+  }
+}

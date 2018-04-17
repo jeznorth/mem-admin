@@ -11,6 +11,7 @@ var ApplicationConfiguration = (function () {
     'ngMessages',
     'ui.router',
     'ui.bootstrap',
+    'ui.sortable',
     'ui.utils',
     'uiGmapgoogle-maps',
     'ngTable',
