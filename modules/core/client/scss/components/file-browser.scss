@@ -352,6 +352,7 @@ $fb-sortable-drag-target-border:        3px dashed #5091cd;
     @include flex(1 1 auto);
     @include flexdirection(row);
     position: relative;
+    overflow: hidden;
   }
 
   .fb-folder {
