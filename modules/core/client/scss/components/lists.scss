@@ -176,3 +176,55 @@ $pick-list-active-item-bg: #5cb85c;
         }
     }
 }
+
+
+// NAME-VALUE PAIRS
+.nv-pair {
+  margin: 0;
+  padding: 0;
+
+  li {
+    @include flexbox();
+    @include flexdirection(row);
+    padding-top: 0.75rem;
+    padding-bottom: 0.7rem;
+    border-bottom: $fb-details-list-border;
+
+    &:first-child {
+      border-top: $fb-details-list-border;
+    }
+  }
+
+  span.name {
+    width: 15rem;
+    min-width: 15rem;
+  }
+
+  span.value {
+    @include flex(1 1 auto);
+    word-break: break-all;
+  }
+
+  ul.value {
+    @include flex(1 1 auto);
+    padding-left: 0;
+
+    li {
+      margin-right: 0.5rem;
+      padding: 0;
+      display: inline-block;
+      border: none;
+
+      &:after {
+        display: inline-block;
+        content: ",";
+      }
+
+      &:last-child {
+        &:after {
+          display: none;
+        }
+      }
+    }
+  }
+}

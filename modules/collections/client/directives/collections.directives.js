@@ -1,7 +1,6 @@
 'use strict';
 
-angular.module('control')
-  .directive('collectionChooser', directiveCollectionsChooser);
+angular.module('control').directive('collectionChooser', directiveCollectionsChooser);
 
 directiveCollectionsChooser.$inject = ['CollectionModel', '$uibModal', '_'];
 

@@ -208,6 +208,7 @@ angular.module('documents')
       restrict: 'A',
       scope: {
         project: '=',
+        target: '=',
         collection: '=',
         docType: '@',
         publishedOnly: '=',
@@ -234,20 +235,18 @@ angular.module('documents')
               }
 
               self.linkedFiles = [];
+              self.sourceDocs = angular.copy(scope.target || []);
               self.publishedOnly = scope.publishedOnly;
               self.docType = scope.docType;
-              self.sourceDocs = {
-                main : scope.collection.mainDocuments,
-                other : scope.collection.otherDocuments
-              };
 
               self.cancel = function () {
                 $uibModalInstance.dismiss('cancel');
               };
 
               self.ok = function () {
-                // return the data in the selected list...
-                $uibModalInstance.close({linked: self.linkedFiles, docType : self.docType});
+                // return the data in the selected list...plus the files previously in the list (as they need to be re-added for ordering)
+                var linkedFiles = _.union(self.sourceDocs, self.linkedFiles);
+                $uibModalInstance.close({linked: linkedFiles, docType : self.docType});
               };
 
             }

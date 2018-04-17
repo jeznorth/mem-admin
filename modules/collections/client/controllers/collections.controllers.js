@@ -1,10 +1,10 @@
 var collectionModules = angular.module('collections');
 
 
-//Controller for collections list.
+//Controller for displaying a list of collections.
 collectionModules.controller('CollectionListCtrl',
-  ['$scope', '$log', '$state', '$location', 'NgTableParams', 'project', 'collections', 'types',
-    function($scope, $log, $state, $location, NgTableParams, project, collections, types) {
+  ['$scope', 'NgTableParams', 'project', 'collections', 'types',
+    function($scope, NgTableParams, project, collections, types) {
       $scope.tableParams = new NgTableParams({ count: 10 },{ dataset: collections });
       $scope.project = project;
       $scope.types = types;
@@ -13,26 +13,24 @@ collectionModules.controller('CollectionListCtrl',
 
 //Controller for creating/editing collections.
 collectionModules.controller('CollectionEditCtrl',
-  ['$scope', '$log', '$state', '$uibModal', '$location', 'NgTableParams', 'collection', 'project', 'types', 'CollectionModel', 'AlertService', 'ConfirmService', '_',
-    function($scope, $log, $state, $uibModal, $location, NgTableParams, collection, project, types, CollectionModel, AlertService, ConfirmService, _) {
+  ['$scope', '$log', '$state', '$uibModal', 'collection', 'project', 'types', 'CollectionModel', 'AlertService', 'ConfirmService', '_',
+    function($scope, $log, $state, $uibModal, collection, project, types, CollectionModel, AlertService, ConfirmService, _) {
+      var self = this;
+
       $scope.collection = collection;
       $scope.collection.project = project._id;
       $scope.project = project;
       $scope.types = types;
+
       // Keep a copy of original documents for comparison.
-      $scope.originalDocuments = {
-        main: _.map(collection.mainDocuments, function(cd) { return cd.document; }),
-        other: _.map(collection.otherDocuments, function(cd) { return cd.document; })
+      $scope.originalDocumentList = {
+        main: _.map($scope.collection.mainDocuments, function(cd) { return cd.document; }),
+        other: _.map($scope.collection.otherDocuments, function(cd) { return cd.document; })
       }
       // Create a new copy of documents to manipulate before saving.
-      $scope.modifiedDocuments = {
-        main: _.map(collection.mainDocuments, function(cd) { return cd.document; }),
-        other: _.map(collection.otherDocuments, function(cd) { return cd.document; })
-      }
-      // Create an object to keep track of table parameters.
-      $scope.tableParams = {
-        main: new NgTableParams({ sorting: { sortOrder: 'asc' }, count: 5 }, { dataset: $scope.modifiedDocuments.main }),
-        other: new NgTableParams({ sorting: { sortOrder: 'asc' }, count: 10 }, { dataset: $scope.modifiedDocuments.other })
+      $scope.documentList = {
+        main: _.map($scope.collection.mainDocuments, function(cd) { return cd.document; }),
+        other: _.map($scope.collection.otherDocuments, function(cd) { return cd.document; })
       }
       // Validation flags. Used for various purposes including in-line validation (see ng-class in collection-edit.html) or flagging changed documents.
       $scope.validationFlags = {
@@ -54,58 +52,56 @@ collectionModules.controller('CollectionEditCtrl',
       };
 
       // Shorthand for transitioning to Edit. This is interchangeable with $state.reload() *if* we're already in Edit (not in Create).
-      $scope.goToEdit = function() {
+      self.goToEdit = function() {
         $state.transitionTo('p.collection.edit', { projectid: project.code, collectionId: collection._id }, {
           reload: true, inherit: false, notify: true
         });
       }
 
       // Shorthand for transitioning to List.
-      $scope.goToList = function() {
+      self.goToList = function() {
         $state.transitionTo('p.collection.list', { projectid: project.code }, {
           reload: true, inherit: false, notify: true
         });
       }
 
       // Called after using the Document Manager modal.
-      $scope.updateDocuments = function(selectedDocs, docType) {
+      $scope.updateDocuments = function(updatedDocuments, docType) {
         var alternate = docType == 'main' ? 'other' : 'main';
-        var errMsg = '';
-        _.forEach(selectedDocs, function(doc) {
-          // Iterate through each selected document, and see if it exists in the collection already.
-          var match = false;
-          _.forEach($scope.modifiedDocuments[alternate], function(altDoc) {
-            if (altDoc.id == doc.id) {
-              // If it's in the other document set, we alert the user that it won't be added (no docs can be in both 'Main' and 'Related').
-              errMsg += ('<br/> - ' + doc.displayName);
-              match = true;
-            }
-          });
-          _.forEach($scope.modifiedDocuments[docType], function(mainDoc) {
-            if (mainDoc.id == doc.id) {
-              // If it's in the current document set, just don't add it (no duplicate documents).
-              match = true;
-            }
-          });
-          if (!match) {
-            $scope.modifiedDocuments[docType].push(doc);
-          }
-        });
-        if (errMsg.length > 0) {
+        var duplicates = $scope.findDuplicates(updatedDocuments, $scope.documentList[alternate]);
+        if (duplicates.length > 0) {
+          // If duplicates are found...
+          var errMsg = '';
+          _.forEach(duplicates, function(doc) {
+            errMsg += ('<br/> - ' + doc.displayName);
+            updatedDocuments = _.without(updatedDocuments, doc);
+            // Remove them from the updated documents list, and alert the user.
+          })
           AlertService.error('The following document(s) already exist in "' + (docType == 'main' ? 'Related' : 'Main') + ' Documents" and have not been added:' + errMsg, 7000);
         }
-        $scope.tableParams[docType] = new NgTableParams({ sorting: { sortOrder: 'asc' }, count: docType == 'main' ? 5 : 10 }, { dataset: $scope.modifiedDocuments[docType] });
-        // Reload the table
+        $scope.documentList[docType] = _.map(updatedDocuments);
         $scope.validationFlags.docsChanged = true;
         if ($scope.validationFlags.documentsTabInvalid) {
           $scope.checkDocumentsField();
         }
       };
 
+      // Helper function to check if user has selected a document for both 'main' and 'other'.
+      $scope.findDuplicates = function(docs1, docs2) {
+        var duplicateFiles = [];
+        _.forEach(docs1, function(doc1) {
+          _.find (docs2, function(doc2) {
+            if (doc1.id == doc2.id) {
+              duplicateFiles.push(doc1);
+            }
+          })
+        })
+        return duplicateFiles;
+      }
+
       // Remove a document from the list via the trash glyphicon.
       $scope.removeDocument = function(removedDoc, docType) {
-        $scope.modifiedDocuments[docType] = _.without($scope.modifiedDocuments[docType], removedDoc);
-        $scope.tableParams[docType] = new NgTableParams({ sorting: { sortOrder: 'asc' }, count: docType == 'main' ? 5 : 10 }, { dataset: $scope.modifiedDocuments[docType] });
+        $scope.documentList[docType] = _.without($scope.documentList[docType], removedDoc);
         $scope.validationFlags.docsChanged = true;
       };
 
@@ -142,7 +138,7 @@ collectionModules.controller('CollectionEditCtrl',
 
       // Helper function to check validity of Documents tab specifically.
       $scope.checkDocumentsField = function() {
-        var publishedMainDocs = _.filter($scope.modifiedDocuments.main, function (item) {
+        var publishedMainDocs = _.filter($scope.documentList.main, function (item) {
           return item.isPublished === true;
         });
         $scope.validationFlags.documentsTabInvalid = publishedMainDocs.length < 1;
@@ -185,7 +181,7 @@ collectionModules.controller('CollectionEditCtrl',
             return CollectionModel.save($scope.collection);
           })
           .then(function() {
-            return $scope.submitDocs(false);
+            return $scope.saveCollectionDocuments(false);
           })
           .then(function() {
             return CollectionModel.publishCollection($scope.collection._id);
@@ -212,7 +208,7 @@ collectionModules.controller('CollectionEditCtrl',
             return CollectionModel.save($scope.collection);
           })
           .then(function() {
-            return $scope.submitDocs(false);
+            return $scope.saveCollectionDocuments(false);
           })
           .then(function() {
             return CollectionModel.unpublishCollection($scope.collection._id);
@@ -259,69 +255,77 @@ collectionModules.controller('CollectionEditCtrl',
           $scope.collection.parentType = 'Other';
           break;
         }
-        if ($scope.collection.dateAdded) {
-          // Editing an existing collection.
-          CollectionModel.save($scope.collection)
-            .then(function(){
-              if ($scope.validationFlags.docsChanged) {
-                $scope.submitDocs(true);
-              } else {
-                AlertService.success('"' + $scope.collection.displayName + '" was saved successfully.', 4000, true)
-                $scope.goToEdit();
-              }
-            })
-            .catch(function() {
-              AlertService.error('"' + $scope.collection.displayName + '" was not saved.', 4000, true);
-              $scope.goToEdit();
-            });
-        } else {
-          // Creating a new collection.
-          CollectionModel.add($scope.collection)
-            .then(function() {
-              if ($scope.validationFlags.docsChanged) {
-                $scope.submitDocs(true);
-              } else {
-                AlertService.success('"' + $scope.collection.displayName + '" was saved successfully.', 4000, true)
-                $scope.goToEdit();
-              }
-            })
-            .catch(function() {
-              AlertService.error('"' + $scope.collection.displayName + '" was not saved.', 4000, true);
-            });
-        }
+
+        CollectionModel.save($scope.collection)
+          .then(function(){
+            $scope.saveCollectionDocuments(true);
+          })
+          .catch(function() {
+            AlertService.error('"' + $scope.collection.displayName + '" was not saved.', 4000, true);
+            self.goToEdit();
+          });
       };
 
+      /*
+       * This objecect contains jQuery-sortable settings related to sortable document lists.
+       * It is defined as a function because it is initialized once for each list.
+       */
+      self.createOptions = function () {
+        var options = {
+          handle : '.sort-handle',
+          axis: 'y',
+          placeholder: "fb-list-item",
+          connectWith: ".sortable-list",
+          update: function() {
+            $scope.validationFlags.docsChanged = true;
+          },
+          helper: function(e, item) {
+            return item;
+          }
+        };
+        return options;
+      };
+      $scope.sortableOptionsList = [self.createOptions('main'), self.createOptions('other')];
+
       // Helper function when saving, to submit any changes to documents.
-      $scope.submitDocs = function(reload) {
-        var docPromises = {};
-        _.forEach($scope.modifiedDocuments, function(updatedDocs, docType) {
-          var addedDocuments = _.filter(updatedDocs, function(updatedDoc) {
-            return !_.find($scope.originalDocuments[docType], function(originalDoc) { return originalDoc._id === updatedDoc._id; });
+      $scope.saveCollectionDocuments = function(reload) {
+        // In order to maintain the ordering, we need to first remove all the current documents...
+        var clearDocPromises = [];
+        _.forEach($scope.originalDocumentList.main, function(document) {
+          clearDocPromises.push(CollectionModel.removeDocument($scope.collection._id, document._id, "main"));
+        });
+        _.forEach($scope.originalDocumentList.other, function(document) {
+          clearDocPromises.push(CollectionModel.removeDocument($scope.collection._id, document._id, "other"));
+        });
+
+        // ...and then re-add the entire updated set
+        var addDocPromises = [];
+        _.forEach($scope.documentList.main, function(document) {
+          addDocPromises.push(CollectionModel.addDocument($scope.collection._id, document._id, "main"));
+        });
+        _.forEach($scope.documentList.other, function(document) {
+          addDocPromises.push(CollectionModel.addDocument($scope.collection._id, document._id, "other"));
+        });
+
+        return Promise.all(clearDocPromises)
+          .then(function(){
+            // old documents cleared, add new documents
+            return Promise.all(addDocPromises);
+          }, function(){
+            // error clearing documents
+            AlertService.error('"' + $scope.collection.displayName + '" documents were not saved.', 4000);
+          })
+          .then(function(){
+            // new document set updated
+            AlertService.success('"' + $scope.collection.displayName + '" and documents were saved successfully.', 4000, true);
+            if(reload){
+              // only reload page if we're creating a new collection
+              self.goToEdit();
+            }
+          }, function(){
+            // error adding documents
+            AlertService.error('"' + $scope.collection.displayName + '" documents were not saved.', 4000);
           });
-          var removedDocuments = _.filter($scope.originalDocuments[docType], function(originalDoc) {
-            return !_.find(updatedDocs, function(updatedDoc) { return updatedDoc._id === originalDoc._id; });
-          });
-          // Generate promises for document management.
-          docPromises[docType] = _.union(_.map(addedDocuments, function(doc) {
-            return CollectionModel.addDocument(collection._id, doc._id, docType);
-          }), _.map(removedDocuments, function(doc) {
-            return CollectionModel.removeDocument(collection._id, doc._id, docType);
-          }));
-        })
-        if (reload) {
-          // We're saving/creating a collection. This is the last operation to happen, so we need it to complete before reloading!
-          return Promise.all(_.union(docPromises.main, docPromises.other))
-            .then(function() {
-              AlertService.success('"' + $scope.collection.displayName + '" and documents were saved successfully.', 4000, true);
-              $scope.goToEdit();
-            }, function() {
-              AlertService.error('"' + $scope.collection.displayName + '" documents were not saved.', 4000, true);
-              $scope.goToEdit();
-            });
-        } else {
-          // We're publishing/unpublishing. Do not reload; more operations need to happen!
-          return Promise.all(_.union(docPromises.main, docPromises.other))
-        }
       }
 
       // Cancel any unsaved changes on the page.
@@ -333,11 +337,11 @@ collectionModules.controller('CollectionEditCtrl',
             okText: 'Yes',
             cancelText: 'No',
             onOk: function() {
-              $scope.goToList();
+              self.goToList();
             }
           });
         } else {
-          $scope.goToList();
+          self.goToList();
         }
       }
 
@@ -370,7 +374,7 @@ collectionModules.controller('CollectionEditCtrl',
             .then(function() {
               // Collection deleted. Show confirmation message and return to list.
               AlertService.success('"'+ $scope.collection.displayName +'" was deleted successfully.', 4000, true);
-              $scope.goToList();
+              self.goToList();
             })
             .catch(function() {
               // User cancels delete, or error is thrown.
