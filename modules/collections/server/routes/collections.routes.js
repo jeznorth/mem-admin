@@ -58,7 +58,7 @@ module.exports = function(app) {
   app.route('/api/collections/:collectionId/document/:documentId/add')
     .all(policy('user'))
     .put(routes.setAndRun(CollectionClass, function(model, req) {
-      return model.addOtherDocument(req.params.collectionId, req.params.documentId);
+      return model.addOtherDocument(req.params.collectionId, req.params.documentId, req.body.sortOrder);
     }));
 
   // Remove a document from a collection
@@ -79,7 +79,7 @@ module.exports = function(app) {
   app.route('/api/collections/:collectionId/document/:documentId/main/add')
     .all(policy('user'))
     .put(routes.setAndRun(CollectionClass, function(model, req) {
-      return model.addMainDocument(req.params.collectionId, req.params.documentId);
+      return model.addMainDocument(req.params.collectionId, req.params.documentId, req.body.sortOrder);
     }));
 
   // Remove a main document from a collection

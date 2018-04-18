@@ -22,6 +22,14 @@ collectionModules.controller('CollectionEditCtrl',
       $scope.project = project;
       $scope.types = types;
 
+      // ensure sorting for display purposes
+      $scope.collection.mainDocuments.sort(function(a, b){
+        return a.sortOrder > b.sortOrder;
+      });
+      $scope.collection.otherDocuments.sort(function(a, b){
+        return a.sortOrder > b.sortOrder;
+      });
+
       // Keep a copy of original documents for comparison.
       $scope.originalDocumentList = {
         main: _.map($scope.collection.mainDocuments, function(cd) { return cd.document; }),
@@ -181,7 +189,7 @@ collectionModules.controller('CollectionEditCtrl',
             return CollectionModel.save($scope.collection);
           })
           .then(function() {
-            return $scope.saveCollectionDocuments(false);
+            return self.saveCollectionDocuments(false);
           })
           .then(function() {
             return CollectionModel.publishCollection($scope.collection._id);
@@ -208,7 +216,7 @@ collectionModules.controller('CollectionEditCtrl',
             return CollectionModel.save($scope.collection);
           })
           .then(function() {
-            return $scope.saveCollectionDocuments(false);
+            return self.saveCollectionDocuments(false);
           })
           .then(function() {
             return CollectionModel.unpublishCollection($scope.collection._id);
@@ -265,7 +273,7 @@ collectionModules.controller('CollectionEditCtrl',
           collectionSaved = CollectionModel.add($scope.collection);
         }
         collectionSaved.then(function(){
-          $scope.saveCollectionDocuments(true);
+          self.saveCollectionDocuments(true);
         })
           .catch(function() {
             AlertService.error('"' + $scope.collection.displayName + '" was not saved.', 4000, true);
@@ -295,7 +303,7 @@ collectionModules.controller('CollectionEditCtrl',
       $scope.sortableOptionsList = [self.createOptions('main'), self.createOptions('other')];
 
       // Helper function when saving, to submit any changes to documents.
-      $scope.saveCollectionDocuments = function(reload) {
+      self.saveCollectionDocuments = function(reload) {
         // In order to maintain the ordering, we need to first remove all the current documents...
         var clearDocPromises = [];
         _.forEach($scope.originalDocumentList.main, function(document) {
@@ -307,11 +315,11 @@ collectionModules.controller('CollectionEditCtrl',
 
         // ...and then re-add the entire updated set
         var addDocPromises = [];
-        _.forEach($scope.documentList.main, function(document) {
-          addDocPromises.push(CollectionModel.addDocument($scope.collection._id, document._id, "main"));
+        _.forEach($scope.documentList.main, function(document, idx) {
+          addDocPromises.push(CollectionModel.addDocument($scope.collection._id, document._id, idx, "main"));
         });
-        _.forEach($scope.documentList.other, function(document) {
-          addDocPromises.push(CollectionModel.addDocument($scope.collection._id, document._id, "other"));
+        _.forEach($scope.documentList.other, function(document, idx) {
+          addDocPromises.push(CollectionModel.addDocument($scope.collection._id, document._id, idx, "other"));
         });
 
         return Promise.all(clearDocPromises)
