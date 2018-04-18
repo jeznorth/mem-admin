@@ -136,15 +136,15 @@ module.exports = DBModel.extend({
     });
   },
 
-  addMainDocument: function(collectionId, documentId) {
-    return this.addDocument(collectionId, documentId, "main");
+  addMainDocument: function(collectionId, documentId, sortOrder) {
+    return this.addDocument(collectionId, documentId, sortOrder, "main");
   },
 
-  addOtherDocument: function(collectionId, documentId) {
-    return this.addDocument(collectionId, documentId, "other");
+  addOtherDocument: function(collectionId, documentId, sortOrder) {
+    return this.addDocument(collectionId, documentId, sortOrder, "other");
   },
 
-  addDocument: function(collectionId, documentId, docType) {
+  addDocument: function(collectionId, documentId, sortOrder, docType) {
     var self = this;
 
     // find the target collection in the database
@@ -172,6 +172,7 @@ module.exports = DBModel.extend({
           var CollectionDocument = new CollectionDocClass(self.opts);
           return CollectionDocument.create({
             document: document,
+            sortOrder: sortOrder
           }).then(function(collectionDocument) {
             // update the record in the collections table, adding the reference to
             // the new document

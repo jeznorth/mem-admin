@@ -12,11 +12,11 @@ angular.module('collections').factory('CollectionModel', function (ModelBase) {
       return this.put('/api/collections/' + collectionId + '/remove', {});
     },
 
-    addDocument: function(collectionId, documentId, docType) {
+    addDocument: function(collectionId, documentId, sortOrder, docType) {
       if ( docType === "main") {
-        return this.put('/api/collections/' + collectionId + '/document/' + documentId + '/main/add', {});
+        return this.put('/api/collections/' + collectionId + '/document/' + documentId + '/main/add', { sortOrder : sortOrder});
       }
-      return this.put('/api/collections/' + collectionId + '/document/' + documentId + '/add', {});
+      return this.put('/api/collections/' + collectionId + '/document/' + documentId + '/add', { sortOrder : sortOrder});
     },
 
     removeDocument: function(collectionId, documentId, docType) {
