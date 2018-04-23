@@ -2,125 +2,130 @@
 @import "modules/core/client/scss/global/helpers.scss";
 
 .doc-sort-order-modal {
-    .modal-body {
-        @include flexbox();
-        @include flexdirection(column);
+  .modal-body {
+    @include flexbox();
+    @include flexdirection(column);
 
-        .btn-toolbar{
-            @include flex(0 0 auto);
-            margin-bottom: 2rem;
-        }
-
-        .doc-sort-container {
-            @include flex(1 1 auto);
-        }
+    .btn-toolbar{
+      @include flex(0 0 auto);
+      margin-bottom: 2rem;
     }
+
+    .doc-sort-container {
+      @include flex(1 1 auto);
+    }
+  }
 }
 
 .doc-sort-header {
-    @include flex(0 0 auto);
+  @include flex(0 0 auto);
 
-    .col {
-        &.date {
-            @include flex(0 0 15rem);
-        }
-    
-        &.name {
-            @include flex(1 1 auto);
-            padding-left: 1.5rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    
-        &.status {
-            @include flex(0 0 15rem);
-            margin-right: 17px;
-        }
+  .col {
+    &.date {
+      @include flex(0 0 15rem);
     }
+  
+    &.name {
+      @include flex(1 1 auto);
+      padding-left: 1.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  
+    &.status {
+      @include flex(0 0 15rem);
+      margin-right: 17px;
+    }
+  }
 }
 
 .doc-sort-scroll-container {
-    @include flex(1 1 1px);
-    position: relative;
-    overflow-y: scroll;
-    background: #fff;
+  @include flex(1 1 1px);
+  position: relative;
+  overflow-y: scroll;
+  background: #fff;
 }
 
 .doc-sort-options {
-    @include clearfix();
+  @include clearfix();
 
-    .checkbox {
-        margin-top: 0.5rem;
-        margin-bottom: 0;
-        margin-left: 1rem;
-        
-        label {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
+  .checkbox {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+    margin-left: 1rem;
+    
+    label {
+      font-size: 1.2rem;
+      font-weight: bold;
     }
+  }
 }
 
 .dnd-content {
-    .col {
-        padding: 1.25rem 0.5rem;
+  .col {
+    padding: 1.25rem 0.5rem;
 
-        &.avatar {
-            @include flex(0 0 auto);
-            padding: 1.25rem;
+    &.avatar {
+      @include flex(0 0 auto);
+      padding: 1.25rem;
 
-            .glyphicon {
-                margin-top: -0.2rem;
-                font-size: 1.8rem;
-                vertical-align: top;
-            }
-        }
-
-        &.date {
-            @include flex(0 0 15rem);
-        }
-
-        &.name {
-            @include flex(1 1 auto);
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        &.status {
-            @include flex(0 0 15rem);
-        }
+      .glyphicon {
+        margin-top: -0.2rem;
+        font-size: 1.8rem;
+        vertical-align: top;
+      }
     }
+
+    &.date {
+      @include flex(0 0 15rem);
+    }
+
+    &.name {
+      @include flex(1 1 auto);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &.status {
+      @include flex(0 0 15rem);
+    }
+  }
 }
 
-.delete-confirmation {
-    &__list {
-        border-radius: 4px;
-        background: #fff;
+.fb-confirmation {
+  &__list {
+    border-radius: 4px;
+    background: #fff;
 
-        .fb-list-item {
-            &:hover {
-                background: transparent;
-            }
-            &.has-error {
-                color: $danger-bg;
+    .fb-list-item {
+      &:hover {
+        background: transparent;
+      }
+      &.has-error {
+        color: $danger-bg;
 
-                .glyphicon {
-                    color: inherit;
-                }
-
-                .name {
-                    font-weight: bold;
-                }
-            }
-
-            .reason {
-                margin-top: 0.5rem;
-                padding-left: 2.15rem;
-
-                li {
-                    list-style-type: disc;
-                }
-            }
+        .glyphicon {
+          color: inherit;
         }
+
+        .name {
+          font-weight: bold;
+        }
+      }
+
+      .reason {
+        margin-top: 0.5rem;
+        padding-left: 2.15rem;
+
+        li {
+          list-style-type: disc;
+        }
+      }
     }
+  }
+
+  .modal-body {
+    position: relative;
+    min-height: 20rem;
+  }
 }

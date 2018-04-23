@@ -89,13 +89,12 @@
 					<li>
 						<a title="Unpublish"
 							ng-hide="documentMgr.publishSelected.unpublishableFiles.length === 0 && documentMgr.publishSelected.unpublishableDirs.length === 0"
-							x-confirm-dialog
-							x-title-text="'Unpublish Item(s)'"
-							x-ok-text="Yes"
-							x-cancel-text="No"
-							x-confirm-text="'Are you sure you want to unpublish the selected item(s)?'"
-							x-confirm-items="documentMgr.publishSelected.confirmUnpublishItems"
-							x-on-ok="documentMgr.publishSelected.unpublish"><span class="glyphicon glyphicon-ban-circle"></span> Unpublish</a>
+              x-confirm-unpublish
+              x-unpublish-callback="documentMgr.unpublishFilesAndDirs"
+              x-current-node="documentMgr.currentNode"
+              x-project="project"
+              x-folders="documentMgr.checkedDirs"
+              x-files="documentMgr.checkedFiles"><span class="glyphicon glyphicon-ban-circle"></span> Unpublish</a>
 					</li>
 					<li>
 						<a title="Collections"
@@ -214,14 +213,11 @@
 											</li>
 											<li ng-if="project.userCan.manageFolders && doc.model.published">
 												<button class="btn icon-btn" title="Unpublish Folder" ng-click="$event.stopPropagation();"
-														x-confirm-dialog
-														x-title-text="'Unpublish Folder'"
-														x-ok-text="'Yes'"
-														x-cancel-text="'No'"
-														x-confirm-text="'Are you sure you want to unpublish the selected folder?'"
-														x-confirm-items="[doc.model.folderObj.displayName]"
-														x-on-ok="documentMgr.unpublishFolder"
-														x-ok-args="doc">
+                          x-confirm-unpublish
+                          x-unpublish-callback="documentMgr.unpublishFilesAndDirs"
+                          x-current-node="documentMgr.currentNode"
+                          x-project="project"
+                          x-folders="doc">
 													<span class="glyphicon glyphicon-ban-circle"></span>
 												</button>
 											</li>
@@ -335,14 +331,11 @@
 											</li>
 											<li ng-if="doc.userCan.unPublish && doc.isPublished">
 												<button class="btn icon-btn" title="Unpublish File" ng-click="$event.stopPropagation();"
-														x-confirm-dialog
-														x-title-text="'Unpublish File'"
-														x-ok-text="'Yes'"
-														x-cancel-text="'No'"
-														x-confirm-text="'Are you sure you want to unpublish the selected file?'"
-														x-confirm-items="[doc.displayName]"
-														x-on-ok="documentMgr.unpublishFile"
-														x-ok-args="doc">
+                          x-confirm-unpublish
+                          x-current-node="documentMgr.currentNode"
+                          x-project="project"
+                          x-unpublish-callback="documentMgr.unpublishFilesAndDirs"
+                          x-files="doc">
 													<span class="glyphicon glyphicon-ban-circle"></span>
 												</button>
 											</li>
@@ -437,14 +430,11 @@
 								<li ng-if="documentMgr.infoPanel.data.userCan.unPublish && documentMgr.infoPanel.data.isPublished">
 									<a title="Unpublish File"
 										ng-click="$event.stopPropagation();"
-										x-confirm-dialog
-										x-title-text="'Unpublish File'"
-										x-ok-text="'Yes'"
-										x-cancel-text="'No'"
-										x-confirm-text="'Are you sure you want to unpublish the selected file?'"
-										x-confirm-items="[documentMgr.infoPanel.data.displayName]"
-										x-on-ok="documentMgr.unpublishFile"
-										x-ok-args="documentMgr.infoPanel.data"><span class="glyphicon glyphicon-ban-circle"></span> Unpublish</a>
+										x-confirm-unpublish
+                    x-current-node="documentMgr.currentNode"
+                    x-project="project"
+                    x-unpublish-callback="documentMgr.unpublishFilesAndDirs"
+                    x-files="documentMgr.infoPanel.data"><span class="glyphicon glyphicon-ban-circle"></span> Unpublish</a>
 								</li>
 								<li>
 									<a title="Copy Link to Clipboard"

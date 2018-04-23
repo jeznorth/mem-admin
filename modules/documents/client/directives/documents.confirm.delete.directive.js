@@ -54,7 +54,7 @@ angular.module('documents')
               self.files = collect(scope.files);
               self.folders = collect(scope.folders);
               // the combined list is used by the ng-repeat
-              self.combindedList = self.folders.concat(self.files);
+              self.combinedList = self.folders.concat(self.files);
               self.deletableFolders = _.filter(self.folders, function (item) {
                 return item.canBeDeleted;
               });
@@ -140,8 +140,8 @@ angular.module('documents')
               var fileCnt = self.files.length;
               var deletableFolderCnt = self.deletableFolders.length;
               var deletableFileCnt = self.deletableFiles.length;
-              var CONFIRM_DELETE = "Delete File(s) and/or Folder(s)";
-              var CANNOT_DELETE = "Delete File(s) and/or Folder(s)";
+              var CONFIRM_DELETE = "Delete Files and/or Folders";
+              var CANNOT_DELETE = "Delete Files and/or Folders";
               var INFO_DELETE = "One or more of the following files or folders cannot be deleted.";
               self.allBlocked = false;
               self.hasBlockedContent = false;

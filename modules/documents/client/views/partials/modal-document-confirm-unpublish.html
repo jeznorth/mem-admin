@@ -1,13 +1,13 @@
 <form class="fb-confirmation">
-	
+
 	<div class="modal-header">
 		<button class="btn btn-default close" type="button" ng-click="confirmDlg.cancel()">
 			<span aria-hidden="true">&times;</span>
 		</button>
-		<h3 class="modal-title">Delete Files and/or Folders</h3>
+		<h3 class="modal-title">Unpublish Files and/or Folders</h3>
 	</div>
 
-	<div class="modal-body">
+  <div class="modal-body">
 
 		<div class="spinner-container" ng-if="confirmDlg.busy">
 			<div class="spinner-new rotating"></div>
@@ -16,30 +16,35 @@
 		<div class="alert alert-danger" ng-if="confirmDlg.errMsg">{{confirmDlg.errMsg}}</div>
 
 		<div ng-if="!confirmDlg.errMsg && !confirmDlg.busy">
-			<div class="m-b-2" ng-bind-html="confirmDlg.confirmText"
-				ng-if="confirmDlg.confirmText">
+			<div class="m-b-2"
+				ng-if="confirmDlg.confirmText"
+				ng-bind-html="confirmDlg.confirmText">
 			</div>
-			<div class="m-b-2" ng-class="{'alert alert-danger': confirmDlg.hasBlockedContent}" ng-if="confirmDlg.hasBlockedContent">
+			<div class="m-b-2" ng-class="{'alert alert-danger': confirmDlg.hasBlockedContent}"
+				ng-if="confirmDlg.hasBlockedContent">
 				<div class="alert__icon">
 					<span class="glyphicon glyphicon-ban-circle"></span>
 				</div>
-				<span class="alert__msg" ng-bind-html="confirmDlg.bannerText"></span>
+				<span class="alert__msg">One or more of the following files or folders cannot be unpublished.</span>
 			</div>
-
 			<div class="fb-confirmation__list fb-list">
 				<ul>
-					<li class="fb-list-item" ng-class="{'has-error': !item.canBeDeleted}" ng-repeat="item in confirmDlg.combinedList">
+					<li class="fb-list-item" ng-class="{'has-error': !item.canBeUnpublished}" ng-repeat="item in confirmDlg.combinedList">
 						<span class="col name-col first-col">
 							<span class="avatar">
-								<span class="glyphicon" ng-if="item.canBeDeleted"
+								<span class="glyphicon" ng-if="item.canBeUnpublished"
 									ng-class="{'fb-folder glyphicon-folder-close' : item.type === 'Folder',
 														'fb-file glyphicon-file': item.type === 'File',
 														'fb-img glyphicon-picture': item.type === 'Picture' }">
 								</span>
-								<span class="glyphicon glyphicon-ban-circle" ng-if="!item.canBeDeleted"></span>
+								<span class="glyphicon glyphicon-ban-circle" ng-if="!item.canBeUnpublished"></span>
 							</span>
 							<span class="name">{{item.displayName}}</span>
-							<div class="reason" ng-if="!item.canBeDeleted" ng-bind-html="item.reason"></div>
+							<div class="reason" ng-if="!item.canBeUnpublished">
+								<ul>
+									<li ng-repeat="reason in item.reasons">{{ reason }}</li>
+								</ul>
+							</div>
 						</span>
 					</li>
 				</ul>
@@ -49,14 +54,14 @@
 	</div>
 
 	<div class="modal-footer">
-		<button class="btn btn-default" type="button" 
+		<button class="btn btn-default" type="button"
 			ng-click="confirmDlg.cancel()">
-			{{confirmDlg.cancelText ? confirmDlg.cancelText : 'Cancel'}}
+			Cancel
 		</button>
-		<button class="btn btn-primary" type="submit" 
+		<button class="btn btn-primary" type="submit"
 			ng-click="confirmDlg.submit()"
 			ng-show="confirmDlg.showSubmit" ng-disabled="confirmDlg.errMsg">
-			Delete
+			Unpublish
 		</button>
 	</div>
 
