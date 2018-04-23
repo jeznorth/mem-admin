@@ -500,110 +500,92 @@ angular.module('documents')
             });
         };
 
+        // Publishing
+
         self.publishFilesAndDirs = function(files, dirs) {
           self.busy = true;
+          self.dirCount = 0;
+          self.fileCount = 0;
+
           var filePromises = _.map(files, function(f) {
-            return Document.publish(f);
+            return Document.publish(f)
+              .then(function(/* result */) {
+                self.fileCount++;
+                f.isPublished = true;
+              }, function(/* err */) {
+                AlertService.error('File "' + f.displayName + '" could not be published.', 4000);
+              });
           });
+
           var dirPromises = _.map(dirs, function(d) {
-            return ProjectModel.publishDirectory($scope.project, d.model.id);
+            return ProjectModel.publishDirectory($scope.project, d.model.id)
+              .then(function(/* result */) {
+                self.dirCount++;
+                d.model.published = true;
+              }, function(/* err */) {
+                AlertService.error('Folder "' + d.model.name + '" could not be published.', 4000);
+              });
           });
-          var directoryStructure;
 
           return Promise.all(dirPromises)
-            .then(function(result) {
-              if (!_.isEmpty(result)) {
+            .then(function(/* result */) {
+              if (_.size(dirs) > 0) {
                 self.selectNode(self.currentNode.model.id);
-                AlertService.success('The selected folder' + (dirPromises.length > 1 ? 's were' : ' was') + ' successfully published.', 4000);
-                directoryStructure = _.last(result);
+                AlertService.success(self.dirCount + ' of ' + _.size(dirs) + ' folders ' + (self.dirCount != 1 ? 'were' : 'was') + ' successfully published.', 4000);
               }
-            }, function(/* err */) {
-              self.busy = false;
-              var msg = '';
-              if (dirPromises.length > 1) {
-                msg = 'Some of the selected folders could not be published.';
-              } else {
-                msg = 'The selected folder could not be published.';
-              }
-              AlertService.error(msg, 4000);
             })
             .then(function() {
               return Promise.all(filePromises);
             })
-            .then(function(result) {
-              if (directoryStructure) {
-                $scope.project.directoryStructure = directoryStructure;
-                $scope.$broadcast('documentMgrRefreshNode', { directoryStructure: directoryStructure });
-              }
-              if (!_.isEmpty(filePromises)) {
-                var published = _.map(result, function(o) { if (o.isPublished) {return o.displayName;} });
+            .then(function(/* result */) {
+              if (_.size(files) > 0) {
                 self.selectNode(self.currentNode.model.id);
-                AlertService.success(_.size(published) + ' of ' + _.size(files) + ' file(s) successfully published.', 4000);
+                AlertService.success(self.fileCount + ' of ' + _.size(files) + ' files ' + (self.dirCount != 1 ? 'were' : 'was') + ' successfully published.', 4000);
               }
-            }, function(/* err */) {
               self.busy = false;
-              var msg = '';
-              if (filePromises.length > 1) {
-                msg = 'Some of the selected files could not be published.';
-              } else {
-                msg = 'The selected file could not be published.';
-              }
-              AlertService.error(msg, 4000);
             });
         };
 
         self.unpublishFilesAndDirs = function(files, dirs) {
           self.busy = true;
+          self.dirCount = 0;
+          self.fileCount = 0;
+
           var filePromises = _.map(files, function(f) {
-            return Document.unpublish(f);
+            return Document.unpublish(f)
+              .then(function(/* result */) {
+                self.fileCount++;
+                f.isPublished = false;
+              }, function(/* err */) {
+                AlertService.error('File "' + f.displayName + '" could not be unpublished.', 4000);
+              });
           });
           var dirPromises = _.map(dirs, function(d) {
-            return ProjectModel.unpublishDirectory($scope.project, d.model.id);
+            return ProjectModel.unpublishDirectory($scope.project, d.model.id)
+              .then(function(/* result */) {
+                self.dirCount++;
+                d.model.published = false;
+              }, function(/* err */) {
+                AlertService.error('Folder "' + d.model.name + '" could not be unpublished.', 4000);
+              });
           });
-          var directoryStructure;
 
           return Promise.all(dirPromises)
-            .then(function(result) {
-              if (!_.isEmpty(result)) {
+            .then(function(/* result */) {
+              if (_.size(dirs) > 0) {
                 self.selectNode(self.currentNode.model.id);
-                AlertService.success('The selected folder' + (dirPromises.length > 1 ? 's were' : ' was') + ' successfully unpublished.', 4000);
-                directoryStructure = _.last(result);
+                AlertService.success(self.dirCount + ' of ' + _.size(dirs) + ' folders ' + (self.dirCount != 1 ? 'were' : 'was') + ' successfully unpublished.', 4000);
               }
-            }, function(docs) {
-              var msg = 'The selected folder' + (dirPromises.length > 1 ? 's' : '') + ' could not be unpublished';
-              var time = 4000;
-              if (docs.message && docs.message[0] && docs.message[0].displayName) {
-                msg += ' as ' + (dirPromises.length > 1 ? 'they contain' : 'it contains') + ' published documents.';
-                msg += ' Please unpublish each document and attempt your action again.';
-                time = 7000;
-              } else {
-                msg += '.';
-              }
-              self.busy = false;
-              AlertService.error(msg, time);
             })
             .then(function() {
               return Promise.all(filePromises);
             })
-            .then(function(result) {
-              if (directoryStructure) {
-                $scope.project.directoryStructure = directoryStructure;
-                $scope.$broadcast('documentMgrRefreshNode', { directoryStructure: directoryStructure });
-              }
-              if (!_.isEmpty(filePromises)) {
-                var unpublished = _.map(result, function(o) { if (!o.isPublished) {return o.displayName;} });
+            .then(function(/* result */) {
+              if (_.size(files) > 0) {
                 self.selectNode(self.currentNode.model.id);
-                AlertService.success(_.size(unpublished) + ' of ' + _.size(files) + ' file(s) successfully unpublished.', 4000);
+                AlertService.success(self.fileCount + ' of ' + _.size(files) + ' files ' + (self.dirCount != 1 ? 'were' : 'was') + ' successfully unpublished.', 4000);
               }
-            }, function(/* err */) {
               self.busy = false;
-              var msg = '';
-              if (filePromises.length > 1) {
-                msg = 'Some of the selected files could not be unpublished.';
-              } else {
-                msg = 'The selected file could not be unpublished.';
-              }
-              AlertService.error(msg, 4000);
             });
         };
 
