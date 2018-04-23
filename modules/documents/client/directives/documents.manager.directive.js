@@ -583,7 +583,7 @@ angular.module('documents')
             .then(function(/* result */) {
               if (_.size(files) > 0) {
                 self.selectNode(self.currentNode.model.id);
-                AlertService.success(self.fileCount + ' of ' + _.size(files) + ' files ' + (self.dirCount != 1 ? 'were' : 'was') + ' successfully unpublished.', 4000);
+                AlertService.success(self.fileCount + ' of ' + _.size(files) + ' files ' + (self.fileCount != 1 ? 'were' : 'was') + ' successfully unpublished.', 4000);
               }
               self.busy = false;
             });
