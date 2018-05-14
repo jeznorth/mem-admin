@@ -16,7 +16,7 @@
     "angular-moment": "latest",
     "angular-resizable": "latest",
     "angular-resource": "~1.5",
-    "angular-sanitize": "^1.5",
+    "angular-sanitize": "1.5.11",
     "angular-scroll": "~1.0.2",
     "angular-ui-router": "0.4.2",
     "angular-ui-select": "latest",
