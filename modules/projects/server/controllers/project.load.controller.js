@@ -66,7 +66,7 @@ module.exports = function(file, req, res, opts) {
                 .saveDocument(project)
                 .then(rs);
             });
-        } else if (finalPhaseCode === "closed") {
+        } else if (finalPhaseCode === "currently-not-operating") {
           return (new Project(opts)).startNextPhase(project) // intake
             .then( function (pr) {
               pr.currentPhase = pr.phases[1];
@@ -84,6 +84,32 @@ module.exports = function(file, req, res, opts) {
               project.currentPhase = project.phases[4];
               project.currentPhaseCode = project.phases[4].code;
               project.currentPhaseName = project.phases[4].name;
+              new Project(opts)
+                .saveDocument(project)
+                .then(rs);
+            });
+        } else if (finalPhaseCode === "closed") {
+          return (new Project(opts)).startNextPhase(project) // intake
+            .then( function (pr) {
+              pr.currentPhase = pr.phases[1];
+              return (new Project(opts)).startNextPhase(pr); // pre-ea
+            })
+            .then( function (pr) {
+              pr.currentPhase = pr.phases[2];
+              return (new Project(opts)).startNextPhase(pr); // pre-ea
+            })
+            .then( function (pr) {
+              pr.currentPhase = pr.phases[3];
+              return (new Project(opts)).startNextPhase(pr); // pre-ea
+            })
+            .then( function (pr) {
+              pr.currentPhase = pr.phases[4];
+              return (new Project(opts)).startNextPhase(pr); // pre-ea
+            })
+            .then (function (project) {
+              project.currentPhase = project.phases[5];
+              project.currentPhaseCode = project.phases[5].code;
+              project.currentPhaseName = project.phases[5].name;
               new Project(opts)
                 .saveDocument(project)
                 .then(rs);
@@ -219,4 +245,3 @@ module.exports = function(file, req, res, opts) {
     }); // Read File
   });
 };
-
