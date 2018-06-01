@@ -33,6 +33,11 @@ var baseObjects = {
       "code": "care-and-maintenance",
     },
     {
+      "description": "Currently Not Operating",
+      "name": "Currently Not Operating",
+      "code": "currently-not-operating",
+    },
+    {
       "description": "Closed",
       "name": "Closed",
       "code": "closed",
@@ -62,6 +67,3 @@ module.exports = function (clear) {
       .then (resolve, reject);
   });
 };
-
-
-

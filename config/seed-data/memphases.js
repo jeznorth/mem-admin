@@ -35,6 +35,14 @@ module.exports = [
     read: ['public'],
     submit: ['team'],
     status : 'In Progress',
+    code : 'currently-not-operating',
+    name : 'Currently Not Operating',
+    description : 'Currently Not Operating'
+  },
+  {
+    read: ['public'],
+    submit: ['team'],
+    status : 'In Progress',
     code : 'closed',
     name : 'Closed',
     description : 'Closed'
