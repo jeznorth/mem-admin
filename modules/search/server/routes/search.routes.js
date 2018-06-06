@@ -60,14 +60,14 @@ module.exports = function (app) {
                 if (projects && projects.length > 0) {
                   // This ensures we don't find docs that are in other projects not part
                   // of the codes lookup if no objectID's are specified.
-                  var prjArray = [];
+                  var prjString = "";
                   _.each(projects, function (pp) {
-                    prjArray += pp._id + ",";
+                    prjString += pp._id + ",";
                   });
-                  if (prjArray) {
-                    prjArray = prjArray.replace(/,*$/, "");
+                  if (prjString) {
+                    prjString = prjString.replace(/,*$/, "");
                   }
-                  var pjs = req.query.project || prjArray;
+                  var pjs = prjString ||req.query.project;
 
                   return docController.searchMany(req.query.search,
                     req.query.datestart,
@@ -161,14 +161,14 @@ module.exports = function (app) {
                 if (projects && projects.length > 0) {
                   // This ensures we don't find docs that are in other projects not part
                   // of the codes lookup if no objectID's are specified.
-                  var prjArray = [];
+                  var prjString = "";
                   _.each(projects, function (pp) {
-                    prjArray += pp._id + ",";
+                    prjString += pp._id + ",";
                   });
-                  if (prjArray) {
-                    prjArray = prjArray.replace(/,*$/, "");
+                  if (prjString) {
+                    prjString = prjString.replace(/,*$/, "");
                   }
-                  var pjs = req.query.project || prjArray;
+                  var pjs = prjString || req.query.project;
 
                   return docController.searchMany(req.query.search,
                     req.query.datestart,
