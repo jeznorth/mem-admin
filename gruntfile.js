@@ -170,7 +170,8 @@ module.exports = function(grunt) {
     },
     clean: {
       'test-client': ['build/coverage/client'],
-      'test-server': ['build/coverage/server']
+      'test-server': ['build/coverage/server'],
+      'dist':['public/dist']
     }
   });
 
@@ -300,6 +301,7 @@ module.exports = function(grunt) {
 
   // Package application files
   grunt.registerTask('build', [
+    'clean:dist',
     'env:dev',
     'lint',
     'ngAnnotate',
@@ -307,6 +309,7 @@ module.exports = function(grunt) {
     'cssmin'
   ]);
   grunt.registerTask('buildprod', [
+    'clean:dist',
     'env:prod',
     'lint',
     'ngAnnotate',
@@ -314,6 +317,7 @@ module.exports = function(grunt) {
     'cssmin'
   ]);
   grunt.registerTask('buildtest', [
+    'clean:dist',
     'env:test',
     'lint',
     'ngAnnotate',
