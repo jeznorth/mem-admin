@@ -51,22 +51,23 @@
 				</div>
 			</div>
 			<div class="col-sm-3">
-				<div class="form-group">
-					<label for="dateAdded" class="control-label">Date Added</label>
-
+				<div class="form-group" x-show-errors>
+					<label for="dateAdded" class="control-label">Date Added<em class="control-label">(YYYY-MM-DD)</em></label>
 					<div class="input-group">
-						<input type="text"
-							id="dateAdded"
-							name="dateAdded"
-							class="form-control text-center "
-							ng-model="recentActivity.dateAdded"
-							ng-disabled="1"/>
-						<div x-modal-date-picker
-							x-selected-date="recentActivity.dateAdded"
-							class="input-group-addon btn-default">
-						<i class="glyphicon glyphicon-calendar"></i></div>
+						<input class="form-control" placeholder="{{ recentActivity.dateAdded | amDateFormat:'YYYY-MM-DD' }}"  id="date" name="date"
+              ng-model="recentActivity.dateAdded"
+              type="text"
+              uib-datepicker-popup
+              is-open="datePicker.opened"
+              datepicker-options="dateOptions"
+              close-text="Close"
+              ng-change="validate()"/>
+            <span class="input-group-btn">
+              <span class="btn btn-default" ng-click="datePicker.opened = true;">
+                <span class="glyphicon glyphicon-calendar"/>
+              </span>
+            </span>
 					</div>
-
 				</div>
 			</div>
 			<div class="col-sm-3">

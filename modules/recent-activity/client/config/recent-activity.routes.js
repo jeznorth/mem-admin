@@ -168,6 +168,9 @@ angular.module('recent-activity').config(['$stateProvider', function ($stateProv
         $scope.recentActivity = recentActivity;
         $scope.recentActivity.addedBy = Authentication.user._id;
         var which = 'add';
+        $scope.dateOptions = {
+          showWeeks: false
+        };
         $scope.save = function (isValid) {
           if (!isValid) {
             $scope.$broadcast('show-errors-check-validity', 'recentActivityForm');
@@ -203,6 +206,9 @@ angular.module('recent-activity').config(['$stateProvider', function ($stateProv
       controller: function ($scope, $state, recentActivity, RecentActivityModel) {
         $scope.recentActivity = recentActivity;
         var which = 'edit';
+        $scope.dateOptions = {
+          showWeeks: false
+        };
         $scope.save = function (isValid) {
           if (!isValid) {
             $scope.$broadcast('show-errors-check-validity', 'recentActivityForm');

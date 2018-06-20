@@ -77,15 +77,30 @@
               ng-model="collection.description"></textarea>
           </div>
           <div ng-class="{'form-group': true, 'datepicker__input': true, 'has-error': validationFlags.date}">
-            <label for="date" class="control-label">Date<em class="required">(Required)</em></label>
-            <div class="datepicker__input">
-              <input class="form-control" placeholder="{{ collection.date | amDateFormat:'YYYY-MM-DD' }}"  id="date" name="date"
-                ng-model="collection.date" type="text"
-                uib-datepicker-popup
-                is-open="datePicker.opened"
-                close-text="Close"
-                ng-change="checkDetailsField()"/>
-              <button class="btn btn-default calendar-btn"  type="button" ng-click="datePicker.opened = true;"><span class="glyphicon glyphicon-calendar"/></button>
+            <div class="form-group datepicker">
+              <label class="control-label" for="date">
+                  Date <em class="control-label required">(Required)</em>
+              </label>
+              <div class="datepicker__input">
+                <p class="input-group">
+                  <input class="form-control" placeholder="{{ collection.date | amDateFormat:'YYYY-MM-DD' }}"  id="date" name="date"
+                    ng-model="collection.date"
+                    type="text"
+                    uib-datepicker-popup
+                    is-open="datePicker.opened"
+                    datepicker-options="dateOptions"
+                    close-text="Close"
+                    ng-change="checkDetailsField()"/>
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" ng-click="datePicker.opened = true;">
+                      <span class="glyphicon glyphicon-calendar"/>
+                    </button>
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div class="help-block">
+              Format: YYYY-MM-DD
             </div>
           </div>
         </fieldset>
@@ -109,7 +124,7 @@
         </fieldset>
       </div>
       <div class="tab-pane active" ng-show="form.curTab === 'Collection Documents'" ng-form="collectionDocuments">
-        
+
         <!-- MAIN DOCUMENTS -->
         <fieldset>
           <legend>Main Documents</legend>
