@@ -169,7 +169,6 @@ module.exports = function (app) {
                     prjString = prjString.replace(/,*$/, "");
                   }
                   var pjs = prjString || req.query.project;
-
                   return docController.searchMany(req.query.search,
                     req.query.datestart,
                     req.query.dateend,
@@ -177,7 +176,7 @@ module.exports = function (app) {
                     null, // not on this one - we already filtered on the org
                     null, // not on this one - we already filtered on the ownership
                     req.query.fields,
-                    null, // sort by
+                    { documentDate: -1}, // sort by documentDate descending
                     page,
                     limit,
                     true); // include count
