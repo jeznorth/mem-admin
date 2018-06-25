@@ -16,7 +16,6 @@ collectionModules.controller('CollectionEditCtrl',
   ['$scope', '$log', '$state', '$uibModal', 'collection', 'project', 'types', 'CollectionModel', 'AlertService', 'ConfirmService', '_',
     function($scope, $log, $state, $uibModal, collection, project, types, CollectionModel, AlertService, ConfirmService, _) {
       var self = this;
-
       $scope.collection = collection;
       $scope.collection.project = project._id;
       $scope.project = project;
@@ -51,8 +50,13 @@ collectionModules.controller('CollectionEditCtrl',
         documentsTabInvalid: false,
         docsChanged: false
       }
+
+
       // Date Picker flag, required for proper functionality.
       $scope.datePicker = { opened: false };
+      $scope.dateOptions = {
+        showWeeks : false
+      };
 
       // Open document directory in Document Manager.
       $scope.goToDocument = function(doc) {

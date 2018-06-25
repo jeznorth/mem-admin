@@ -28,14 +28,17 @@ angular.module('documents')
             controller: function ($scope, $uibModalInstance, DocumentMgrService, TreeModel, ProjectModel, Document, obj, CodeLists, FolderModel, AlertService) {
               var self = this;
               self.busy = true;
-
               $scope.project = scope.project;
 
               $scope.dateOptions = {
                 showWeeks: false
               };
 
-              $scope.setDefaultSortOrder = function(value) {
+              $scope.validate = function () {
+                $scope.$broadcast('show-errors-check-validity', 'editFileForm');
+              };
+
+              $scope.setDefaultSortOrder = function (value) {
                 $scope.doc.defaultSortField = value ? value : '';
                 $scope.doc.defaultSortDirection = value ? 'desc' : '';
               };
@@ -48,23 +51,27 @@ angular.module('documents')
                 $scope.extension = parts.length > 1 ? parts.pop() : undefined;
               }
               // any dates going to the datepicker need to be javascript Date objects...
-              function prepDate(model) { return _.isEmpty(model) ? null : moment(model).toDate();}
+              function prepDate(model) { return _.isEmpty(model) ? null : moment(model).toDate(); }
               $scope.doc.documentDate = prepDate(obj.documentDate);
               $scope.doc.dateUploaded = prepDate(obj.dateUploaded);
               if ($scope.doc.inspectionReport) {
-                $scope.doc.inspectionReport.dateReportIssued 	= prepDate(obj.inspectionReport.dateReportIssued);
-                $scope.doc.inspectionReport.dateResponse 	= prepDate(obj.inspectionReport.dateResponse);
-                $scope.doc.inspectionReport.dateFollowUp 	= prepDate(obj.inspectionReport.dateFollowUp);
+                $scope.doc.inspectionReport.dateReportIssued = prepDate(obj.inspectionReport.dateReportIssued);
+                $scope.doc.inspectionReport.dateResponse = prepDate(obj.inspectionReport.dateResponse);
+                $scope.doc.inspectionReport.dateFollowUp = prepDate(obj.inspectionReport.dateFollowUp);
               }
 
               $scope.datePicker = { opened: false };
-              $scope.dateUploadedPicker = {opened: false};
-              $scope.dateReportIssuedPicker = {opened: false};
-              $scope.dateResponsePicker = {opened: false};
-              $scope.dateFollowUpPicker = {opened: false};
-              $scope.validate = function() {
-                $scope.$broadcast('show-errors-check-validity', 'editFileForm');
-              };
+              $scope.dateOpen = function (){
+                $scope.datePicker.opened = true;
+              }
+              $scope.dateUploadedPicker = { opened: false };
+              $scope.dateUploadedOpen = function (){
+                $scope.dateUploadedPicker.opened = true;
+              }
+              $scope.dateReportIssuedPicker = { opened: false };
+              $scope.dateResponsePicker = { opened: false };
+              $scope.dateFollowUpPicker = { opened: false };
+
 
               self.canEdit = $scope.doc.userCan.write;
 

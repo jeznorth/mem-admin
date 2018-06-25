@@ -121,32 +121,40 @@
         <div class="form-group datepicker col-md-3" x-show-errors>
           <label class="control-label" for="dateReportIssued">Inspection Report Date</label>
           <div class="datepicker__input">
-            <input class="form-control" placeholder="YYYY-MM-DD"  id="dateReportIssued" name="dateReportIssued"
-                   ng-model="doc.inspectionReport.dateReportIssued" type="text"
-                   uib-datepicker-popup
-                   is-open="dateReportIssuedPicker.opened"
-                   datepicker-options="dateOptions"
-                   close-text="Close"/>
-            <button class="btn btn-default calendar-btn"  type="button" ng-click="dateReportIssuedPicker.opened = true;">
-              <span class="glyphicon glyphicon-calendar"/>
-            </button>
-          </div>
+            <p class="input-group">
+              <input class="form-control" placeholder="YYYY-MM-DD"  id="dateReportIssued" name="dateReportIssued"
+                  ng-model="doc.inspectionReport.dateReportIssued" type="text"
+                  uib-datepicker-popup
+                  is-open="dateReportIssuedPicker.opened"
+                  datepicker-options="{
+                    showWeeks: false
+                  };"
+                  close-text="Close"
+                  ng-change="validate()"/>
+              <span class="input-group-btn">
+                <button class="btn btn-default" ng-click="dateReportIssuedPicker.opened = true;"><span class="glyphicon glyphicon-calendar"/></button>
+              </span>
+            </p>
+        </div>
         </div>
       </div>
       <div class="row" ng-if="doc.inspectionType === 'Inspection Report Response'">
         <div class="form-group datepicker col-md-3" x-show-errors>
           <label class="control-label" for="dateResponse">Inspection Report Response Date</label>
           <div class="datepicker__input">
-            <input class="form-control" placeholder="YYYY-MM-DD"  id="dateResponse" name="dateResponse"
-                   ng-model="doc.inspectionReport.dateResponse" type="text"
-                   uib-datepicker-popup
-                   is-open="dateResponsePicker.opened"
-                   datepicker-options="dateOptions"
-                   close-text="Close"/>
-            <button class="btn btn-default calendar-btn" type="button" ng-click="dateResponsePicker.opened = true;">
-              <span class="glyphicon glyphicon-calendar"/>
-            </button>
-          </div>
+            <p class="input-group">
+              <input class="form-control" placeholder="YYYY-MM-DD"  id="dateResponse" name="dateResponse"
+                  ng-model="doc.inspectionReport.dateResponse" type="text"
+                  uib-datepicker-popup
+                  is-open="dateResponsePicker.opened"
+                  datepicker-options="dateOptions"
+                  close-text="Close"
+                  ng-change="validate()"/>
+              <span class="input-group-btn">
+                <button class="btn btn-default" ng-click="dateResponsePicker.opened = true;"><span class="glyphicon glyphicon-calendar"/></button>
+              </span>
+            </p>
+        </div>
         </div>
       </div>
       <div class="row" ng-if="doc.inspectionType === 'Inspection Report Follow Up'">
@@ -166,23 +174,26 @@
     </div>
 
     <div class="row">
-      <div class="form-group datepicker col-md-3" x-show-errors>
+      <div class="form-group datepicker col-md-4" x-show-errors>
         <label ng-if="doc._schemaName === 'Folder'" class="control-label" for="documentDate">Created Date<em class="required">(Required)</em></label>
-        <label ng-if="doc._schemaName === 'Document' && !doc.inspectionType" class="control-label" for="documentDate">Document Date<em class="required">(Required)</em></label>
+        <label ng-if="doc._schemaName === 'Document' && !doc.inspectionType" class="control-label" for="documentDate">Document Date</label>
         <label ng-if="doc._schemaName === 'Document' && doc.inspectionType" class="control-label" for="documentDate">Inspection Date<em class="required">(Required)</em></label>
         <div class="datepicker__input">
-          <input class="form-control" placeholder="YYYY-MM-DD"  id="documentDate" name="documentDate"
-            ng-model="doc.documentDate" type="text"
-            uib-datepicker-popup='{{ doc.documentDateDisplayMnYr ? "MMMM yyyy" : "yyyy-MM-dd" }}'
-            is-open="datePicker.opened"
-            datepicker-options="dateOptions"
-            close-text="Close"
-            required
-            ng-change="validate()"/>
-          <button class="btn btn-default calendar-btn"  type="button" ng-click="datePicker.opened = true;"><span class="glyphicon glyphicon-calendar"/></button>
+            <p class="input-group">
+              <input class="form-control" placeholder="YYYY-MM-DD"  id="documentDate" name="documentDate"
+                  ng-model="doc.documentDate" type="text"
+                  uib-datepicker-popup='{{ doc.documentDateDisplayMnYr ? "MMMM yyyy" : "yyyy-MM-dd" }}'
+                  is-open="datePicker.opened"
+                  datepicker-options="dateOptions"
+                  close-text="Close"
+                  ng-change="validate()"/>
+              <span class="input-group-btn">
+                <button class="btn btn-default" ng-click="datePicker.opened = true;"><span class="glyphicon glyphicon-calendar"/></button>
+              </span>
+            </p>
         </div>
       </div>
-      <div class="day-display-input">
+      <div class="day-display-input col-md-4">
         <input class="" id="day" name="day" type="checkbox" ng-model="doc.documentDateDisplayMnYr" ng-blur="validate()">
         <label for="day" class="">Display Month Year Only</label>
       </div>
@@ -190,16 +201,20 @@
     </div>
     <div class="row">
       <div ng-if="doc._schemaName === 'Document'" class="form-group datepicker col-md-3" x-show-errors>
-        <label class="control-label" for="dateUploaded">Uploaded Date</label>
+        <label class="control-label" for="dateUploaded">Uploaded Date<em class="control-label"></em></label>
         <div class="datepicker__input">
-          <input class="form-control" placeholder="YYYY-MM-DD"  id="dateUploaded" name="dateUploaded"
-               ng-model="doc.dateUploaded" type="text"
-               uib-datepicker-popup
-               is-open="dateUploadedPicker.opened"
-               datepicker-options="dateOptions"
-               close-text="Close"
-               ng-change="validate()"/>
-          <button class="btn btn-default calendar-btn"  type="button" ng-click="dateUploadedPicker.opened = true;"><span class="glyphicon glyphicon-calendar"/></button>
+            <p class="input-group">
+              <input class="form-control" placeholder="YYYY-MM-DD"  id="dateUploaded" name="dateUploaded"
+                  ng-model="doc.dateUploaded" type="text"
+                  uib-datepicker-popup
+                  is-open="dateUploadedPicker.opened"
+                  datepicker-options="dateOptions"
+                  close-text="Close"
+                  ng-change="validate()"/>
+              <span class="input-group-btn">
+                <button class="btn btn-default" ng-click="dateUploadedOpen()"><span class="glyphicon glyphicon-calendar"/></button>
+              </span>
+            </p>
         </div>
       </div>
     </div>
