@@ -176,7 +176,7 @@
     <div class="row">
       <div class="form-group datepicker col-md-4" x-show-errors>
         <label ng-if="doc._schemaName === 'Folder'" class="control-label" for="documentDate">Created Date<em class="required">(Required)</em></label>
-        <label ng-if="doc._schemaName === 'Document' && !doc.inspectionType" class="control-label" for="documentDate">Document Date</label>
+        <label ng-if="doc._schemaName === 'Document' && !doc.inspectionType" class="control-label" for="documentDate">Document Date<em class="required">(Required)</em></label>
         <label ng-if="doc._schemaName === 'Document' && doc.inspectionType" class="control-label" for="documentDate">Inspection Date<em class="required">(Required)</em></label>
         <div class="datepicker__input">
             <p class="input-group">
@@ -186,6 +186,7 @@
                   is-open="datePicker.opened"
                   datepicker-options="dateOptions"
                   close-text="Close"
+                  required
                   ng-change="validate()"/>
               <span class="input-group-btn">
                 <button class="btn btn-default" ng-click="datePicker.opened = true;"><span class="glyphicon glyphicon-calendar"/></button>
