@@ -3,8 +3,8 @@
     <button ng-disabled="editFileProperties.busy" type="button" class="btn btn-default close" ng-click="editFileProperties.cancel()">
       <span aria-hidden="true">&times;</span>
     </button>
-    <h3 ng-if="doc._schemaName === 'Document'" class="modal-title">Edit File  &nbsp;&rsaquo;&nbsp;  {{originalName}}</h3>
-    <h3 ng-if="doc._schemaName === 'Folder'" class="modal-title">Edit Folder  &nbsp;&rsaquo;&nbsp;  {{originalName}}</h3>
+    <h3 ng-if="doc._schemaName === 'Document'" class="modal-title">Edit File &nbsp;&rsaquo;&nbsp; {{originalName}}</h3>
+    <h3 ng-if="doc._schemaName === 'Folder'" class="modal-title">Edit Folder &nbsp;&rsaquo;&nbsp; {{originalName}}</h3>
   </div>
 
   <div class="modal-body">
@@ -18,19 +18,21 @@
     -->
 
     <div class="form-group file-type" ng-class="{'has-error': editFileProperties.validationMessage}" x-show-errors>
-      <label for="displayName" class="control-label">Display Name<em class="required">(Required)</em></label>
+      <label for="displayName" class="control-label">Display Name
+        <em class="required">(Required)</em>
+      </label>
       <input class="form-control" id="displayName" name="displayName" type="text" ng-model="doc.displayName" required ng-blur="validate()">
       <div class="help-block">
         {{editFileProperties.validationMessage}}
-    </div>
+      </div>
     </div>
 
     <div ng-if="doc._schemaName === 'Document'" class="form-group file-type" x-show-errors>
       <label for="documentFileName" class="control-label">File Name
         <span class="text-danger " id="fileNameExtError" ng-show="editFileForm.documentFileName.$invalid"></span>
       </label>
-      <input class="form-control" id="documentFileName" name="documentFileName" type="text" ng-model="doc.documentFileName"
-        fn-filename ng-trim=false fn-extension="{{extension}}" fn-error="fileNameExtError">
+      <input class="form-control" id="documentFileName" name="documentFileName" type="text" ng-model="doc.documentFileName" fn-filename
+        ng-trim=false fn-extension="{{extension}}" fn-error="fileNameExtError">
     </div>
 
     <div class="form-group" x-show-errors>
@@ -59,8 +61,12 @@
     </div>
     <div ng-if="doc._schemaName === 'Folder'" class="form-group">
       <label class="control-label">Default Sort Order</label>
-      <input type="radio" name="defaultSort" value="date" ng-model="doc.defaultSortField" ng-click="setDefaultSortOrder('date')"/> By Date (most recent first)<br>
-      <input type="radio" name="defaultSort" value="name" ng-model="doc.defaultSortField" ng-click="setDefaultSortOrder('name')"/> By Name (descending)<br>
+      <input type="radio" name="defaultSort" value="date" ng-model="doc.defaultSortField" ng-click="setDefaultSortOrder('date')"
+      /> By Date (most recent first)
+      <br>
+      <input type="radio" name="defaultSort" value="name" ng-model="doc.defaultSortField" ng-click="setDefaultSortOrder('name')"
+      /> By Name (descending)
+      <br>
       <!--<input type="radio" name="defaultSort" value="" ng-model="doc.defaultSortField" ng-click="setDefaultSortOrder()"/> Default (use global setting)<br>-->
     </div>
 
@@ -71,13 +77,12 @@
           <ul class="tag-list">
             <li class="tag" ng-repeat="keyword in doc.keywords">
               <span class="tag-name">{{keyword}}</span>
-              <button class="btn btn-sm" type="button"  ng-click="removeKeyword(keyword)"><span class="glyphicon glyphicon-remove"></span></button>
+              <button class="btn btn-sm" type="button" ng-click="removeKeyword(keyword)">
+                <span class="glyphicon glyphicon-remove"></span>
+              </button>
             </li>
             <li class="add-tag">
-              <button class="add-btn btn btn-sm"  type="button"
-                      x-document-mgr-add-keyword
-                      x-project="project"
-                      x-doc="doc">
+              <button class="add-btn btn btn-sm" type="button" x-document-mgr-add-keyword x-project="project" x-doc="doc">
                 <span class="glyphicon glyphicon-plus"></span>
               </button>
             </li>
@@ -89,17 +94,20 @@
     <div ng-if="doc.inspectionType">
       <div class="form-group" x-show-errors>
         <label for="inspectionNumber" class="control-label">Inspection Number</label>
-        <input class="form-control" id="inspectionNumber" name="inspectionNumber" type="text" ng-required="doc.inspectionType" ng-model="doc.inspectionReport.inspectionNumber" ng-blur="validate()">
+        <input class="form-control" id="inspectionNumber" name="inspectionNumber" type="text" ng-required="doc.inspectionType" ng-model="doc.inspectionReport.inspectionNumber"
+          ng-blur="validate()">
       </div>
 
       <div class="form-group" x-show-errors>
         <label for="inspectorName" class="control-label">Inspector Name</label>
-        <input class="form-control" id="inspectorName" name="inspectorName" type="text" ng-required="doc.inspectionType" ng-model="doc.inspectionReport.inspectorName" ng-blur="validate()">
+        <input class="form-control" id="inspectorName" name="inspectorName" type="text" ng-required="doc.inspectionType" ng-model="doc.inspectionReport.inspectorName"
+          ng-blur="validate()">
       </div>
 
       <div class="form-group" x-show-errors>
         <label for="accompanyingInspectors" class="control-label">Accompanying Inspector(s)</label>
-        <input class="form-control" id="accompanyingInspectors" name="accompanyingInspectors" type="text" ng-model="doc.inspectionReport.accompanyingInspectors" ng-blur="validate()">
+        <input class="form-control" id="accompanyingInspectors" name="accompanyingInspectors" type="text" ng-model="doc.inspectionReport.accompanyingInspectors"
+          ng-blur="validate()">
       </div>
 
       <div class="form-group" x-show-errors>
@@ -109,12 +117,14 @@
 
       <div class="form-group" x-show-errors>
         <label for="personsContacted" class="control-label">Person(s) Contacted</label>
-        <input class="form-control" id="personsContacted" name="personsContacted" type="text" ng-model="doc.inspectionReport.personsContacted" ng-blur="validate()">
+        <input class="form-control" id="personsContacted" name="personsContacted" type="text" ng-model="doc.inspectionReport.personsContacted"
+          ng-blur="validate()">
       </div>
 
       <div class="form-group" x-show-errors>
         <label for="associatedAuthorization" class="control-label">Associated Authorization(s)</label>
-        <input class="form-control" id="associatedAuthorization" name="associatedAuthorization" type="text" ng-model="doc.inspectionReport.associatedAuthorization" ng-blur="validate()">
+        <input class="form-control" id="associatedAuthorization" name="associatedAuthorization" type="text" ng-model="doc.inspectionReport.associatedAuthorization"
+          ng-blur="validate()">
       </div>
 
       <div class="row">
@@ -122,20 +132,17 @@
           <label class="control-label" for="dateReportIssued">Inspection Report Date</label>
           <div class="datepicker__input">
             <p class="input-group">
-              <input class="form-control" placeholder="YYYY-MM-DD"  id="dateReportIssued" name="dateReportIssued"
-                  ng-model="doc.inspectionReport.dateReportIssued" type="text"
-                  uib-datepicker-popup
-                  is-open="dateReportIssuedPicker.opened"
-                  datepicker-options="{
+              <input class="form-control" placeholder="YYYY-MM-DD" id="dateReportIssued" name="dateReportIssued" ng-model="doc.inspectionReport.dateReportIssued"
+                type="text" uib-datepicker-popup is-open="dateReportIssuedPicker.opened" datepicker-options="{
                     showWeeks: false
-                  };"
-                  close-text="Close"
-                  ng-change="validate()"/>
+                  };" close-text="Close" ng-change="validate()" />
               <span class="input-group-btn">
-                <button class="btn btn-default" ng-click="dateReportIssuedPicker.opened = true;"><span class="glyphicon glyphicon-calendar"/></button>
+                <button class="btn btn-default" ng-click="dateReportIssuedPicker.opened = true;">
+                  <span class="glyphicon glyphicon-calendar" />
+                </button>
               </span>
             </p>
-        </div>
+          </div>
         </div>
       </div>
       <div class="row" ng-if="doc.inspectionType === 'Inspection Report Response'">
@@ -143,31 +150,28 @@
           <label class="control-label" for="dateResponse">Inspection Report Response Date</label>
           <div class="datepicker__input">
             <p class="input-group">
-              <input class="form-control" placeholder="YYYY-MM-DD"  id="dateResponse" name="dateResponse"
-                  ng-model="doc.inspectionReport.dateResponse" type="text"
-                  uib-datepicker-popup
-                  is-open="dateResponsePicker.opened"
-                  datepicker-options="dateOptions"
-                  close-text="Close"
-                  ng-change="validate()"/>
+              <input class="form-control" placeholder="YYYY-MM-DD" id="dateResponse" name="dateResponse" ng-model="doc.inspectionReport.dateResponse"
+                type="text" uib-datepicker-popup is-open="dateResponsePicker.opened" datepicker-options="dateOptions" close-text="Close"
+                ng-change="validate()" />
               <span class="input-group-btn">
-                <button class="btn btn-default" ng-click="dateResponsePicker.opened = true;"><span class="glyphicon glyphicon-calendar"/></button>
+                <button class="btn btn-default" ng-click="dateResponsePicker.opened = true;">
+                  <span class="glyphicon glyphicon-calendar" />
+                </button>
               </span>
             </p>
-        </div>
+          </div>
         </div>
       </div>
       <div class="row" ng-if="doc.inspectionType === 'Inspection Report Follow Up'">
         <div class="form-group datepicker col-md-3" x-show-errors>
           <label class="control-label" for="dateFollowUp">Follow Up Date</label>
           <div class="datepicker__input">
-            <input class="form-control" placeholder="YYYY-MM-DD"  id="dateFollowUp" name="dateFollowUp"
-                   ng-model="doc.inspectionReport.dateFollowUp" type="text"
-                   uib-datepicker-popup
-                   is-open="dateFollowUpPicker.opened"
-                   datepicker-options="dateOptions"
-                   close-text="Close"/>
-            <button class="btn btn-default calendar-btn"  type="button" ng-click="dateFollowUpPicker.opened = true;"><span class="glyphicon glyphicon-calendar"/></button>
+            <input class="form-control" placeholder="YYYY-MM-DD" id="dateFollowUp" name="dateFollowUp" ng-model="doc.inspectionReport.dateFollowUp"
+              type="text" uib-datepicker-popup is-open="dateFollowUpPicker.opened" datepicker-options="dateOptions" close-text="Close"
+            />
+            <button class="btn btn-default calendar-btn" type="button" ng-click="dateFollowUpPicker.opened = true;">
+              <span class="glyphicon glyphicon-calendar" />
+            </button>
           </div>
         </div>
       </div>
@@ -175,23 +179,26 @@
 
     <div class="row">
       <div class="form-group datepicker col-md-4" x-show-errors>
-        <label ng-if="doc._schemaName === 'Folder'" class="control-label" for="documentDate">Created Date<em class="required">(Required)</em></label>
-        <label ng-if="doc._schemaName === 'Document' && !doc.inspectionType" class="control-label" for="documentDate">Document Date<em class="required">(Required)</em></label>
-        <label ng-if="doc._schemaName === 'Document' && doc.inspectionType" class="control-label" for="documentDate">Inspection Date<em class="required">(Required)</em></label>
+        <label ng-if="doc._schemaName === 'Folder'" class="control-label" for="documentDate">Created Date
+          <em class="required">(Required)</em>
+        </label>
+        <label ng-if="doc._schemaName === 'Document' && !doc.inspectionType" class="control-label" for="documentDate">Document Date
+          <em class="required">(Required)</em>
+        </label>
+        <label ng-if="doc._schemaName === 'Document' && doc.inspectionType" class="control-label" for="documentDate">Inspection Date
+          <em class="required">(Required)</em>
+        </label>
         <div class="datepicker__input">
-            <p class="input-group">
-              <input class="form-control" placeholder="YYYY-MM-DD"  id="documentDate" name="documentDate"
-                  ng-model="doc.documentDate" type="text"
-                  uib-datepicker-popup='{{ doc.documentDateDisplayMnYr ? "MMMM yyyy" : "yyyy-MM-dd" }}'
-                  is-open="datePicker.opened"
-                  datepicker-options="dateOptions"
-                  close-text="Close"
-                  required
-                  ng-change="validate()"/>
-              <span class="input-group-btn">
-                <button class="btn btn-default" ng-click="datePicker.opened = true;"><span class="glyphicon glyphicon-calendar"/></button>
-              </span>
-            </p>
+          <p class="input-group">
+            <input class="form-control" placeholder="YYYY-MM-DD" id="documentDate" name="documentDate" ng-model="doc.documentDate" type="text"
+              uib-datepicker-popup='{{ doc.documentDateDisplayMnYr ? "MMMM yyyy" : "yyyy-MM-dd" }}' is-open="datePicker.opened"
+              datepicker-options="dateOptions" close-text="Close" required ng-change="validate()" />
+            <span class="input-group-btn">
+              <button class="btn btn-default" ng-click="datePicker.opened = true;">
+                <span class="glyphicon glyphicon-calendar" />
+              </button>
+            </span>
+          </p>
         </div>
       </div>
       <div class="day-display-input col-md-4">
@@ -202,20 +209,20 @@
     </div>
     <div class="row">
       <div ng-if="doc._schemaName === 'Document'" class="form-group datepicker col-md-3" x-show-errors>
-        <label class="control-label" for="dateUploaded">Uploaded Date<em class="control-label"></em></label>
+        <label class="control-label" for="dateUploaded">Uploaded Date
+          <em class="control-label"></em>
+        </label>
         <div class="datepicker__input">
-            <p class="input-group">
-              <input class="form-control" placeholder="YYYY-MM-DD"  id="dateUploaded" name="dateUploaded"
-                  ng-model="doc.dateUploaded" type="text"
-                  uib-datepicker-popup
-                  is-open="dateUploadedPicker.opened"
-                  datepicker-options="dateOptions"
-                  close-text="Close"
-                  ng-change="validate()"/>
-              <span class="input-group-btn">
-                <button class="btn btn-default" ng-click="dateUploadedOpen()"><span class="glyphicon glyphicon-calendar"/></button>
-              </span>
-            </p>
+          <p class="input-group">
+            <input class="form-control" placeholder="YYYY-MM-DD" id="dateUploaded" name="dateUploaded" ng-model="doc.dateUploaded" type="text"
+              uib-datepicker-popup is-open="dateUploadedPicker.opened" datepicker-options="dateOptions" close-text="Close"
+              ng-change="validate()" />
+            <span class="input-group-btn">
+              <button class="btn btn-default" ng-click="dateUploadedOpen()">
+                <span class="glyphicon glyphicon-calendar" />
+              </button>
+            </span>
+          </p>
         </div>
       </div>
     </div>
