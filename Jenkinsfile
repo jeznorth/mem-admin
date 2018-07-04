@@ -49,6 +49,7 @@ def getChangeLog(pastBuilds) {
 }
 
 def CHANGELOG = "No new changes"
+def IMAGE_HASH = "latest"
 
 node('master') {
   /*
@@ -81,8 +82,6 @@ node('master') {
         script: """oc get istag mem-admin:latest -o template --template=\"{{.image.dockerImageReference}}\"|awk -F \":\" \'{print \$3}\'""",
         returnStdout: true).trim()
         echo ">> IMAGE_HASH: ${IMAGE_HASH}"
-
-        openshiftTag destStream: 'mem-admin', verbose: 'true', destTag: "${IMAGE_HASH}", srcStream: 'mem-admin', srcTag: 'latest'
         echo "Tagging done"
       } catch (error) {
         notifySlack(
@@ -114,7 +113,7 @@ node('master') {
     stage('Deploy to Test'){
       try {
         echo "Deploying to test..."
-        openshiftTag destStream: 'mem-admin', verbose: 'true', destTag: 'test', srcStream: 'mem-admin', srcTag: 'latest'
+        openshiftTag destStream: 'mem-admin', verbose: 'false', destTag: 'test', srcStream: 'mem-admin', srcTag: "${IMAGE_HASH}"
         sleep 5
         openshiftVerifyDeployment depCfg: 'mem-mmt-test', namespace: 'mem-mmt-test', replicaCount: 1, verbose: 'false', verifyReplicaCount: 'false', waitTime: 600000
         echo ">>>> Deployment Complete"
