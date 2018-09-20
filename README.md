@@ -25,21 +25,12 @@ mem-admin has been built using MongoDB, Express, AngularJS and NodeJS.  See http
 * git
 * yarn >= 1.3.2
 
-The following environment variables must be set in order for a Minio object storage instance to be used for document uploads:
-* `MINIO_DEPLOYMENT_NAME` - the URL pointing to a Minio instance (can be https://play.minio.io:9000)
-* `MINIO_ACCESS_KEY` - the minio access key to be used for authentication
-* `MINIO_SECRET_KEY` - the minio secret key to be used for authentication
-
 ## Installation
- `yarn install`
+ yarn install
 
-## Development Mode
- `npm start`
+## Start in development mode
+ *npm start*
 
-## Production Mode
-`grunt build && NODE_ENV=production node server.js`
-
-After this you may open up a browser of your choice and navigte to http://localhost:4000/
 
 ## Unit Tests
 
