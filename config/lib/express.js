@@ -9,7 +9,6 @@ var config = require('../config'),
   bodyParser = require('body-parser'),
   session = require('express-session'),
   MongoStore = require('connect-mongo')(session),
-  multer = require('multer'),
   favicon = require('serve-favicon'),
   compress = require('compression'),
   methodOverride = require('method-override'),
@@ -83,9 +82,9 @@ module.exports.initMiddleware = function (app) {
     app.set('view cache', false);
 
     // Enable CORS Wildcard
-    console.log("Enable CORS Wildcard.");
-    app.use (function (req, res, next) {
-      res.set ({
+    console.log("Enable CORS Wildcard."); //eslint-disable-line
+    app.use(function (req, res, next) {
+      res.set({
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
         'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type'
@@ -101,20 +100,14 @@ module.exports.initMiddleware = function (app) {
     extended: true,
     limit: '2mb'
   }));
-  app.use(bodyParser.json({limit: '2mb'}));
+  app.use(bodyParser.json({
+    limit: '2mb'
+  }));
   app.use(methodOverride());
 
   // Add the cookie parser and flash middleware
   app.use(cookieParser());
   app.use(flash());
-
-  // Add multipart handling middleware
-  var uploaddir = process.env.UPLOAD_PATH || './uploads/';
-  if (uploaddir.substr(-1, 1) !== '/') {uploaddir += '/';}
-  app.use(multer({//TODO: multer upgrade
-    dest: uploaddir,
-    inMemory: false
-  }));
 };
 
 /**
@@ -221,7 +214,7 @@ module.exports.initErrorRoutes = function (app) {
     }
 
     // Log it
-    console.error(err.stack);
+    console.error(err.stack); //eslint-disable-line
 
     // Redirect to error page
     res.redirect('/server-error');
@@ -279,7 +272,6 @@ module.exports.init = function (db) {
 
   // Configure Socket.io
   app = this.configureSocketIO(app, db);
-
 
   return app;
 };
